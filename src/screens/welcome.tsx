@@ -1,11 +1,13 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import { RootStackScreenProps } from "../types/navigation";
+import { useClerk } from "@clerk/clerk-expo";
 
 export const Welcome = ({}: RootStackScreenProps<"Welcome">) => {
+  const { signOut } = useClerk();
   return (
-    <View className="flex-1">
+    <TouchableOpacity onPress={() => signOut()} className="h-screen flex-1">
       <Text>Welcome!</Text>
-    </View>
+    </TouchableOpacity>
   );
 };
