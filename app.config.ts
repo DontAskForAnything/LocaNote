@@ -7,7 +7,7 @@ const defineConfig = (): ExpoConfig => ({
   version: "0.8.0",
   orientation: "portrait",
   icon: "./assets/icon.png",
-  userInterfaceStyle: "light",
+  userInterfaceStyle: "dark",
   splash: {
     image: "./assets/icon.png",
     backgroundColor: "#ea5b6e",
@@ -31,6 +31,8 @@ const defineConfig = (): ExpoConfig => ({
     package: "misiu.dontaskforanything.locanote",
   },
   extra: {
+    CLERK_PUBLISHABLE_KEY:
+      "pk_test_dWx0aW1hdGUtcmF5LTY2LmNsZXJrLmFjY291bnRzLmRldiQ",
     // eas: {
     //   projectId: "c0c5802d-8183-4aab-88af-27ef68b73009",
     // },

@@ -11,11 +11,14 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "eslint . --ext ts,tsx",
-    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\" --ignore-unknown --no-error-on-unmatched-pattern",
-    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\" --ignore-unknown --no-error-on-unmatched-pattern"
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,cjs}\" --ignore-unknown --no-error-on-unmatched-pattern",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md,cjs}\" --ignore-unknown --no-error-on-unmatched-pattern"
   },
   "dependencies": {
+    "@clerk/clerk-expo": "^0.19.11",
     "@expo-google-fonts/inter": "^0.2.3",
+    "@expo-google-fonts/open-sans": "^0.2.3",
+    "@expo-google-fonts/poppins": "^0.2.3",
     "@expo/config": "~8.0.0",
     "@expo/vector-icons": "^13.0.0",
     "@hookform/resolvers": "^3.3.1",
@@ -50,18 +53,21 @@
     "react-native-svg": "13.4.0",
     "react-native-swiper": "^1.6.0",
     "react-native-web": "~0.18.10",
-    "zod": "^3.18.0"
+    "zod": "^3.18.0",
+    "expo-image": "~1.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
     "@babel/preset-env": "^7.19.3",
     "@babel/runtime": "^7.19.0",
     "@types/react": "~18.0.27",
+    "@types/react-native": "^0.72.5",
     "@typescript-eslint/eslint-plugin": "^6.7.2",
     "dotenv": "^16.3.1",
     "eslint": "^8.28.0",
     "postcss": "^8.4.19",
     "prettier": "^3.0.3",
+    "prettier-plugin-tailwindcss": "^0.5.6",
     "tailwindcss": "3.3.2",
     "typescript": "^4.9.3"
   },
