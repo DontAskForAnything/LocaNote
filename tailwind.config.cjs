@@ -27,8 +27,8 @@ module.exports = {
           dark: "#2E54B7",
         },
         primary: {
-          DEFAULT: "#172750",
-          dark: "#2E54B7",
+          DEFAULT: "#16a34a",
+          dark: "#16a34a",
         },
         // For all switches such as private/public yes/no
         switch: {

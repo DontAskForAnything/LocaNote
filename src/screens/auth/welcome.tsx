@@ -12,10 +12,10 @@ export default function WelcomeScreen({
       <SafeAreaView className="flex h-screen bg-background dark:bg-background-dark">
         <View className="inline-flex flex-col items-center justify-start p-12">
           <View className="mt-8 flex h-40 flex-col items-start justify-start self-stretch">
-            <Text className="self-stretch text-center  font-open-sans-bold text-5xl text-white">
+            <Text className="self-stretch text-center font-open-sans-bold text-5xl text-white">
               Welcome to LocaNote
             </Text>
-            <Text className="mt-4 self-stretch text-center font-open-sans-regular text-base leading-normal text-white">
+            <Text className="mt-2 self-stretch text-center font-open-sans-regular text-base leading-normal text-white">
               Let's start here!
             </Text>
           </View>
