@@ -73,9 +73,6 @@ const SignInWithOAuthButton = ({
   }, []);
   return (
     <>
-      <Text className="mt-1 flex h-6 pt-0.5 text-center font-open-sans-semibold text-xs text-red-500">
-        {error}
-      </Text>
       <TouchableOpacity
         className={`rounded-2xl p-4 shadow-md shadow-black ${
           backgroundColorVariants[themeVariant]
@@ -97,6 +94,11 @@ const SignInWithOAuthButton = ({
           {text}
         </Text>
       </TouchableOpacity>
+      {error && (
+        <Text className="mt-1 flex h-6 pt-0.5 text-center font-open-sans-semibold text-xs text-red-500">
+          {error}
+        </Text>
+      )}
     </>
   );
 };

@@ -1,4 +1,4 @@
-// sign up
+// TODO: Check on other device and improve design
 import * as React from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useSignUp } from "@clerk/clerk-expo";

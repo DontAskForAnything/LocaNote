@@ -1,14 +1,20 @@
 import * as React from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useSignUp } from "@clerk/clerk-expo";
 import { RootStackScreenProps } from "../../types/navigation";
-import { NavigationBar } from "../../components/navigationBar";
 import { EmailSignUpSchema } from "../../utils/schemas";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { isClerkAPIResponseError } from "@clerk/clerk-js";
 import { z } from "zod";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { GoBackSignButton } from "../../components/goBackSignButton";
 
 export default function SignUpScreen({
   navigation,
@@ -83,121 +89,127 @@ export default function SignUpScreen({
   };
 
   return (
-    <SafeAreaView className="relative flex bg-background dark:bg-background-dark">
-      <NavigationBar
-        title="Sign Up"
-        onPress={() => {
-          navigation.goBack();
-        }}
-      />
-      <View className="flex h-screen bg-background px-5 pt-4 dark:bg-background-dark">
-        <View className="w-11/12 self-center rounded-2xl"></View>
+    <View className="flex bg-background dark:bg-background-dark">
+      <SafeAreaView className="flex w-11/12 self-center bg-background dark:bg-background-dark">
+        <View className="h-screen bg-background px-5 pt-6 dark:bg-background-dark">
+          <GoBackSignButton onPress={() => navigation.goBack()} />
 
-        {/* email */}
-        <Controller
-          control={control}
-          name="emailAddress"
-          render={({ field: { onChange, value, onBlur } }) => (
-            <TextInput
-              autoCapitalize="none"
-              placeholder="Email"
-              value={value}
-              onBlur={onBlur}
-              onChangeText={(value) => onChange(value)}
-              placeholderTextColor="#6B7280"
-              className={`rounded-2xl bg-input  p-4 text-black dark:bg-input-dark  dark:text-white ${
-                errors.emailAddress?.message && "border-2 border-red-500"
-              }`}
-            />
-          )}
-        />
-        {errors.emailAddress?.message && (
-          <Text className="mt-2 font-open-sans-bold text-red-500">
-            {errors.emailAddress.message.toString()}
-          </Text>
-        )}
+          <KeyboardAvoidingView behavior={"position"}>
+            <View className=" mt-20 ">
+              <Text className="pb-8 text-center font-open-sans-semibold text-xl  text-black dark:text-white">
+                Create account
+              </Text>
 
-        {/* password */}
-        <Controller
-          control={control}
-          name="password"
-          render={({ field: { onChange, value, onBlur } }) => (
-            <TextInput
-              autoCapitalize="none"
-              secureTextEntry={true}
-              placeholder="Password"
-              value={value}
-              onBlur={onBlur}
-              onChangeText={(value) => onChange(value)}
-              placeholderTextColor="#6B7280"
-              className={`mt-3 rounded-2xl bg-input p-4  font-open-sans-regular text-black dark:bg-input-dark dark:text-white ${
-                errors.password?.message && "border-2 border-red-500"
-              }`}
-            />
-          )}
-        />
-        {errors.password?.message && (
-          <Text className="mt-2 font-open-sans-bold text-red-500">
-            {errors.password.message.toString()}
-          </Text>
-        )}
+              {/* email */}
+              <Controller
+                control={control}
+                name="emailAddress"
+                render={({ field: { onChange, value, onBlur } }) => (
+                  <TextInput
+                    autoCapitalize="none"
+                    placeholder="Email"
+                    value={value}
+                    onBlur={onBlur}
+                    onChangeText={(value) => onChange(value)}
+                    placeholderTextColor="#6B7280"
+                    className={`rounded-2xl bg-input  p-4 text-black dark:bg-input-dark  dark:text-white ${
+                      errors.emailAddress?.message && "border-2 border-red-500"
+                    }`}
+                  />
+                )}
+              />
+              {errors.emailAddress?.message && (
+                <Text className="mt-2 font-open-sans-bold text-red-500">
+                  {errors.emailAddress.message.toString()}
+                </Text>
+              )}
 
-        {/* passwordConfirm */}
-        <Controller
-          control={control}
-          name="passwordConfirm"
-          render={({ field: { onChange, value, onBlur } }) => (
-            <TextInput
-              autoCapitalize="none"
-              secureTextEntry={true}
-              placeholder="Confirm password"
-              value={value}
-              onBlur={onBlur}
-              onChangeText={(value) => onChange(value)}
-              placeholderTextColor="#6B7280"
-              className={`mt-3 rounded-2xl bg-input  p-4 font-open-sans-regular text-black dark:bg-input-dark dark:text-white ${
-                errors.passwordConfirm?.message && "border-2 border-red-500"
-              }`}
-            />
-          )}
-        />
-        {errors.passwordConfirm?.message && (
-          <Text className="mt-2 font-open-sans-bold text-red-500">
-            {errors.passwordConfirm.message.toString()}
-          </Text>
-        )}
+              {/* password */}
+              <Controller
+                control={control}
+                name="password"
+                render={({ field: { onChange, value, onBlur } }) => (
+                  <TextInput
+                    autoCapitalize="none"
+                    secureTextEntry={true}
+                    placeholder="Password"
+                    value={value}
+                    onBlur={onBlur}
+                    onChangeText={(value) => onChange(value)}
+                    placeholderTextColor="#6B7280"
+                    className={`mt-3 rounded-2xl bg-input p-4  font-open-sans-regular text-black dark:bg-input-dark dark:text-white ${
+                      errors.password?.message && "border-2 border-red-500"
+                    }`}
+                  />
+                )}
+              />
+              {errors.password?.message && (
+                <Text className="mt-2 font-open-sans-bold text-red-500">
+                  {errors.password.message.toString()}
+                </Text>
+              )}
 
-        {/* username */}
-        <Controller
-          control={control}
-          name="username"
-          render={({ field: { onChange, value, onBlur } }) => (
-            <TextInput
-              autoCapitalize="none"
-              placeholder="Username"
-              value={value}
-              onBlur={onBlur}
-              onChangeText={(value) => onChange(value)}
-              placeholderTextColor="#6B7280"
-              className={`mt-3 rounded-2xl bg-input p-4  font-open-sans-regular text-black dark:bg-input-dark dark:text-white ${
-                errors.username?.message && "border-2 border-red-500"
-              }`}
-            />
-          )}
-        />
-        {errors.username?.message && (
-          <Text className="mt-2 font-open-sans-bold text-red-500">
-            {errors.username.message.toString()}
-          </Text>
-        )}
-      </View>
+              {/* passwordConfirm */}
+              <Controller
+                control={control}
+                name="passwordConfirm"
+                render={({ field: { onChange, value, onBlur } }) => (
+                  <TextInput
+                    autoCapitalize="none"
+                    secureTextEntry={true}
+                    placeholder="Confirm password"
+                    value={value}
+                    onBlur={onBlur}
+                    onChangeText={(value) => onChange(value)}
+                    placeholderTextColor="#6B7280"
+                    className={`mt-3 rounded-2xl bg-input  p-4 font-open-sans-regular text-black dark:bg-input-dark dark:text-white ${
+                      errors.passwordConfirm?.message &&
+                      "border-2 border-red-500"
+                    }`}
+                  />
+                )}
+              />
+              {errors.passwordConfirm?.message && (
+                <Text className="mt-2 font-open-sans-bold text-red-500">
+                  {errors.passwordConfirm.message.toString()}
+                </Text>
+              )}
 
-      <TouchableOpacity
-        className="absolute bottom-52  mt-4 w-6/12 self-center rounded-2xl bg-primary p-4   dark:bg-primary-dark"
-        onPress={handleSubmit(onSignUpPress)}
-      >
-        <Text className="text-center font-open-sans-bold text-white">NEXT</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+              {/* username */}
+              <Controller
+                control={control}
+                name="username"
+                render={({ field: { onChange, value, onBlur } }) => (
+                  <TextInput
+                    autoCapitalize="none"
+                    placeholder="Username"
+                    value={value}
+                    onBlur={onBlur}
+                    onChangeText={(value) => onChange(value)}
+                    placeholderTextColor="#6B7280"
+                    className={`mt-3 rounded-2xl bg-input p-4  font-open-sans-regular text-black dark:bg-input-dark dark:text-white ${
+                      errors.username?.message && "border-2 border-red-500"
+                    }`}
+                  />
+                )}
+              />
+              {errors.username?.message && (
+                <Text className="mt-2 font-open-sans-bold text-red-500">
+                  {errors.username.message.toString()}
+                </Text>
+              )}
+              <TouchableOpacity
+                className=" mt-4  w-full self-center rounded-2xl bg-primary p-4   dark:bg-primary-dark"
+                onPress={handleSubmit(onSignUpPress)}
+              >
+                <Text className="text-center font-open-sans-bold text-white">
+                  NEXT
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </KeyboardAvoidingView>
+        </View>
+      </SafeAreaView>
+    </View>
   );
 }

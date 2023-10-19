@@ -1,6 +1,5 @@
 import React from "react";
 import { RootStackScreenProps } from "../../../types/navigation";
-import { NavigationBar } from "../../../components/navigationBar";
 import { CodeInput } from "../../../components/auth/codeInput";
 import {
   Keyboard,
@@ -13,6 +12,7 @@ import { useSignIn } from "@clerk/clerk-expo";
 import { isClerkAPIResponseError } from "@clerk/clerk-js";
 import { SafeAreaView } from "react-native-safe-area-context";
 import useInterval from "../../../hooks/useInterval";
+import { GoBackSignButton } from "../../../components/goBackSignButton";
 
 const resendCodeDelay = 30;
 
@@ -99,50 +99,50 @@ export default function ForgotPasswordCodeVerifyScreen({
 
   return (
     <View className="flex bg-background dark:bg-background-dark">
-      <SafeAreaView className="flex bg-background dark:bg-background-dark">
-        <NavigationBar
-          title="Forgot Password"
-          onPress={() => navigation.goBack()}
-        />
-        <Pressable
-          className="flex h-screen bg-background px-5 pt-4 dark:bg-background-dark"
-          onPress={Keyboard.dismiss}
-        >
-          <Text className="text-center font-open-sans-semibold text-base text-black dark:text-white">
-            Enter your code
-          </Text>
-          <Text className="text-x mb-4 p-2 text-center text-blue-800 dark:text-blue-600">
-            Please enter the code we sent to your phone or email
-          </Text>
-          <CodeInput
-            length={6}
-            code={code}
-            setCode={setCode}
-            error={codeError}
-          />
-          <TouchableOpacity
-            className={`mb-2  mt-2 rounded-2xl bg-primary p-4   dark:bg-primary-dark ${
-              code.length !== 6 && " opacity-60"
-            }`}
-            onPress={codeSubmit}
-            disabled={code.length !== 6}
+      <SafeAreaView className="flex w-11/12 self-center bg-background dark:bg-background-dark">
+        <View className="h-screen bg-background px-5 pt-6 dark:bg-background-dark">
+          <GoBackSignButton onPress={() => navigation.goBack()} />
+
+          <Pressable
+            className="flex  h-screen justify-center bg-background  dark:bg-background-dark"
+            onPress={Keyboard.dismiss}
           >
-            <Text className="text-center font-open-sans-semibold text-white">
-              Continue
+            <Text className="text-center font-open-sans-semibold text-base text-black dark:text-white">
+              Enter your code
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity className=" p-2" onPress={resendCode}>
-            <Text className="text-x  text-center text-blue-800 dark:text-blue-600">
-              Didn't receive the code?{" "}
-              {count > 0 && count < resendCodeDelay && ` (${count}s) `}
+            <Text className="text-x mb-4 p-2 text-center  dark:text-primary-dark">
+              Please enter the code we sent to your phone or email
             </Text>
-            {resendError && (
-              <Text className=" text-center font-open-sans-bold text-xs text-red-500">
-                {resendError}
+            <CodeInput
+              length={6}
+              code={code}
+              setCode={setCode}
+              error={codeError}
+            />
+            <TouchableOpacity
+              className={`mb-2  mt-2 rounded-2xl bg-primary p-4   dark:bg-primary-dark ${
+                code.length !== 6 && " opacity-60"
+              }`}
+              onPress={codeSubmit}
+              disabled={code.length !== 6}
+            >
+              <Text className="text-center font-open-sans-semibold text-white">
+                Continue
               </Text>
-            )}
-          </TouchableOpacity>
-        </Pressable>
+            </TouchableOpacity>
+            <TouchableOpacity className=" p-2" onPress={resendCode}>
+              <Text className="text-x  text-center dark:text-primary-dark">
+                Didn't receive the code?{" "}
+                {count > 0 && count < resendCodeDelay && ` (${count}s) `}
+              </Text>
+              {resendError && (
+                <Text className=" text-center font-open-sans-bold text-xs text-red-500">
+                  {resendError}
+                </Text>
+              )}
+            </TouchableOpacity>
+          </Pressable>
+        </View>
       </SafeAreaView>
     </View>
   );

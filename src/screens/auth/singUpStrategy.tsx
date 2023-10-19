@@ -4,7 +4,6 @@ import { RootStackScreenProps } from "../../types/navigation";
 import SignInWithOAuthButton from "../../components/SignInWithOAuth";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { GoBackSignButton } from "../../components/goBackSignButton";
-import { Image } from "expo-image";
 
 export default function SignUpStrategyScreen({
   navigation,
@@ -51,10 +50,6 @@ export default function SignUpStrategyScreen({
           </View>
         </View>
       </SafeAreaView>
-      <Image
-        className="z-100 absolute top-2 flex-1"
-        source={require("../../../assets/background_welcome.png")}
-      />
     </View>
   );
 }
