@@ -21,7 +21,7 @@ export const CodeInput = ({
   }) => {
     return (
       <View
-        className={`flex h-12 w-11 items-center justify-center rounded-lg  bg-input dark:bg-input-dark ${
+        className={`bg-input flex h-12 w-11 items-center justify-center  rounded-lg dark:bg-card-dark ${
           current && " bg-gray-400 dark:bg-zinc-600"
         } ${error && "border-2 border-red-500"}`}
       >

@@ -116,7 +116,7 @@ export default function LogInStrategyScreen({
                   onBlur={onBlur}
                   onChangeText={(value) => onChange(value)}
                   placeholderTextColor="#6B7280"
-                  className={`rounded-2xl bg-input p-4  font-open-sans-regular text-black dark:bg-input-dark dark:text-white ${
+                  className={`bg-input rounded-2xl p-4  font-open-sans-regular text-black dark:bg-card-dark dark:text-white ${
                     errors.emailAddress?.message && "border-2 border-red-500"
                   }`}
                 />
@@ -141,7 +141,7 @@ export default function LogInStrategyScreen({
                   value={value}
                   onBlur={onBlur}
                   onChangeText={(value) => onChange(value)}
-                  className={`mt-3 rounded-2xl bg-input p-4 font-open-sans-regular text-black dark:bg-input-dark dark:text-white ${
+                  className={`bg-input mt-3 rounded-2xl p-4 font-open-sans-regular text-black dark:bg-card-dark dark:text-white ${
                     errors.password?.message && "border-2 border-red-500"
                   }`}
                 />

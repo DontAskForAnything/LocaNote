@@ -18,9 +18,9 @@ module.exports = {
           DEFAULT: "#EBEBEB",
           dark: "#1B1B1B",
         },
-        input: {
+        backgroundLight: {
           DEFAULT: "#EBEBEB",
-          dark: "#1B1B1B",
+          dark: "#212121",
         },
         title: {
           DEFAULT: "black",
@@ -29,11 +29,6 @@ module.exports = {
         primary: {
           DEFAULT: "#16a34a",
           dark: "#16a34a",
-        },
-        // For all switches such as private/public yes/no
-        switch: {
-          DEFAULT: "#FFFFFF",
-          dark: "#757575",
         },
         // For cancel button
         cancel: {

@@ -92,7 +92,7 @@ export default function ForgotPasswordSendCodeScreen({
                   onBlur={onBlur}
                   onChangeText={onChange}
                   placeholderTextColor={"rgb(107,114,128)"}
-                  className={`rounded-2xl bg-input  p-4 font-open-sans-regular text-black  placeholder-gray-500  dark:bg-input-dark dark:text-white ${
+                  className={`bg-input rounded-2xl  p-4 font-open-sans-regular text-black  placeholder-gray-500  dark:bg-card-dark dark:text-white ${
                     errors.emailAddress?.message && "border-2 border-red-500"
                   }`}
                 />

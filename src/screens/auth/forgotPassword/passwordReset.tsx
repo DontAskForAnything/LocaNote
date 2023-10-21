@@ -69,7 +69,7 @@ export default function ForgotPasswordRestartScreen({
                       onBlur={onBlur}
                       onChangeText={(value) => onChange(value)}
                       placeholderTextColor="#6B7280"
-                      className={`mt-4 rounded-2xl bg-input p-4  font-open-sans-regular text-black dark:bg-input-dark dark:text-white ${
+                      className={`bg-input mt-4 rounded-2xl p-4  font-open-sans-regular text-black dark:bg-card-dark dark:text-white ${
                         errors.password?.message && "border-2 border-red-500"
                       }`}
                     />
@@ -94,7 +94,7 @@ export default function ForgotPasswordRestartScreen({
                       onBlur={onBlur}
                       onChangeText={(value) => onChange(value)}
                       placeholderTextColor="#6B7280"
-                      className={`mt-4 rounded-2xl bg-input  p-4 font-open-sans-regular text-black dark:bg-input-dark dark:text-white ${
+                      className={`bg-input mt-4 rounded-2xl  p-4 font-open-sans-regular text-black dark:bg-card-dark dark:text-white ${
                         errors.passwordConfirm?.message &&
                         "border-2 border-red-500"
                       }`}
