@@ -12,7 +12,7 @@ type ColorVariants = {
 };
 
 const backgroundColorVariants: ColorVariants = {
-  facebook: "bg-blue-600 dark:bg-input-dark ",
+  facebook: "bg-blue-600 dark:bg-card-dark ",
   google: "bg-background dark:bg-blue-600",
   apple: "bg-black dark:bg-background",
 };

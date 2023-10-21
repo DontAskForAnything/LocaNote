@@ -23,6 +23,9 @@ import {
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import { CalendarScreen } from "./screens/calendar/main";
+import { AccountScreen } from "./screens/account/account";
+import { SettingsScreen } from "./screens/account/settings/settings";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -52,49 +55,60 @@ const CalenderStack = () => {
 
 const AppNavigator = () => {
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        initialRouteName="MainStack"
-        screenOptions={{
-          headerShown: false,
-          tabBarLabelStyle: { display: "none" },
-          tabBarActiveTintColor: "black",
-          tabBarInactiveTintColor: "grey",
-          tabBarStyle: {
-            borderTopColor: "transparent",
-            backgroundColor: "transparent",
-            elevation: 0,
-          },
+    <Tab.Navigator
+      initialRouteName="MainStack"
+      screenOptions={{
+        headerShown: false,
+        tabBarLabelStyle: { display: "none" },
+        tabBarActiveTintColor: "black",
+        tabBarInactiveTintColor: "grey",
+        tabBarStyle: {
+          borderTopColor: "transparent",
+          backgroundColor: "transparent",
+          elevation: 0,
+        },
+      }}
+    >
+      <Tab.Screen
+        name="MainStack"
+        options={{
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "home" : "home-outline"}
+              size={24}
+              color={color}
+            />
+          ),
         }}
-      >
-        <Tab.Screen
-          name="MainStack"
-          options={{
-            tabBarIcon: ({ color, focused }) => (
-              <Ionicons
-                name={focused ? "home" : "home-outline"}
-                size={24}
-                color={color}
-              />
-            ),
-          }}
-          component={MainStack}
-        />
-        <Tab.Screen
-          name="CalenderStack"
-          options={{
-            tabBarIcon: ({ color, focused }) => (
-              <Ionicons
-                name={focused ? "calendar" : "calendar-outline"}
-                size={24}
-                color={color}
-              />
-            ),
-          }}
-          component={CalenderStack}
-        />
-      </Tab.Navigator>
-    </NavigationContainer>
+        component={MainStack}
+      />
+      <Tab.Screen
+        name="CalenderStack"
+        options={{
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "calendar" : "calendar-outline"}
+              size={24}
+              color={color}
+            />
+          ),
+        }}
+        component={CalenderStack}
+      />
+      <Tab.Screen
+        name="Account"
+        options={{
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "person" : "person-outline"}
+              size={24}
+              color={color}
+            />
+          ),
+        }}
+        component={AccountScreen}
+      />
+    </Tab.Navigator>
   );
 };
 
@@ -109,51 +123,61 @@ export const App = () => {
     return <></>;
   }
   return (
-    <ClerkProvider
-      publishableKey={Constants.expoConfig?.extra?.CLERK_PUBLISHABLE_KEY}
-    >
-      <SignedIn>
-        <AppNavigator />
-      </SignedIn>
-      <SignedOut>
-        <NavigationContainer>
-          <Stack.Navigator
-            initialRouteName="Welcome"
-            screenOptions={{ headerShown: false }}
-          >
-            <Stack.Screen name="Welcome" component={WelcomeScreen} />
-            <Stack.Screen
-              name="LogInStrategy"
-              component={LogInStrategyScreen}
-            />
-            <Stack.Screen
-              name="ForgotPasswordSendCode"
-              component={ForgotPasswordSendCodeScreen}
-            />
+    <ActionSheetProvider>
+      <ClerkProvider
+        publishableKey={Constants.expoConfig?.extra?.CLERK_PUBLISHABLE_KEY}
+      >
+        <SignedIn>
+          <NavigationContainer>
+            <Stack.Navigator
+              initialRouteName="AppNavigator"
+              screenOptions={{ headerShown: false }}
+            >
+              <Stack.Screen name="AppNavigator" component={AppNavigator} />
+              <Stack.Screen name="Settings" component={SettingsScreen} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </SignedIn>
+        <SignedOut>
+          <NavigationContainer>
+            <Stack.Navigator
+              initialRouteName="Welcome"
+              screenOptions={{ headerShown: false }}
+            >
+              <Stack.Screen name="Welcome" component={WelcomeScreen} />
+              <Stack.Screen
+                name="LogInStrategy"
+                component={LogInStrategyScreen}
+              />
+              <Stack.Screen
+                name="ForgotPasswordSendCode"
+                component={ForgotPasswordSendCodeScreen}
+              />
 
-            <Stack.Screen
-              name="ForgotPasswordCodeVerify"
-              component={ForgotPasswordCodeVerifyScreen}
-            />
+              <Stack.Screen
+                name="ForgotPasswordCodeVerify"
+                component={ForgotPasswordCodeVerifyScreen}
+              />
 
-            <Stack.Screen
-              name="ForgotPasswordRestart"
-              component={ForgotPasswordRestartScreen}
-            />
+              <Stack.Screen
+                name="ForgotPasswordRestart"
+                component={ForgotPasswordRestartScreen}
+              />
 
-            <Stack.Screen name="SignUp" component={SignUpScreen} />
-            <Stack.Screen
-              name="SignUpStrategy"
-              component={SignUpStrategyScreen}
-            />
-            <Stack.Screen
-              name="UsernameChoose"
-              component={UsernameChooseScreen}
-            />
-            <Stack.Screen name="VerifyCode" component={VerifyCodeScreen} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </SignedOut>
-    </ClerkProvider>
+              <Stack.Screen name="SignUp" component={SignUpScreen} />
+              <Stack.Screen
+                name="SignUpStrategy"
+                component={SignUpStrategyScreen}
+              />
+              <Stack.Screen
+                name="UsernameChoose"
+                component={UsernameChooseScreen}
+              />
+              <Stack.Screen name="VerifyCode" component={VerifyCodeScreen} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </SignedOut>
+      </ClerkProvider>
+    </ActionSheetProvider>
   );
 };

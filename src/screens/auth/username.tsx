@@ -70,7 +70,7 @@ export default function UsernameChooseScreen({
             onChangeText={(username) => {
               setUsername(username);
             }}
-            className="mb-4 mt-2 rounded-2xl bg-input p-4 font-open-sans-regular text-gray-500 dark:bg-input-dark  dark:text-white"
+            className="bg-input mb-4 mt-2 rounded-2xl p-4 font-open-sans-regular text-gray-500 dark:bg-card-dark  dark:text-white"
           />
           {usernameError && (
             <Text className="mt-2 font-open-sans-bold text-red-500">
