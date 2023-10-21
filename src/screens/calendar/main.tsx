@@ -13,7 +13,7 @@ export const CalendarScreen = ({}: RootStackScreenProps<"CalendarScreen">) => {
         markedDates={{
           [selectedDay]: { selected: true },
         }}
-        className="bg-input-dark"
+        className="bg-card-dark"
         theme={{
           arrowColor: "#16A34A",
           textSectionTitleColor: "white",
