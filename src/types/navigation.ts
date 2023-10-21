@@ -25,6 +25,10 @@ export type RootStackParamList = {
   // Calendar Stack
   CalendarStack: undefined;
   CalendarScreen: undefined;
+  // AccountStack
+  Account: undefined;
+  Settings: undefined;
+  AppNavigator: undefined;
 };
 
 declare module "@react-navigation/native" {

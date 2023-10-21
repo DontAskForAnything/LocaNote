@@ -1,5 +1,5 @@
 {
-  "name": "@locanote/expo",
+  "name": "locanote",
   "version": "0.1.0",
   "main": "index.ts",
   "scripts": {
@@ -20,6 +20,7 @@
     "@expo-google-fonts/open-sans": "^0.2.3",
     "@expo-google-fonts/poppins": "^0.2.3",
     "@expo/config": "~8.0.0",
+    "@expo/react-native-action-sheet": "^4.0.1",
     "@expo/vector-icons": "^13.0.0",
     "@hookform/resolvers": "^3.3.1",
     "@react-navigation/bottom-tabs": "^6.5.8",
@@ -29,8 +30,9 @@
     "expo": "^48.0.6",
     "expo-auth-session": "~4.0.3",
     "expo-barcode-scanner": "12.3.2",
+    "expo-image": "~1.0.2",
     "expo-image-manipulator": "~11.1.1",
-    "expo-image-picker": "14.1.1",
+    "expo-image-picker": "^14.5.0",
     "expo-linear-gradient": "12.1.2",
     "expo-random": "~13.1.1",
     "expo-secure-store": "~12.1.1",
@@ -44,6 +46,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.46.1",
     "react-native": "0.71.8",
+    "react-native-calendars": "^1.1301.0",
     "react-native-chart-kit": "^6.12.0",
     "react-native-dropdown-select-list": "^2.0.5",
     "react-native-gesture-handler": "2.9.0",
@@ -53,8 +56,7 @@
     "react-native-svg": "13.4.0",
     "react-native-swiper": "^1.6.0",
     "react-native-web": "~0.18.10",
-    "zod": "^3.18.0",
-    "expo-image": "~1.0.2"
+    "zod": "^3.18.0"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",

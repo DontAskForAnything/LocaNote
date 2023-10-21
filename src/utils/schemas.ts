@@ -21,7 +21,7 @@ export const UsernameSchema = z
   .max(64, "Username must be shorter than 64 characters.")
   .regex(/[a-zA-Z]/, "Username must contain at least one non-number character.")
   .regex(
-    /^[a-zA-Z0-9_]*$/,
+    /^[a-zA-Z0-9_-]*$/,
     "Username can only contain alphanumeric characters, underscores (_), and dashes (-).",
   );
 

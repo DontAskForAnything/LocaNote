@@ -7,8 +7,7 @@ export const MainScreen = ({}: RootStackScreenProps<"MainScreen">) => {
   const { signOut } = useClerk();
   return (
     <TouchableOpacity onPress={() => signOut()} className="h-screen flex-1">
-      <Text>MainScreen!</Text>
-      <Text>CLICKING WILL LOG OUT YOU!</Text>
+      <Text>Just chilling here till someone do me {">_<"}</Text>
     </TouchableOpacity>
   );
 };

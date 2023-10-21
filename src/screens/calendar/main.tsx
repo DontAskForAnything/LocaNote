@@ -1,13 +1,36 @@
-import React from "react";
-import { Text, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { KeyboardAvoidingView } from "react-native";
 import { RootStackScreenProps } from "../../types/navigation";
-import { useClerk } from "@clerk/clerk-expo";
-
+import { Calendar } from "react-native-calendars";
 export const CalendarScreen = ({}: RootStackScreenProps<"CalendarScreen">) => {
-  const { signOut } = useClerk();
+  // const [selectedDay, setSelectedDay] = useState(new Date(Date.now()).toISOString().split('T')[0]);
+  const [selectedDay, setSelectedDay] = useState("1970-1-1");
+
   return (
-    <TouchableOpacity className="h-screen flex-1">
-      <Text>Calendar!</Text>
-    </TouchableOpacity>
+    <KeyboardAvoidingView className="h-screen flex-1">
+      <Calendar
+        firstDay={1}
+        markedDates={{
+          [selectedDay]: { selected: true },
+        }}
+        className="bg-card-dark"
+        theme={{
+          arrowColor: "#16A34A",
+          textSectionTitleColor: "white",
+          monthTextColor: "white",
+          calendarBackground: "#1B1B1B",
+          backgroundColor: "#1B1B1B",
+          dayTextColor: "white",
+          textDisabledColor: "grey",
+          selectedDotColor: "blue",
+          selectedDayBackgroundColor: "#00adf5",
+          todayTextColor: "#16A34A",
+          selectedDayTextColor: "white",
+        }}
+        onDayPress={(day) => {
+          setSelectedDay(day.dateString);
+        }}
+      />
+    </KeyboardAvoidingView>
   );
 };
