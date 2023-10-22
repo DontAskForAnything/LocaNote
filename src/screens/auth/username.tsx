@@ -1,12 +1,17 @@
-// TODO: Check on other device and improve design
 import * as React from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Pressable,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useSignUp } from "@clerk/clerk-expo";
 import { RootStackScreenProps } from "../../types/navigation";
-import { NavigationBar } from "../../components/navigationBar";
 import { UsernameSchema } from "../../utils/schemas";
 import { isClerkAPIResponseError } from "@clerk/clerk-js";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { GoBackSignButton } from "../../components/goBackSignButton";
 
 export default function UsernameChooseScreen({
   navigation,
@@ -51,41 +56,40 @@ export default function UsernameChooseScreen({
   };
   return (
     <View className="flex bg-background dark:bg-background-dark">
-      <SafeAreaView className="relevant">
-        <NavigationBar
-          title="Sign Up"
-          onPress={() => {
-            navigation.goBack();
-          }}
-        />
-        <View className="flex h-screen bg-background px-5 pt-4 dark:bg-background-dark">
-          <Text className="text-center font-open-sans-bold text-white">
-            Set your username
-          </Text>
-          <TextInput
-            autoCapitalize="none"
-            value={username}
-            placeholder="Username"
-            placeholderTextColor={"rgb(107,114,128)"}
-            onChangeText={(username) => {
-              setUsername(username);
-            }}
-            className="bg-input mb-4 mt-2 rounded-2xl p-4 font-open-sans-regular text-gray-500 dark:bg-card-dark  dark:text-white"
-          />
-          {usernameError && (
-            <Text className="mt-2 font-open-sans-bold text-red-500">
-              {usernameError}
+      <SafeAreaView className="flex w-11/12 self-center bg-background dark:bg-background-dark">
+        <View className="h-screen bg-background  dark:bg-background-dark">
+          <GoBackSignButton onPress={() => navigation.goBack()} />
+
+          <Pressable className="flex h-screen justify-center bg-background  dark:bg-background-dark">
+            <Text className="mb-4 text-center font-open-sans-bold text-black dark:text-white">
+              Set your username
             </Text>
-          )}
+            <TextInput
+              autoCapitalize="none"
+              value={username}
+              placeholder="Username"
+              placeholderTextColor={"rgb(107,114,128)"}
+              onChangeText={(username) => {
+                setUsername(username);
+              }}
+              className="bg-input mx-4 rounded-2xl p-4 font-open-sans-regular text-gray-500 dark:bg-card-dark  dark:text-white"
+            />
+            {usernameError && (
+              <Text className="mt-2 text-center font-open-sans-bold text-red-500">
+                {usernameError}
+              </Text>
+            )}
+
+            <TouchableOpacity
+              className=" mt-4 w-6/12 self-center rounded-2xl bg-primary p-4   dark:bg-primary-dark"
+              onPress={onSignUpPress}
+            >
+              <Text className="text-center font-open-sans-bold text-white">
+                NEXT
+              </Text>
+            </TouchableOpacity>
+          </Pressable>
         </View>
-        <TouchableOpacity
-          className="absolute bottom-52 mt-4 w-6/12 self-center rounded-2xl bg-primary p-4   dark:bg-primary-dark"
-          onPress={onSignUpPress}
-        >
-          <Text className="text-center font-open-sans-bold text-white">
-            NEXT
-          </Text>
-        </TouchableOpacity>
       </SafeAreaView>
     </View>
   );
