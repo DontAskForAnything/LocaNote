@@ -9,6 +9,7 @@ import { firestore } from "../../utils/firebaseConfig";
 import { useUser } from "@clerk/clerk-react";
 import { collection, doc, getDoc, setDoc } from "@firebase/firestore";
 import { MarkedDates } from "react-native-calendars/src/types";
+import LoadingModal from "../../components/loadingModal";
 
 type Task = {
   id: string,
@@ -28,6 +29,7 @@ export const CalendarScreen = ({}: RootStackScreenProps<"CalendarScreen">) => {
   const [tasks, setTasks] = useState<Array<Task>>([]);
   const [taskDates, setTaskDates] = useState<MarkedDates>({[new Date(Date.now()).toISOString().substring(0, 10)]: {selected: true}})
   const [loaded, setLoaded] = useState<boolean>(false);
+  const [showLoadingModal, setShowLoadingModal] = useState<boolean>(false);
   const showDatePicker = (): void => {
     DateTimePickerAndroid.open({
       value: new Date(),
@@ -54,6 +56,7 @@ export const CalendarScreen = ({}: RootStackScreenProps<"CalendarScreen">) => {
 
   const submitTask = (): void => {
     setModalVisible(false);
+    setShowLoadingModal(true);
     if(user) {
       setDoc(doc(firestore, "users", user.id), {
         tasks: [...tasks, {
@@ -64,14 +67,14 @@ export const CalendarScreen = ({}: RootStackScreenProps<"CalendarScreen">) => {
           loggedTime: 0
         }]
       }).then(() => {
-        tasks.push(
+        setTasks([...tasks, 
           {
             id: assignmentName + "_" + endDate.split("/").reverse().join("-"),
             name: assignmentName,
             endDate: endDate.split("/").reverse().join("-"),
             estimatedTime: parseInt(estimatedTime)*3600,
             loggedTime: 0
-          }
+          }]
         )
       })
     }
@@ -99,7 +102,9 @@ export const CalendarScreen = ({}: RootStackScreenProps<"CalendarScreen">) => {
                 else {
                   periods.push({startingDay: false, endingDay: false, color: color});
                 }
-
+              }
+              else {
+                periods.push({color: "transparent"})
               }
             })
           markedData['periods'] = periods; //set the array of dots
@@ -107,28 +112,29 @@ export const CalendarScreen = ({}: RootStackScreenProps<"CalendarScreen">) => {
       });
       return markedEvents;
   };
-
+  const getDatesWithWork = (tasks: Task[]): Array<string> => {
+    let dates: Array<string> = [];
+    tasks.forEach((task: Task, index: number) => {
+      let currentDate = new Date();
+      currentDate.setDate(currentDate.getDate() + index);
+      let endDate = new Date(task.endDate)
+      while(currentDate < endDate) {
+        let date = new Date(currentDate).toISOString().substring(0,10);
+        dates.push(date); 
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+    })
+    return dates; 
+  }
   const getData = async (): Promise<void> => {
     if(user) {
       const ref = doc(firestore, "users", user.id);
       const userData = await getDoc(ref)
       if(userData.exists()) {
         setTasks(userData.data().tasks);
-        let tempDates: Array<string> = [];
-        userData.data().tasks.forEach((task: Task, index: number) => {
-          let currentDate = new Date();
-          currentDate.setDate(currentDate.getDate() + index);
-          let endDate = new Date(task.endDate)
-          while(currentDate < endDate) {
-            let date = new Date(currentDate).toISOString().substring(0,10);
-            tempDates.push(date); 
-            currentDate.setDate(currentDate.getDate() + 1);
-          }
-        })
-        let markedDates = setMarking(userData.data().tasks, tempDates);
+        let dates = getDatesWithWork(userData.data().tasks);
+        let markedDates = setMarking(userData.data().tasks, dates);
         setTaskDates(markedDates);
-        // setLoaded(true);
-        // setTaskDates({[selectedDay]: {selected: true}, ...tempDates});
       }
     }
   }
@@ -139,9 +145,17 @@ export const CalendarScreen = ({}: RootStackScreenProps<"CalendarScreen">) => {
   useEffect(() => {
     let temp = {[new Date(Date.now()).toISOString().substring(0, 10)]: {selected: true}};
     if(JSON.stringify(taskDates) != JSON.stringify(temp)) {
-      setLoaded(true);[]
+      setLoaded(true);
     }
   },[taskDates])
+  useEffect(() => {
+    if(tasks.length != 0) {
+      let dates = getDatesWithWork(tasks);
+      let markedDates = setMarking(tasks, dates);
+      setTaskDates(markedDates);
+      setShowLoadingModal(false);
+    }
+  }, [tasks])
   return (
     <KeyboardAvoidingView className="h-screen flex-1 bg-background-dark">
       { loaded && <>
@@ -242,6 +256,7 @@ export const CalendarScreen = ({}: RootStackScreenProps<"CalendarScreen">) => {
             </View>
           </TouchableWithoutFeedback>
       </Modal>
+      <LoadingModal visible={showLoadingModal}/>
       <PlusSignButton onPress={addTask} />
     </KeyboardAvoidingView>
   );
