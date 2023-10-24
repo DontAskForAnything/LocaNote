@@ -13,14 +13,11 @@ import { ColorPicker, fromHsv } from "react-native-color-picker";
 import { doc, updateDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
 import { useClerk } from "@clerk/clerk-expo";
-
-interface SubjectItem {
-  id: string;
-  title: string;
-  // Because this will be icon name if will be wrong big question mark will appear
-  icon: any; // eslint-disable-line
-  color: string;
-}
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SubjectNameSchema } from "../../utils/schemas";
+import { z } from "zod";
+import { SubjectItem } from "../../utils/types";
 
 export const AddSubjectScreen = ({
   route,
@@ -29,7 +26,6 @@ export const AddSubjectScreen = ({
   const { user } = useClerk();
   const [selectedIcon, setSelectedIcon] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("");
-  const [lessonName, setLessonName] = useState<string>("");
   const icons: Array<string> = [
     "book",
     "book-open",
@@ -42,41 +38,67 @@ export const AddSubjectScreen = ({
     "frog",
     "pen-nib",
   ];
+  //TODO: Walidacja ikon i koloru
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(SubjectNameSchema),
+    defaultValues: { lessonName: "" },
+  });
 
-  const addToDB = (): void => {
-    const subjects: Array<SubjectItem> = [...route.params];
-    subjects.pop();
-    if (user) {
-      updateDoc(doc(firestore, "users", user.id), {
-        subjects: [
-          ...subjects,
-          {
-            color: selectedColor,
-            icon: selectedIcon,
-            id: lessonName + selectedColor,
-            title: lessonName,
-          },
-        ],
-      }).then(() => {
-        console.log(subjects);
-        navigation.pop();
-      });
+  const addToDB = (values: z.infer<typeof SubjectNameSchema>): void => {
+    if (selectedIcon !== "" && selectedColor !== "") {
+      try {
+        values = values as z.infer<typeof SubjectNameSchema>;
+        const subjects: Array<SubjectItem> = [...route.params];
+        subjects.pop();
+        if (user) {
+          updateDoc(doc(firestore, "users", user.id), {
+            subjects: [
+              ...subjects,
+              {
+                color: selectedColor,
+                icon: selectedIcon,
+                id: values.lessonName + selectedColor,
+                title: values.lessonName,
+              },
+            ],
+          }).then(() => {
+            navigation.pop();
+          });
+        }
+      } catch (e) {
+        console.log(e);
+      }
     }
   };
 
   return (
-    <KeyboardAvoidingView className="flex-1 bg-background-dark p-4">
-      <TextInput
-        className={
-          "bg-input rounded-2xl p-4  font-open-sans-regular text-black dark:bg-card-dark dark:text-white"
-        }
-        placeholder="Lesson Name"
-        value={lessonName}
-        onChangeText={(name) => {
-          setLessonName(name);
-        }}
-        placeholderTextColor="#6B7280"
+    <KeyboardAvoidingView className="flex-1 bg-background-dark p-4 pt-12">
+      <Controller
+        control={control}
+        name="lessonName"
+        render={({ field: { onChange, value, onBlur } }) => (
+          <TextInput
+            autoCapitalize="none"
+            placeholder="Email"
+            value={value}
+            onBlur={onBlur}
+            onChangeText={(value) => onChange(value)}
+            placeholderTextColor="#6B7280"
+            className={`bg-input rounded-2xl p-4  font-open-sans-regular text-black dark:bg-card-dark dark:text-white ${
+              errors.lessonName?.message && "border-2 border-red-500"
+            }`}
+          />
+        )}
       />
+      {errors.lessonName?.message && (
+        <Text className="mt-2 font-open-sans-semibold text-red-500">
+          {errors.lessonName.message.toString()}
+        </Text>
+      )}
       <Text
         className={"my-6 text-center font-poppins-medium text-lg text-white"}
       >
@@ -88,7 +110,6 @@ export const AddSubjectScreen = ({
           numColumns={5}
           keyExtractor={(item) => item}
           data={icons}
-          // renderItem={(item) => <Icon icon={item}/>}
           renderItem={({ item }) => {
             return (
               <TouchableOpacity
@@ -114,17 +135,8 @@ export const AddSubjectScreen = ({
         />
       </View>
       <TouchableOpacity
-        className={`absolute bottom-0 left-0 right-0 m-4 rounded-2xl bg-slate-300 p-4 ${
-          lessonName !== "" &&
-          selectedIcon !== "" &&
-          selectedColor !== "" &&
-          "bg-primary"
-        }`}
-        onPress={() => {
-          lessonName !== "" && selectedIcon !== "" && selectedColor !== ""
-            ? addToDB()
-            : () => {};
-        }}
+        className={`absolute bottom-0 left-0 right-0 m-4 rounded-2xl bg-primary p-4`}
+        onPress={handleSubmit(addToDB)}
       >
         <Text className="text-center font-open-sans-bold text-white">
           Add Subject

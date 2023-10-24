@@ -12,16 +12,10 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { useUser } from "@clerk/clerk-expo";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
+import { SubjectItem } from "../../utils/types";
 
 type SubjectObject = SubjectItem[] | [];
 
-interface SubjectItem {
-  id: string;
-  title: string;
-  // Because this will be icon name if will be wrong big question mark will appear
-  icon: any; // eslint-disable-line
-  color: string;
-}
 export const MainScreen = ({
   navigation,
 }: RootStackScreenProps<"MainScreen">) => {
