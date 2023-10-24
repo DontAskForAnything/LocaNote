@@ -1,5 +1,13 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
+interface SubjectItem {
+  id: string;
+  title: string;
+  // Because this will be icon name if will be wrong big question mark will appear
+  icon: any; // eslint-disable-line
+  color: string;
+}
+
 export type VerificationType = "email";
 
 export type RootStackParamList = {
@@ -22,7 +30,7 @@ export type RootStackParamList = {
   // Main Stack
   MainStack: undefined;
   MainScreen: undefined;
-  AddSubjectScreen: undefined;
+  AddSubjectScreen: Array<SubjectItem>;
   SubjectScreen: undefined;
   // Calendar Stack
   CalendarStack: undefined;

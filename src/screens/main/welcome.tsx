@@ -53,8 +53,10 @@ export const MainScreen = ({
   };
 
   useEffect(() => {
-    getData();
-  }, []);
+    navigation.addListener("focus", () => {
+      getData(); //get fresh data each time this screen is visible
+    });
+  }, [navigation]);
 
   return (
     <View
@@ -76,7 +78,9 @@ export const MainScreen = ({
               if (item.id === "footer") {
                 return (
                   <TouchableOpacity
-                    onPress={() => navigation.push("AddSubjectScreen")}
+                    onPress={() =>
+                      navigation.push("AddSubjectScreen", subjects)
+                    }
                     className="m-1 flex aspect-square  h-20 max-h-20 flex-1 items-center justify-center overflow-hidden whitespace-nowrap rounded-xl bg-neutral-700 p-4"
                   >
                     <Text className="text-center  font-open-sans-bold text-white opacity-70">
