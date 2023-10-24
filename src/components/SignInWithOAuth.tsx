@@ -5,22 +5,18 @@ import { Text, TouchableOpacity, View, useColorScheme } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 
 // According tailwindcss.com/docs/content-configuration#dynamic-class-names this is as it should be
+// if you want to add new auth provider add oauth name on bottom and in corresponding style object
 type ColorVariants = {
-  facebook: string;
+  // facebook: string;
   google: string;
-  apple: string;
 };
 
 const backgroundColorVariants: ColorVariants = {
-  facebook: "bg-blue-600 dark:bg-card-dark ",
-  google: "bg-background dark:bg-blue-600",
-  apple: "bg-black dark:bg-background",
+  google: "bg-background bg-green-800",
 };
 
 const textColorVariants: ColorVariants = {
-  facebook: "text-white dark:text-white",
   google: "text-black dark:text-white",
-  apple: "text-white dark:text-black",
 };
 
 const SignInWithOAuthButton = ({
@@ -37,10 +33,10 @@ const SignInWithOAuthButton = ({
   onNewAccount: () => void;
 }) => {
   const colorScheme = useColorScheme();
+
   const iconColor: ColorVariants = {
-    facebook: "white",
+    // facebook: "white",
     google: colorScheme == "dark" ? "white" : "black",
-    apple: colorScheme == "dark" ? "black" : "white",
   };
 
   const { startOAuthFlow } = useOAuth({ strategy: oauth_strategy });
