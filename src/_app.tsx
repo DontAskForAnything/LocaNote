@@ -26,6 +26,8 @@ import { CalendarScreen } from "./screens/calendar/main";
 import { AccountScreen } from "./screens/account/account";
 import { SettingsScreen } from "./screens/account/settings/settings";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
+import { AddSubjectScreen } from "./screens/main/addSubject";
+import { SubjectScreen } from "./screens/main/subject";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -63,6 +65,7 @@ const AppNavigator = () => {
         tabBarActiveTintColor: "black",
         tabBarInactiveTintColor: "grey",
         tabBarStyle: {
+          height: 50,
           borderTopColor: "transparent",
           backgroundColor: "transparent",
           elevation: 0,
@@ -133,8 +136,15 @@ export const App = () => {
               initialRouteName="AppNavigator"
               screenOptions={{ headerShown: false }}
             >
+              {/* We put some screen here to hide TabNavigator i think in future we will just delete this TabNavigator, we will see */}
               <Stack.Screen name="AppNavigator" component={AppNavigator} />
               <Stack.Screen name="Settings" component={SettingsScreen} />
+              {/* Subjects */}
+              <Stack.Screen
+                name="AddSubjectScreen"
+                component={AddSubjectScreen}
+              />
+              <Stack.Screen name="SubjectScreen" component={SubjectScreen} />
             </Stack.Navigator>
           </NavigationContainer>
         </SignedIn>

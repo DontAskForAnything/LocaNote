@@ -22,6 +22,8 @@ export type RootStackParamList = {
   // Main Stack
   MainStack: undefined;
   MainScreen: undefined;
+  AddSubjectScreen: undefined;
+  SubjectScreen: undefined;
   // Calendar Stack
   CalendarStack: undefined;
   CalendarScreen: undefined;
