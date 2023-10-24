@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   SafeAreaView,
@@ -8,67 +8,108 @@ import {
 } from "react-native";
 import { RootStackScreenProps } from "../../types/navigation";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import {  FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { useUser } from "@clerk/clerk-expo";
+import { doc, getDoc } from "firebase/firestore";
+import { firestore } from "../../utils/firebaseConfig";
 
+type SubjectObject = SubjectItem[] | [];
+
+interface SubjectItem {
+  id: string;
+  title: string;
+  // Because this will be icon name if will be wrong big question mark will appear
+  icon: any; // eslint-disable-line
+  color: string;
+}
 export const MainScreen = ({
   navigation,
 }: RootStackScreenProps<"MainScreen">) => {
+  const { user } = useUser();
+  const [subjects, setSubjects] = useState<SubjectObject>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const insets = useSafeAreaInsets();
-  // TODO: pull this from firebase
-  const subjects = [
-    { id: "ygfC", title: "P.E.", icon: "dumbbell", color: "#4287f5" },
-    { id: "qONy", title: "Biology", icon: "frog", color: "#fcba03" },
-    { id: "REXG", title: "EwogRq", icon: "dumbbell", color: "#64F9C4" },
-    {
-      id: "ScjL",
-      title: "sJWzxoUUbHEvbeDqdqEa",
-      icon: "frog",
-      color: "#7EE040",
-    },
-    { id: "footer", title: "HEHEHE", icon: "house" },
-  ];
+
+  const getData = async (): Promise<void> => {
+    setLoading(true);
+    setSubjects([]);
+    if (user) {
+      const ref = doc(firestore, "users", user.id);
+      const userData = await getDoc(ref);
+      if (userData.exists()) {
+        // Set the subjects data
+        if (userData.data().subjects)
+          setSubjects(userData.data().subjects as SubjectObject);
+
+        // Now, add the "footer" object after subjects are set
+        setSubjects((prevSubjects) => [
+          ...prevSubjects,
+          { id: "footer", title: "", icon: "", color: "" },
+        ]);
+      }
+
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     <View
       style={{ paddingTop: insets.top }}
       className="flex-1 bg-background-dark"
     >
       <SafeAreaView className="flex w-11/12 self-center bg-background dark:bg-background-dark">
-        <Text className="my-4 font-open-sans-bold  text-xl text-neutral-600">
+        <Text className="my-4 font-open-sans-bold  text-xl text-neutral-500">
           Your subjects:
         </Text>
-        <FlatList
-          data={subjects}
-          keyExtractor={(item) => item.title}
-          numColumns={3}
-          renderItem={({ item }) => {
-            if (item.id === "footer") {
-              return (
-                <TouchableOpacity
-                  onPress={() => navigation.push("AddSubjectScreen")}
-                  style={{ backgroundColor: "red" }}
-                  className="m-1 flex aspect-square flex-1 items-center justify-center overflow-hidden whitespace-nowrap rounded-xl p-4"
-                >
-                  <Text>Add new subject</Text>
-                </TouchableOpacity>
-              );
-            } else {
-              // Render the subjects
-              return (
-                <TouchableOpacity
-                  onPress={() => navigation.push("SubjectScreen")}
-                  style={{ backgroundColor: item.color }}
-                  className="m-1 flex aspect-square  flex-1 items-center justify-center overflow-hidden whitespace-nowrap rounded-xl p-4"
-                >
-                  <View className="absolute z-10 flex-1 opacity-30">
-                    <FontAwesome5 name={item.icon} size={50} color={"white"} />
-                  </View>
+        {subjects.length > 0 && (
+          <FlatList
+            onRefresh={() => getData()}
+            refreshing={loading}
+            data={subjects}
+            keyExtractor={(item) => item.title}
+            numColumns={3}
+            renderItem={({ item }) => {
+              if (item.id === "footer") {
+                return (
+                  <TouchableOpacity
+                    onPress={() => navigation.push("AddSubjectScreen")}
+                    className="m-1 flex aspect-square  h-20 max-h-20 flex-1 items-center justify-center overflow-hidden whitespace-nowrap rounded-xl bg-neutral-700 p-4"
+                  >
+                    <Text className="text-center  font-open-sans-bold text-white opacity-70">
+                      {subjects.length == 1
+                        ? `Add your first subject`
+                        : `Add new subject`}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              } else {
+                return (
+                  <TouchableOpacity
+                    onPress={() => navigation.push("SubjectScreen")}
+                    style={{ backgroundColor: item.color }}
+                    className="m-1 flex h-20 flex-1 items-center justify-center overflow-hidden whitespace-nowrap rounded-xl p-4"
+                  >
+                    <View className="absolute z-10 flex-1 opacity-30">
+                      <FontAwesome5
+                        name={item.icon}
+                        size={50}
+                        color={"white"}
+                      />
+                    </View>
 
-                  <Text className="z-20">{item.title}</Text>
-                </TouchableOpacity>
-              );
-            }
-          }}
-        />
+                    <Text className="z-20  text-center font-open-sans-bold text-white">
+                      {item.title}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              }
+            }}
+          />
+        )}
       </SafeAreaView>
     </View>
   );
