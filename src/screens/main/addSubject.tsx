@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { TextInput } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { ColorPicker, fromHsv } from "react-native-color-picker";
 import { doc, updateDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
 import { useClerk } from "@clerk/clerk-expo";
@@ -24,8 +23,8 @@ export const AddSubjectScreen = ({
   navigation,
 }: RootStackScreenProps<"AddSubjectScreen">) => {
   const { user } = useClerk();
-  const [selectedIcon, setSelectedIcon] = useState<string>("");
-  const [selectedColor, setSelectedColor] = useState<string>("");
+  const [selectedIcon, setSelectedIcon] = useState<string>("book");
+  const [selectedColor, setSelectedColor] = useState<string>("#16A34A");
   const icons: Array<string> = [
     "book",
     "book-open",
@@ -38,6 +37,17 @@ export const AddSubjectScreen = ({
     "frog",
     "pen-nib",
   ];
+
+  const colors: Array<string> = [
+    "#4287f5",
+    "#00ccff",
+    "#eb4034",
+    "#ff00b3",
+    "#72a872",
+    "#16a34a",
+    "#7a00ff",
+    "#996cff",
+  ];
   //TODO: Walidacja ikon i koloru
   const {
     control,
@@ -49,29 +59,27 @@ export const AddSubjectScreen = ({
   });
 
   const addToDB = (values: z.infer<typeof SubjectNameSchema>): void => {
-    if (selectedIcon !== "" && selectedColor !== "") {
-      try {
-        values = values as z.infer<typeof SubjectNameSchema>;
-        const subjects: Array<SubjectItem> = [...route.params];
-        subjects.pop();
-        if (user) {
-          updateDoc(doc(firestore, "users", user.id), {
-            subjects: [
-              ...subjects,
-              {
-                color: selectedColor,
-                icon: selectedIcon,
-                id: values.lessonName + selectedColor,
-                title: values.lessonName,
-              },
-            ],
-          }).then(() => {
-            navigation.pop();
-          });
-        }
-      } catch (e) {
-        console.log(e);
+    try {
+      values = values as z.infer<typeof SubjectNameSchema>;
+      const subjects: Array<SubjectItem> = [...route.params];
+      subjects.pop();
+      if (user) {
+        updateDoc(doc(firestore, "users", user.id), {
+          subjects: [
+            ...subjects,
+            {
+              color: selectedColor,
+              icon: selectedIcon,
+              id: values.lessonName + selectedColor,
+              title: values.lessonName,
+            },
+          ],
+        }).then(() => {
+          navigation.pop();
+        });
       }
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -83,7 +91,7 @@ export const AddSubjectScreen = ({
         render={({ field: { onChange, value, onBlur } }) => (
           <TextInput
             autoCapitalize="none"
-            placeholder="Email"
+            placeholder="Lesson Name"
             value={value}
             onBlur={onBlur}
             onChangeText={(value) => onChange(value)}
@@ -104,7 +112,7 @@ export const AddSubjectScreen = ({
       >
         Choose an Icon:{" "}
       </Text>
-      <View className={"gap-12"}>
+      <View className={"flex gap-12"}>
         <FlatList
           contentContainerStyle={{ alignItems: "center" }}
           numColumns={5}
@@ -129,9 +137,28 @@ export const AddSubjectScreen = ({
             );
           }}
         />
-        <ColorPicker
-          onColorChange={(color) => setSelectedColor(fromHsv(color))}
-          style={{ height: 250 }}
+        <Text
+          className={"mt-6 text-center font-poppins-medium text-lg text-white"}
+        >
+          Pick a color:{" "}
+        </Text>
+        <FlatList
+          numColumns={4}
+          keyExtractor={(item) => item}
+          data={colors}
+          renderItem={({ item }) => {
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedColor(item);
+                }}
+                style={{ backgroundColor: item }}
+                className={`m-1 flex h-20 flex-1 items-center justify-center overflow-hidden whitespace-nowrap rounded-xl border-2 p-4 ${
+                  selectedColor === item && "border-white"
+                }`}
+              ></TouchableOpacity>
+            );
+          }}
         />
       </View>
       <TouchableOpacity
