@@ -85,3 +85,13 @@ export const AnswerQuestionSchema = z.object({
   isAnonymous: z.boolean(),
   isPublic: z.boolean(),
 });
+
+const nameSchema = z
+  .string()
+  .trim()
+  .min(1, "Name is required.")
+  .max(20, "Name must be shorter than 20 characters.");
+
+export const SubjectNameSchema = z.object({
+  lessonName: nameSchema,
+});

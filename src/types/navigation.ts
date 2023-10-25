@@ -1,4 +1,5 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { SubjectItem } from "../utils/types";
 
 export type VerificationType = "email";
 
@@ -21,7 +22,9 @@ export type RootStackParamList = {
   CalenderStack: undefined;
   // Main Stack
   MainStack: undefined;
-  MainScreen: undefined;
+  MainScreen: { refresh?: number };
+  AddSubjectScreen: Array<SubjectItem>;
+  SubjectScreen: undefined;
   // Calendar Stack
   CalendarStack: undefined;
   CalendarScreen: undefined;
