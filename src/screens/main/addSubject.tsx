@@ -2,6 +2,7 @@ import { useState } from "react";
 import { RootStackScreenProps } from "../../types/navigation";
 import {
   FlatList,
+  Keyboard,
   KeyboardAvoidingView,
   Text,
   TouchableOpacity,
@@ -9,7 +10,7 @@ import {
 } from "react-native";
 import { TextInput } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
 import { useClerk } from "@clerk/clerk-expo";
 import { Controller, useForm } from "react-hook-form";
@@ -17,38 +18,45 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubjectNameSchema } from "../../utils/schemas";
 import { z } from "zod";
 import { SubjectItem } from "../../utils/types";
+import LoadingModal from "../../components/loadingModal";
+import { GoBackSignButton } from "../../components/goBackSignButton";
+import * as Crypto from "expo-crypto";
+
+const icons: Array<string> = [
+  "book",
+  "book-open",
+  "dumbbell",
+  "graduation-cap",
+  "calculator",
+  "laptop-code",
+  "atom",
+  "flask",
+  "frog",
+  "pen-nib",
+];
+
+const colors: Array<string> = [
+  "#4287f5",
+  "#00ccff",
+  "#eb4034",
+  "#ff00b3",
+  "#72a872",
+  "#16a34a",
+  "#7a00ff",
+  "#996cff",
+];
 
 export const AddSubjectScreen = ({
   route,
   navigation,
 }: RootStackScreenProps<"AddSubjectScreen">) => {
   const { user } = useClerk();
-  const [selectedIcon, setSelectedIcon] = useState<string>("book");
-  const [selectedColor, setSelectedColor] = useState<string>("#16A34A");
-  const icons: Array<string> = [
-    "book",
-    "book-open",
-    "dumbbell",
-    "graduation-cap",
-    "calculator",
-    "laptop-code",
-    "atom",
-    "flask",
-    "frog",
-    "pen-nib",
-  ];
+  const [selectedIcon, setSelectedIcon] = useState<string>(icons[0] as string);
+  const [selectedColor, setSelectedColor] = useState<string>(
+    colors[0] as string,
+  );
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const colors: Array<string> = [
-    "#4287f5",
-    "#00ccff",
-    "#eb4034",
-    "#ff00b3",
-    "#72a872",
-    "#16a34a",
-    "#7a00ff",
-    "#996cff",
-  ];
-  //TODO: Walidacja ikon i koloru
   const {
     control,
     handleSubmit,
@@ -59,32 +67,39 @@ export const AddSubjectScreen = ({
   });
 
   const addToDB = (values: z.infer<typeof SubjectNameSchema>): void => {
+    Keyboard.dismiss();
+    setLoading(true);
     try {
       values = values as z.infer<typeof SubjectNameSchema>;
       const subjects: Array<SubjectItem> = [...route.params];
       subjects.pop();
       if (user) {
-        updateDoc(doc(firestore, "users", user.id), {
+        const id = Crypto.randomUUID();
+        setDoc(doc(firestore, "users", user.id), {
           subjects: [
             ...subjects,
             {
               color: selectedColor,
               icon: selectedIcon,
-              id: values.lessonName + selectedColor,
+              id,
               title: values.lessonName,
             },
           ],
         }).then(() => {
-          navigation.pop();
+          navigation.navigate("MainScreen", { refresh: Math.random() });
         });
       }
     } catch (e) {
       console.log(e);
     }
+    setLoading(false);
   };
 
   return (
     <KeyboardAvoidingView className="flex-1 bg-background-dark p-4 pt-12">
+      <LoadingModal visible={loading} />
+      {/* Temp solution design will be changed */}
+      <GoBackSignButton onPress={() => navigation.goBack()} />
       <Controller
         control={control}
         name="lessonName"
@@ -96,7 +111,7 @@ export const AddSubjectScreen = ({
             onBlur={onBlur}
             onChangeText={(value) => onChange(value)}
             placeholderTextColor="#6B7280"
-            className={`bg-input rounded-2xl p-4  font-open-sans-regular text-black dark:bg-card-dark dark:text-white ${
+            className={`bg-input mt-10 rounded-2xl p-4 font-open-sans-regular text-black dark:bg-card-dark dark:text-white ${
               errors.lessonName?.message && "border-2 border-red-500"
             }`}
           />
@@ -110,7 +125,7 @@ export const AddSubjectScreen = ({
       <Text
         className={"my-6 text-center font-poppins-medium text-lg text-white"}
       >
-        Choose an Icon:{" "}
+        Choose an Icon:
       </Text>
       <View className={"flex gap-12"}>
         <FlatList
@@ -140,7 +155,7 @@ export const AddSubjectScreen = ({
         <Text
           className={"mt-6 text-center font-poppins-medium text-lg text-white"}
         >
-          Pick a color:{" "}
+          Pick a color:
         </Text>
         <FlatList
           numColumns={4}

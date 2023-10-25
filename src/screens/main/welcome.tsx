@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   FlatList,
+  RefreshControl,
   SafeAreaView,
   Text,
   TouchableOpacity,
@@ -16,9 +18,7 @@ import { SubjectItem } from "../../utils/types";
 
 type SubjectObject = SubjectItem[] | [];
 
-export const MainScreen = ({
-  navigation,
-}: RootStackScreenProps<"MainScreen">) => {
+export const MainScreen = (params: RootStackScreenProps<"MainScreen">) => {
   const { user } = useUser();
   const [subjects, setSubjects] = useState<SubjectObject>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -31,26 +31,26 @@ export const MainScreen = ({
       const ref = doc(firestore, "users", user.id);
       const userData = await getDoc(ref);
       if (userData.exists()) {
-        // Set the subjects data
         if (userData.data().subjects)
           setSubjects(userData.data().subjects as SubjectObject);
-
-        // Now, add the "footer" object after subjects are set
-        setSubjects((prevSubjects) => [
-          ...prevSubjects,
-          { id: "footer", title: "", icon: "", color: "" },
-        ]);
       }
-
-      setLoading(false);
     }
+    setSubjects((prevSubjects) => [
+      ...prevSubjects,
+      { id: "footer", title: "", icon: "", color: "" },
+    ]);
+    setLoading(false);
   };
 
   useEffect(() => {
-    navigation.addListener("focus", () => {
-      getData(); //get fresh data each time this screen is visible
-    });
-  }, [navigation]);
+    if (params.route?.params?.refresh) {
+      getData();
+    }
+  }, [params.route.params?.refresh]);
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
     <View
@@ -61,8 +61,17 @@ export const MainScreen = ({
         <Text className="my-4 font-open-sans-bold  text-xl text-neutral-500">
           Your subjects:
         </Text>
-        {subjects.length > 0 && (
+        {subjects.length > 0 && !loading ? (
           <FlatList
+            style={{ marginBottom: 70 }}
+            refreshControl={
+              <RefreshControl
+                colors={["#16a34a"]}
+                progressBackgroundColor={"black"}
+                refreshing={loading}
+                onRefresh={() => getData()}
+              />
+            }
             onRefresh={() => getData()}
             refreshing={loading}
             data={subjects}
@@ -73,9 +82,9 @@ export const MainScreen = ({
                 return (
                   <TouchableOpacity
                     onPress={() =>
-                      navigation.push("AddSubjectScreen", subjects)
+                      params.navigation.push("AddSubjectScreen", subjects)
                     }
-                    className="m-1 flex aspect-square  h-20 max-h-20 flex-1 items-center justify-center overflow-hidden whitespace-nowrap rounded-xl bg-neutral-700 p-4"
+                    className="m-1 flex h-32 flex-1 items-center justify-center overflow-hidden whitespace-nowrap rounded-xl bg-neutral-700 p-4"
                   >
                     <Text className="text-center  font-open-sans-bold text-white opacity-70">
                       {subjects.length == 1
@@ -87,9 +96,9 @@ export const MainScreen = ({
               } else {
                 return (
                   <TouchableOpacity
-                    onPress={() => navigation.push("SubjectScreen")}
+                    onPress={() => params.navigation.push("SubjectScreen")}
                     style={{ backgroundColor: item.color }}
-                    className="m-1 flex h-20 flex-1 items-center justify-center overflow-hidden whitespace-nowrap rounded-xl p-4"
+                    className="m-1 flex h-32 flex-1 items-center justify-center rounded-xl p-4"
                   >
                     <View className="absolute z-10 flex-1 opacity-30">
                       <FontAwesome5
@@ -99,7 +108,7 @@ export const MainScreen = ({
                       />
                     </View>
 
-                    <Text className="z-20  text-center font-open-sans-bold text-white">
+                    <Text className="z-20  text-center font-open-sans-bold text-white ">
                       {item.title}
                     </Text>
                   </TouchableOpacity>
@@ -107,6 +116,8 @@ export const MainScreen = ({
               }
             }}
           />
+        ) : (
+          <ActivityIndicator size="large" color={"#16a34a"} />
         )}
       </SafeAreaView>
     </View>

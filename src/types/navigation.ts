@@ -22,7 +22,7 @@ export type RootStackParamList = {
   CalenderStack: undefined;
   // Main Stack
   MainStack: undefined;
-  MainScreen: undefined;
+  MainScreen: { refresh?: number };
   AddSubjectScreen: Array<SubjectItem>;
   SubjectScreen: undefined;
   // Calendar Stack
