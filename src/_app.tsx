@@ -52,16 +52,7 @@ export const App = () => {
               screenOptions={{ headerShown: false }}
             >
               <Stack.Screen name="MainScreen" component={MainScreen} />
-              <Stack.Screen
-                options={{
-                  headerShown: false,
-                  presentation: "modal",
-                  animationTypeForReplace: "push",
-                  animation: "fade_from_bottom",
-                }}
-                name="Settings"
-                component={SettingsScreen}
-              />
+              <Stack.Screen name="Settings" component={SettingsScreen} />
               {/* Subjects */}
               <Stack.Screen
                 options={{
