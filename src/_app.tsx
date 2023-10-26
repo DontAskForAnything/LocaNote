@@ -54,7 +54,7 @@ export const App = () => {
                   headerShown: false,
                   presentation: "modal",
                   animationTypeForReplace: "push",
-                  animation: "slide_from_left",
+                  animation: "fade_from_bottom",
                 }}
                 name="Settings"
                 component={SettingsScreen}
