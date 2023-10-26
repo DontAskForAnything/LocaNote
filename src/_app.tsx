@@ -49,13 +49,37 @@ export const App = () => {
               screenOptions={{ headerShown: false }}
             >
               <Stack.Screen name="MainScreen" component={MainScreen} />
-              <Stack.Screen name="Settings" component={SettingsScreen} />
+              <Stack.Screen
+                options={{
+                  headerShown: false,
+                  presentation: "modal",
+                  animationTypeForReplace: "push",
+                  animation: "slide_from_left",
+                }}
+                name="Settings"
+                component={SettingsScreen}
+              />
               {/* Subjects */}
               <Stack.Screen
+                options={{
+                  headerShown: false,
+                  presentation: "modal",
+                  animationTypeForReplace: "push",
+                  animation: "slide_from_right",
+                }}
                 name="AddSubjectScreen"
                 component={AddSubjectScreen}
               />
-              <Stack.Screen name="SubjectScreen" component={SubjectScreen} />
+              <Stack.Screen
+                options={{
+                  headerShown: false,
+                  presentation: "modal",
+                  animationTypeForReplace: "push",
+                  animation: "slide_from_right",
+                }}
+                name="SubjectScreen"
+                component={SubjectScreen}
+              />
             </Stack.Navigator>
           </NavigationContainer>
         </SignedIn>

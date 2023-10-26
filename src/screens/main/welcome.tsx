@@ -63,6 +63,10 @@ export const MainScreen = (params: RootStackScreenProps<"MainScreen">) => {
       className="flex-1 bg-background-dark"
     >
       <SafeAreaView className="w-11/12 flex-1 self-center bg-background dark:bg-background-dark">
+        <Text className="py-4 text-center font-open-sans-bold text-white opacity-70">
+          LocaNote
+        </Text>
+
         <TouchableOpacity
           className="flex w-full flex-row justify-between rounded-xl bg-card-dark p-3"
           onPress={() => params.navigation.navigate("Settings")}
