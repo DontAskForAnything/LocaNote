@@ -177,12 +177,12 @@ export const SettingsScreen = ({
             </TouchableOpacity>
             <View className="mt-2 flex h-14 w-full flex-row items-center rounded-xl bg-card-dark ">
               <View className=" flex h-full w-1/3 items-center justify-center rounded-l-xl bg-neutral-800">
-                <Text className="font-open-sans-semibold text-lg text-black dark:text-white">
+                <Text className="font-open-sans-semibold text-base text-black dark:text-white">
                   Username
                 </Text>
               </View>
 
-              <View className="w-2/3">
+              <View className="w-2/3 pr-4">
                 <Controller
                   control={control}
                   name="username"
@@ -194,7 +194,7 @@ export const SettingsScreen = ({
                       onBlur={onBlur}
                       onChangeText={(value) => onChange(value)}
                       placeholderTextColor="#6B7280"
-                      className={`ml-4 w-full pr-4 font-open-sans-regular text-lg text-black dark:text-white`}
+                      className={`ml-4  font-open-sans-regular text-base text-black dark:text-white`}
                     />
                   )}
                 />

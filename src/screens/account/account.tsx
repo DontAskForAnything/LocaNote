@@ -27,13 +27,13 @@ export const AccountScreen = ({
       <SafeAreaView className="flex w-11/12 self-center bg-background dark:bg-background-dark">
         <View className="mt-8 h-screen bg-background dark:bg-background-dark">
           <View className="flex w-full flex-row justify-between rounded-full bg-card-dark p-6">
-            <View className="min-h-12 w-3/4 flex-row">
+            <View className="w-3/4 flex-row">
               <Image
                 source={{ uri: user.imageUrl }}
                 className="aspect-square h-12 rounded-full bg-neutral-800"
               />
 
-              <View className="ml-8 h-14 w-3/4 overflow-hidden whitespace-nowrap ">
+              <View className="ml-8  w-3/4 overflow-hidden whitespace-nowrap ">
                 <Text className="font-open-sans-semibold text-base text-black opacity-70 dark:text-white">
                   Hello,
                 </Text>
@@ -43,7 +43,7 @@ export const AccountScreen = ({
               </View>
             </View>
             <TouchableOpacity
-              className="flex w-11 items-center justify-center"
+              className="flex w-11 items-center justify-start py-4 pr-4"
               onPress={() => navigation.navigate("Settings")}
             >
               <Ionicons name={`settings-outline`} size={24} color={"white"} />
