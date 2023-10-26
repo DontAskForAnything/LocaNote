@@ -7,10 +7,11 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Image,
 } from "react-native";
 import { RootStackScreenProps } from "../../types/navigation";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { useUser } from "@clerk/clerk-expo";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
@@ -19,7 +20,7 @@ import { SubjectItem } from "../../utils/types";
 type SubjectObject = SubjectItem[] | [];
 
 export const MainScreen = (params: RootStackScreenProps<"MainScreen">) => {
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
   const [subjects, setSubjects] = useState<SubjectObject>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const insets = useSafeAreaInsets();
@@ -52,18 +53,45 @@ export const MainScreen = (params: RootStackScreenProps<"MainScreen">) => {
     getData();
   }, []);
 
+  if (!isLoaded || !user) {
+    return null;
+  }
+
   return (
     <View
       style={{ paddingTop: insets.top }}
       className="flex-1 bg-background-dark"
     >
-      <SafeAreaView className="flex w-11/12 self-center bg-background dark:bg-background-dark">
+      <SafeAreaView className="w-11/12 flex-1 self-center bg-background dark:bg-background-dark">
+        <Text className="py-4 text-center font-open-sans-bold text-white opacity-70">
+          LocaNote
+        </Text>
+
+        <TouchableOpacity
+          className="flex w-full flex-row justify-between rounded-xl bg-card-dark p-3"
+          onPress={() => params.navigation.navigate("Settings")}
+        >
+          <Image
+            source={{ uri: user.imageUrl }}
+            className="aspect-square h-12 w-1/12 self-center rounded-full bg-neutral-800"
+          />
+          <View className="w-10/12 justify-center overflow-hidden whitespace-nowrap ">
+            <Text className="font-open-sans-semibold text-base text-black opacity-70 dark:text-white">
+              Hello,{" "}
+              <Text className="font-open-sans-bold">{user.username}</Text>
+            </Text>
+            <View className="absolute right-1 top-1">
+              <Ionicons name={`settings-outline`} size={16} color={"white"} />
+            </View>
+          </View>
+        </TouchableOpacity>
+
         <Text className="my-4 font-open-sans-bold  text-xl text-neutral-500">
           Your subjects:
         </Text>
         {subjects.length > 0 && !loading ? (
           <FlatList
-            style={{ marginBottom: 70 }}
+            className=" mb-2"
             refreshControl={
               <RefreshControl
                 colors={["#16a34a"]}

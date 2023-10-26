@@ -19,19 +19,10 @@ export type RootStackParamList = {
     identifier: string;
   };
   ForgotPasswordRestart: undefined;
-  CalenderStack: undefined;
-  // Main Stack
-  MainStack: undefined;
   MainScreen: { refresh?: number };
   AddSubjectScreen: Array<SubjectItem>;
   SubjectScreen: undefined;
-  // Calendar Stack
-  CalendarStack: undefined;
-  CalendarScreen: undefined;
-  // AccountStack
-  Account: undefined;
   Settings: undefined;
-  AppNavigator: undefined;
 };
 
 declare module "@react-navigation/native" {
