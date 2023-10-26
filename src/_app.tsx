@@ -20,100 +20,12 @@ import {
   OpenSans_700Bold,
   OpenSans_600SemiBold,
 } from "@expo-google-fonts/open-sans";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons } from "@expo/vector-icons";
-import { CalendarScreen } from "./screens/calendar/main";
-import { AccountScreen } from "./screens/account/account";
-import { SettingsScreen } from "./screens/account/settings/settings";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { AddSubjectScreen } from "./screens/main/addSubject";
 import { SubjectScreen } from "./screens/main/subject";
+import { SettingsScreen } from "./screens/account/settings/settings";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-const Tab = createBottomTabNavigator<RootStackParamList>();
-
-const MainStack = () => {
-  return (
-    <Stack.Navigator
-      initialRouteName="MainScreen"
-      screenOptions={{ headerShown: false }}
-    >
-      <Stack.Screen name="MainScreen" component={MainScreen} />
-    </Stack.Navigator>
-  );
-};
-
-const CalenderStack = () => {
-  return (
-    <Stack.Navigator
-      initialRouteName="CalendarScreen"
-      screenOptions={{ headerShown: false }}
-    >
-      {/* Here you can add all Screens :D */}
-      <Stack.Screen name="CalendarScreen" component={CalendarScreen} />
-    </Stack.Navigator>
-  );
-};
-
-const AppNavigator = () => {
-  return (
-    <Tab.Navigator
-      initialRouteName="MainStack"
-      screenOptions={{
-        headerShown: false,
-        tabBarLabelStyle: { display: "none" },
-        tabBarActiveTintColor: "black",
-        tabBarInactiveTintColor: "grey",
-        tabBarStyle: {
-          height: 50,
-          borderTopColor: "transparent",
-          backgroundColor: "transparent",
-          elevation: 0,
-        },
-      }}
-    >
-      <Tab.Screen
-        name="MainStack"
-        options={{
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "home" : "home-outline"}
-              size={24}
-              color={color}
-            />
-          ),
-        }}
-        component={MainStack}
-      />
-      <Tab.Screen
-        name="CalenderStack"
-        options={{
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "calendar" : "calendar-outline"}
-              size={24}
-              color={color}
-            />
-          ),
-        }}
-        component={CalenderStack}
-      />
-      <Tab.Screen
-        name="Account"
-        options={{
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "person" : "person-outline"}
-              size={24}
-              color={color}
-            />
-          ),
-        }}
-        component={AccountScreen}
-      />
-    </Tab.Navigator>
-  );
-};
 
 export const App = () => {
   const [fontsLoaded] = useFonts({
@@ -133,11 +45,10 @@ export const App = () => {
         <SignedIn>
           <NavigationContainer>
             <Stack.Navigator
-              initialRouteName="AppNavigator"
+              initialRouteName="MainScreen"
               screenOptions={{ headerShown: false }}
             >
-              {/* We put some screen here to hide TabNavigator i think in future we will just delete this TabNavigator, we will see */}
-              <Stack.Screen name="AppNavigator" component={AppNavigator} />
+              <Stack.Screen name="MainScreen" component={MainScreen} />
               <Stack.Screen name="Settings" component={SettingsScreen} />
               {/* Subjects */}
               <Stack.Screen
