@@ -1,5 +1,5 @@
 export const topicsAPI = [
-    `Mathematics Basics: An Introduction to Numbers
+  `Mathematics Basics: An Introduction to Numbers
     Counting and Cardinality: Understanding Number Sequences
     Addition and Subtraction: The Fundamentals of Arithmetic
     Multiplication and Division: Building a Strong Mathematical Foundation
@@ -13,7 +13,7 @@ export const topicsAPI = [
     Graphs and Data: Representing Information Visually
     Mathematical Patterns: Recognizing and Extending Sequences
     Problem-Solving Strategies: Techniques for Mathematical Challenges`,
-    `Polish Language Basics: A Beginner's Guide
+  `Polish Language Basics: A Beginner's Guide
     Introduction to Polish: The Beauty of a Slavic Language
     Polish Alphabet: Learning the 32 Letters and Their Sounds
     Pronunciation Tips: Perfecting the Polish Accent
@@ -32,5 +32,5 @@ export const topicsAPI = [
     Weather Talk: Discussing Conditions and Forecasts
     Holidays and Celebrations: Embracing Polish Traditions
     Polish Culture: Understanding the Rich Heritage of Poland
-    Effective Language Learning: Tips for Mastering Polish Basics`  ];
-  
+    Effective Language Learning: Tips for Mastering Polish Basics`,
+];

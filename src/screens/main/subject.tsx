@@ -1,73 +1,50 @@
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { RootStackScreenProps } from "../../types/navigation";
-import { FlatList, RefreshControl, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-import { SubjectPulledItem, Topic } from "../../utils/types";
+import { Topic } from "../../utils/types";
 import { useClerk } from "@clerk/clerk-expo";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { database, firestore } from "../../utils/firebaseConfig";
-import { topicsAPI } from "../../test/apiTemp";
-import * as Crypto from "expo-crypto";
+import { doc, getDoc } from "firebase/firestore";
+import { firestore } from "../../utils/firebaseConfig";
 
 export const SubjectScreen = (
   params: RootStackScreenProps<"SubjectScreen">,
 ) => {
   const insets = useSafeAreaInsets();
   const { user } = useClerk();
-  const [ topics, setTopics] = useState<Topic[] | []>([])
-  const [ loading, setLoading] = useState<boolean>(false)
-  
+  const [topics, setTopics] = useState<Topic[] | []>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
   const getData = async (): Promise<void> => {
-    // setLoading(true);
+    setLoading(true);
     setTopics([]);
     if (user) {
       const ref = doc(firestore, "subjects", params.route.params.id);
       const userData = await getDoc(ref);
       if (userData.exists()) {
-        if (userData.data().topics){
+        if (userData.data().topics) {
           setTopics(userData.data().topics as Topic[]);
+          setLoading(false);
+
           return;
         }
       }
     }
-
-    // setLoading(false);
+    setLoading(false);
   };
 
-  async function addAiTopics() {
-//TODO: Get from api
-if(topicsAPI){
-  //@ts-ignore
-  const csvLines = topicsAPI[Math.floor(Math.random() * topicsAPI.length)].split('\n');
-  const newTopics : Topic[] = []  
-
-  csvLines.forEach((line) => {
-    const [key, value] = line.split(':');
-    newTopics.push({
-      id: Crypto.randomUUID() as string,
-      title: key?.trim(),
-      description: value?.trim(),
-      flashcards: [],
-      questions: [],
-      notes: [],
-    } as Topic);
-  });  
-
-    setDoc(doc(firestore, "subjects", params.route.params.id), {
-      topics: [
-        ...topics,
-       ...newTopics,
-      ]
-    });
- }
-
-  }  useEffect(()=>{
-    // addAiTopics().then(()=>{getData();});
-
-      getData();
-      
-  }, [])
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
     <View
@@ -94,12 +71,41 @@ if(topicsAPI){
           >
             <AntDesign name="edit" size={20} color={"white"} />
           </TouchableOpacity>
-
         </View>
-        {(topics) ? (
 
-<FlatList
+        {topics && !loading ? (
+          <FlatList
             className="mb-2"
+            ListEmptyComponent={
+              <>
+                <View className=" items-center justify-center">
+                  <Text className="mx-2 mt-8 text-center font-open-sans-bold text-3xl text-white">
+                    You don't have any topics in this subject
+                  </Text>
+                  <Text className="mx-2 mt-4 text-center  font-open-sans-bold  text-sm text-white opacity-50">
+                    Don't worry just start by clicking button below!
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() =>
+                      params.navigation.navigate("GenerateTopics", {
+                        subject: params.route.params,
+                        topics: topics,
+                      })
+                    }
+                    className="mt-4 items-center justify-center"
+                  >
+                    <View className="my-4 flex-row items-center rounded-xl bg-primary-dark p-4">
+                      <View className="opacity-90">
+                        <FontAwesome5 name="robot" size={18} color="white" />
+                      </View>
+                      <Text className="ml-2 font-open-sans-bold text-xs text-white opacity-90">
+                        Generate new topics
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </>
+            }
             refreshControl={
               <RefreshControl
                 colors={["#16a34a"]}
@@ -111,40 +117,91 @@ if(topicsAPI){
             onRefresh={() => getData()}
             refreshing={loading}
             data={topics}
+            ListHeaderComponent={
+              <Text className="mx-2 font-open-sans-bold text-base text-white opacity-50">
+                {topics.length > 0 && "Topics:"}
+              </Text>
+            }
             keyExtractor={(el) => el.id}
             numColumns={1}
             renderItem={({ item }) => {
-                return (
-                  <TouchableOpacity
-                    // onPress={() =>
-                    //   // params.navigation.push("SubjectScreen", item)
-                    // }
-                    className="m-1 bg-card-dark  justify-center rounded-xl p-4"
-                  >
+              return (
+                <TouchableOpacity
+                  // onPress={() =>
+                  //   // params.navigation.push("SubjectScreen", item)
+                  // }
+                  className="m-1 justify-center  rounded-xl bg-card-dark p-4 py-3"
+                >
+                  <Text className=" font-open-sans-bold text-white ">
+                    {item.title}
+                  </Text>
+                  <Text className="font-open-sans-bold text-xs text-white opacity-50">
+                    {item.description}
+                  </Text>
 
-
-                    <Text className=" font-open-sans-bold text-white ">
-                      {item.title}
-                    </Text>
-                    <Text className="text-xs font-open-sans-bold text-white opacity-50">
-                      {item.description}
-                    </Text>
-
-                    <View className="flex mt-4 flex-row justify-between w-1/2">
-                      <View className="bg-red-500 p-2"><Text>Notatka</Text></View>
-                      <View className="bg-green-500 h-4 w-9"><Text>Fiszki</Text></View>
-                      <View className="bg-blue-500 h-4 w-9"><Text>quiz</Text></View>
+                  <View className="mt-2 flex flex-row ">
+                    <View
+                      className={`rounded-full px-2 py-1 ${
+                        item.notes.length > 0
+                          ? "bg-red-500"
+                          : "bg-neutral-800 opacity-50"
+                      }`}
+                    >
+                      <Text
+                        className="font-open-sans-semibold text-white"
+                        style={{ fontSize: 10 }}
+                      >
+                        Notes
+                      </Text>
                     </View>
-                  </TouchableOpacity>
-                );
-              }
-            }
+                    <View
+                      className={`ml-2 rounded-full px-2 py-1 ${
+                        item.flashcards.length > 0
+                          ? "bg-green-500"
+                          : "bg-neutral-800 opacity-50"
+                      }`}
+                    >
+                      <Text
+                        className="font-open-sans-semibold text-white"
+                        style={{ fontSize: 10 }}
+                      >
+                        Flashcards
+                      </Text>
+                    </View>
+                    {/* <View className={`py-1 px-2 rounded-full ${item.notes.length > 0 ? 'bg-blue-500' : 'bg-neutral-800 opacity-50'}`} ><Text className="font-open-sans-semibold text-white" style={{fontSize: 10}}>Quiz</Text></View> */}
+                  </View>
+                </TouchableOpacity>
+              );
+            }}
           />
-) : <></>}
-          {
-            // TODO: if not topics add ability to generate / write own
-            // Pull from database given id
-          }
+        ) : (
+          <View className="flex-1 justify-center">
+            <ActivityIndicator size="large" color={"#16a34a"} />
+          </View>
+        )}
+
+        {topics.length > 0 && (
+          <TouchableOpacity
+            onPress={() =>
+              params.navigation.navigate("GenerateTopics", {
+                subject: params.route.params,
+                topics: topics,
+              })
+            }
+            className="items-center justify-center"
+          >
+            {/* // TODO: All flashcards */}
+
+            <View className="my-4 flex-row items-center rounded-xl bg-primary-dark p-4">
+              <View className=" opacity-90">
+                <FontAwesome5 name="robot" size={18} color="white" />
+              </View>
+              <Text className="ml-2 font-open-sans-bold text-xs text-white opacity-90">
+                Generate new topics
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )}
       </SafeAreaView>
     </View>
   );

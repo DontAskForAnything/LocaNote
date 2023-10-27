@@ -7,14 +7,16 @@ export type SubjectItem = {
 };
 
 export type Topic = {
-  id:string,
-  title: string | null,
-  description: string | null,
-  flashcards: {front: string, back:string}[] | [],
-  questions: {question: string, correctAnswers: string, answers: string[]} | [],
-  notes: string[] | []
-}
+  id: string;
+  title: string | null;
+  description: string | null;
+  flashcards: { front: string; back: string }[] | [];
+  questions:
+    | { question: string; correctAnswers: string; answers: string[] }
+    | [];
+  notes: string[] | [];
+};
 
 export type SubjectPulledItem = {
-  topics: Topic[] | null | [],
-}
+  topics: Topic[] | null | [];
+};
