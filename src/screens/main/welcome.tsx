@@ -16,6 +16,7 @@ import { useUser } from "@clerk/clerk-expo";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
 import { SubjectItem } from "../../utils/types";
+import LogoTop from "../../components/logoTop";
 
 type SubjectObject = SubjectItem[] | [];
 
@@ -63,9 +64,7 @@ export const MainScreen = (params: RootStackScreenProps<"MainScreen">) => {
       className="flex-1 bg-background-dark"
     >
       <SafeAreaView className="w-11/12 flex-1 self-center bg-background dark:bg-background-dark">
-        <Text className="py-4 text-center font-open-sans-bold text-white opacity-70">
-          LocaNote
-        </Text>
+        <LogoTop />
 
         <TouchableOpacity
           className="flex w-full flex-row justify-between rounded-xl bg-card-dark p-3"
@@ -124,7 +123,9 @@ export const MainScreen = (params: RootStackScreenProps<"MainScreen">) => {
               } else {
                 return (
                   <TouchableOpacity
-                    onPress={() => params.navigation.push("SubjectScreen")}
+                    onPress={() =>
+                      params.navigation.push("SubjectScreen", item)
+                    }
                     style={{ backgroundColor: item.color }}
                     className="m-1 flex h-32 flex-1 items-center justify-center rounded-xl p-4"
                   >

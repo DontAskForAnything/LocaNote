@@ -21,7 +21,7 @@ export type RootStackParamList = {
   ForgotPasswordRestart: undefined;
   MainScreen: { refresh?: number };
   AddSubjectScreen: Array<SubjectItem>;
-  SubjectScreen: undefined;
+  SubjectScreen: SubjectItem;
   Settings: undefined;
 };
 

@@ -10,7 +10,7 @@ const defineConfig = (): ExpoConfig => ({
   userInterfaceStyle: "dark",
   splash: {
     image: "./assets/icon.png",
-    backgroundColor: "#ea5b6e",
+    backgroundColor: "#141416",
   },
   updates: {
     fallbackToCacheTimeout: 0,
@@ -26,7 +26,7 @@ const defineConfig = (): ExpoConfig => ({
   android: {
     adaptiveIcon: {
       foregroundImage: "./assets/icon.png",
-      backgroundColor: "#ea5b6e",
+      backgroundColor: "#141416",
     },
     package: "misiu.dontaskforanything.locanote",
   },
