@@ -24,6 +24,7 @@ import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { AddSubjectScreen } from "./screens/main/addSubject";
 import { SubjectScreen } from "./screens/main/subject";
 import { SettingsScreen } from "./screens/account/settings/settings";
+import { FlashcardsScreen } from "./screens/main/flashcards";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -79,6 +80,16 @@ export const App = () => {
                 }}
                 name="SubjectScreen"
                 component={SubjectScreen}
+              />
+              <Stack.Screen
+                options={{
+                  headerShown: false,
+                  presentation: "modal",
+                  animationTypeForReplace: "push",
+                  animation: "slide_from_right",
+                }}
+                name="FlashcardsScreen"
+                component={FlashcardsScreen}
               />
             </Stack.Navigator>
           </NavigationContainer>

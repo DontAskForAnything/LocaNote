@@ -15,10 +15,10 @@ import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { useUser } from "@clerk/clerk-expo";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
-import { SubjectItem } from "../../utils/types";
+import { Flashcard, SubjectItem } from "../../utils/types";
 
 type SubjectObject = SubjectItem[] | [];
-
+const flashcards: Array<Flashcard> = [{question: "What is?", answer: "It is indeed"}, {question: "What was?", answer: "Yes, It was"}];
 export const MainScreen = (params: RootStackScreenProps<"MainScreen">) => {
   const { user, isLoaded } = useUser();
   const [subjects, setSubjects] = useState<SubjectObject>([]);
@@ -124,7 +124,7 @@ export const MainScreen = (params: RootStackScreenProps<"MainScreen">) => {
               } else {
                 return (
                   <TouchableOpacity
-                    onPress={() => params.navigation.push("SubjectScreen")}
+                    onPress={() => params.navigation.push("FlashcardsScreen", flashcards)}
                     style={{ backgroundColor: item.color }}
                     className="m-1 flex h-32 flex-1 items-center justify-center rounded-xl p-4"
                   >

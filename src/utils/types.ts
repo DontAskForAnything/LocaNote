@@ -6,3 +6,8 @@ export type SubjectItem = {
   icon: any; // eslint-disable-line
   color: string;
 };
+
+export type Flashcard = {
+  question: string;
+  answer: string;
+}
