@@ -15,11 +15,11 @@ import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { useUser } from "@clerk/clerk-expo";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
-import { SubjectItem } from "../../utils/types";
+import { Flashcard, SubjectItem } from "../../utils/types";
 import LogoTop from "../../components/logoTop";
 
 type SubjectObject = SubjectItem[] | [];
-
+const flashcards: Array<Flashcard> = [{question: "What is?", answer: "It is indeed"}, {question: "What was?", answer: "Yes, It was"}];
 export const MainScreen = (params: RootStackScreenProps<"MainScreen">) => {
   const { user, isLoaded } = useUser();
   const [subjects, setSubjects] = useState<SubjectObject>([]);
