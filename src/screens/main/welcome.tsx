@@ -18,20 +18,7 @@ import { firestore } from "../../utils/firebaseConfig";
 import { Flashcard, SubjectItem } from "../../utils/types";
 
 type SubjectObject = SubjectItem[] | [];
-const flashcards: Array<Flashcard> = [
-  {
-    question:
-      "What are the two major groups of modern turtles and how do they differ in head retraction?",
-    answer:
-      "Modern turtles are divided into two major groups, the Pleurodira (side necked turtles) and Cryptodira (hidden necked turtles). They differ in the way the head retracts.",
-  },
-  { question: "What was?", answer: "Yes, It was" },
-  {
-    question: "This is a testing question made to test the testing system",
-    answer:
-      "This is the answer to the testing question that was made to test the testing system",
-  },
-];
+const flashcards: Array<Flashcard> = [{question: "What is?", answer: "It is indeed"}, {question: "What was?", answer: "Yes, It was"}];
 export const MainScreen = (params: RootStackScreenProps<"MainScreen">) => {
   const { user, isLoaded } = useUser();
   const [subjects, setSubjects] = useState<SubjectObject>([]);
@@ -137,9 +124,7 @@ export const MainScreen = (params: RootStackScreenProps<"MainScreen">) => {
               } else {
                 return (
                   <TouchableOpacity
-                    onPress={() =>
-                      params.navigation.push("FlashcardsScreen", flashcards)
-                    }
+                    onPress={() => params.navigation.push("FlashcardsScreen", flashcards)}
                     style={{ backgroundColor: item.color }}
                     className="m-1 flex h-32 flex-1 items-center justify-center rounded-xl p-4"
                   >

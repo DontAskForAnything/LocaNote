@@ -10,4 +10,4 @@ export type SubjectItem = {
 export type Flashcard = {
   question: string;
   answer: string;
-};
+}
