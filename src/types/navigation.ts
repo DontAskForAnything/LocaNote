@@ -22,6 +22,7 @@ export type RootStackParamList = {
   MainScreen: { refresh?: number };
   AddSubjectScreen: Array<SubjectItem>;
   SubjectScreen: SubjectItem;
+  TopicScreen: Topic;
   Settings: undefined;
   GenerateTopics: { subject: SubjectItem; topics: Topic[] | [] };
 };
