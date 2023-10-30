@@ -16,9 +16,10 @@ import { useClerk } from "@clerk/clerk-expo";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
 
-export const SubjectScreen = (
-  {route, navigation}: RootStackScreenProps<"SubjectScreen">,
-) => {
+export const SubjectScreen = ({
+  route,
+  navigation,
+}: RootStackScreenProps<"SubjectScreen">) => {
   const insets = useSafeAreaInsets();
   const { user } = useClerk();
   const [topics, setTopics] = useState<Topic[] | []>([]);
@@ -66,7 +67,12 @@ export const SubjectScreen = (
 
           <TouchableOpacity
             //TODO: add edit screen
-            onPress={()=>navigation.navigate("EditSubjectScreen", {subject: route.params.subject, subjects: route.params.subjects})}
+            onPress={() =>
+              navigation.navigate("EditSubjectScreen", {
+                subject: route.params.subject,
+                subjects: route.params.subjects,
+              })
+            }
             className=" flex aspect-square w-1/12 items-center justify-center"
           >
             <AntDesign name="edit" size={20} color={"white"} />
@@ -79,6 +85,8 @@ export const SubjectScreen = (
             ListEmptyComponent={
               <>
                 <View className=" items-center justify-center">
+                  {/* //TODO: Open topic screen */}
+                  {/* //TODO: Options on hold element or 3 dots */}
                   <Text className="mx-2 mt-8 text-center font-open-sans-bold text-3xl text-white">
                     You don't have any topics in this subject
                   </Text>
@@ -127,9 +135,7 @@ export const SubjectScreen = (
             renderItem={({ item }) => {
               return (
                 <TouchableOpacity
-                  // onPress={() =>
-                  //   // params.navigation.push("SubjectScreen", item)
-                  // }
+                  onPress={() => navigation.navigate("TopicScreen", item)}
                   className="m-1 justify-center  rounded-xl bg-card-dark p-4 py-3"
                 >
                   <Text className=" font-open-sans-bold text-white ">
@@ -190,8 +196,6 @@ export const SubjectScreen = (
             }
             className="items-center justify-center"
           >
-            {/* // TODO: All flashcards */}
-
             <View className="my-4 flex-row items-center rounded-xl bg-primary-dark p-4">
               <View className=" opacity-90">
                 <FontAwesome5 name="robot" size={18} color="white" />

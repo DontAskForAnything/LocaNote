@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { RootStackScreenProps } from "../../types/navigation";
 import {
-  FlatList,
   Keyboard,
   KeyboardAvoidingView,
   Text,
@@ -9,7 +8,6 @@ import {
   View,
 } from "react-native";
 import { TextInput } from "react-native";
-import { FontAwesome5 } from "@expo/vector-icons";
 import { doc, setDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
 import { useClerk } from "@clerk/clerk-expo";
@@ -23,7 +21,6 @@ import { GoBackSignButton } from "../../components/goBackSignButton";
 import * as Crypto from "expo-crypto";
 import { ColorPicker } from "../../components/colorPicker";
 import { IconPicker } from "../../components/iconPicker";
-
 
 export const AddSubjectScreen = ({
   route,
@@ -105,14 +102,20 @@ export const AddSubjectScreen = ({
         >
           Choose an Icon:
         </Text>
-        <IconPicker selectedIcon={selectedIcon} onPress={(icon: string) => setSelectedIcon(icon)}/>
+        <IconPicker
+          selectedIcon={selectedIcon}
+          onPress={(icon: string) => setSelectedIcon(icon)}
+        />
         <Text
           className={"mt-16 text-center font-poppins-medium text-lg text-white"}
         >
           Pick a color:
         </Text>
       </View>
-        <ColorPicker selectedColor={selectedColor} onPress={(color: string) => setSelectedColor(color)}/>
+      <ColorPicker
+        selectedColor={selectedColor}
+        onPress={(color: string) => setSelectedColor(color)}
+      />
       <TouchableOpacity
         className={`absolute bottom-0 left-0 right-0 m-4 rounded-2xl bg-primary p-4`}
         onPress={handleSubmit(addToDB)}

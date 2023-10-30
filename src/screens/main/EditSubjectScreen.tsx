@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { RootStackScreenProps } from "../../types/navigation";
 import {
-  FlatList,
   Keyboard,
   KeyboardAvoidingView,
   Text,
@@ -9,7 +8,6 @@ import {
   View,
 } from "react-native";
 import { TextInput } from "react-native";
-import { FontAwesome5 } from "@expo/vector-icons";
 import { doc, setDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
 import { useClerk } from "@clerk/clerk-expo";
@@ -20,7 +18,6 @@ import { z } from "zod";
 import { SubjectItem } from "../../utils/types";
 import LoadingModal from "../../components/loadingModal";
 import { GoBackSignButton } from "../../components/goBackSignButton";
-import * as Crypto from "expo-crypto";
 import { ColorPicker } from "../../components/colorPicker";
 import { IconPicker } from "../../components/iconPicker";
 
@@ -29,8 +26,12 @@ export const EditSubjectScreen = ({
   navigation,
 }: RootStackScreenProps<"EditSubjectScreen">) => {
   const { user } = useClerk();
-  const [selectedIcon, setSelectedIcon] = useState<string>(route.params.subject.icon);
-  const [selectedColor, setSelectedColor] = useState<string>(route.params.subject.color);
+  const [selectedIcon, setSelectedIcon] = useState<string>(
+    route.params.subject.icon,
+  );
+  const [selectedColor, setSelectedColor] = useState<string>(
+    route.params.subject.color,
+  );
   const [loading, setLoading] = useState<boolean>(false);
 
   const {
@@ -49,22 +50,23 @@ export const EditSubjectScreen = ({
       values = values as z.infer<typeof SubjectNameSchema>;
       const subjects: Array<SubjectItem> = [...route.params.subjects];
       subjects.pop();
-      let subjectToEdit = subjects.find((subject, index) => {
-        if(subject.id === route.params.subject.id) {
-          subjects[index] = {color: selectedColor, icon: selectedIcon, id: subject.id, title: values.lessonName}
+      subjects.find((subject, index) => {
+        if (subject.id === route.params.subject.id) {
+          subjects[index] = {
+            color: selectedColor,
+            icon: selectedIcon,
+            id: subject.id,
+            title: values.lessonName,
+          };
           return true;
         }
-      })
-      subjectToEdit = {color: selectedColor, icon: selectedIcon, id: (subjectToEdit as SubjectItem).id, title: values.lessonName}
-      console.log(subjectToEdit)
+      });
 
       if (user) {
         setDoc(doc(firestore, "users", user.id), {
-          subjects: [
-            ...subjects,
-          ],
+          subjects: [...subjects],
         }).then(() => {
-          navigation.navigate("MainScreen",{ refresh: Math.random() });
+          navigation.navigate("MainScreen", { refresh: Math.random() });
         });
       }
     } catch (e) {
@@ -106,13 +108,19 @@ export const EditSubjectScreen = ({
         >
           Choose an Icon:
         </Text>
-        <IconPicker selectedIcon={selectedIcon} onPress={(icon) => setSelectedIcon(icon)} />
+        <IconPicker
+          selectedIcon={selectedIcon}
+          onPress={(icon) => setSelectedIcon(icon)}
+        />
         <Text
           className={"mt-16 text-center font-poppins-medium text-lg text-white"}
         >
           Pick a color:
         </Text>
-        <ColorPicker selectedColor={selectedColor} onPress={(value: string) => setSelectedColor(value)}/>
+        <ColorPicker
+          selectedColor={selectedColor}
+          onPress={(value: string) => setSelectedColor(value)}
+        />
       </View>
       <TouchableOpacity
         className={`absolute bottom-0 left-0 right-0 m-4 rounded-2xl bg-primary p-4`}

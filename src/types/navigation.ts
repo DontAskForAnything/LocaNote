@@ -21,10 +21,17 @@ export type RootStackParamList = {
   ForgotPasswordRestart: undefined;
   MainScreen: { refresh?: number };
   AddSubjectScreen: Array<SubjectItem>;
-  SubjectScreen: {subject: SubjectItem, subjects: Readonly<Array<SubjectItem>>};
+  SubjectScreen: {
+    subject: SubjectItem;
+    subjects: Readonly<Array<SubjectItem>>;
+  };
+  EditSubjectScreen: {
+    subject: Readonly<SubjectItem>;
+    subjects: Readonly<Array<SubjectItem>>;
+  };
+  TopicScreen: Topic;
   Settings: undefined;
   GenerateTopics: { subject: SubjectItem; topics: Topic[] | [] };
-  EditSubjectScreen: {subject: Readonly<SubjectItem>; subjects: Readonly<Array<SubjectItem>>};
 };
 
 declare module "@react-navigation/native" {
