@@ -24,4 +24,4 @@ export type SubjectPulledItem = {
 export type Flashcard = {
   question: string;
   answer: string;
-};
+}
