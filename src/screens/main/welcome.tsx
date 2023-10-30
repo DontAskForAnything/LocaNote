@@ -124,7 +124,7 @@ export const MainScreen = (params: RootStackScreenProps<"MainScreen">) => {
                 return (
                   <TouchableOpacity
                     onPress={() =>
-                      params.navigation.push("SubjectScreen", {subject: item, subjects: subjects})
+                      params.navigation.push("SubjectScreen", item)
                     }
                     style={{ backgroundColor: item.color }}
                     className="m-1 flex h-32 flex-1 items-center justify-center rounded-xl p-4"

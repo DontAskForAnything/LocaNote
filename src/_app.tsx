@@ -25,7 +25,6 @@ import { AddSubjectScreen } from "./screens/main/addSubject";
 import { SubjectScreen } from "./screens/main/subject";
 import { SettingsScreen } from "./screens/account/settings/settings";
 import GenerateTopicsScreen from "./screens/main/generateTopics";
-import { EditSubjectScreen } from "./screens/main/EditSubjectScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -91,16 +90,6 @@ export const App = () => {
                 }}
                 name="SubjectScreen"
                 component={SubjectScreen}
-              />
-              <Stack.Screen
-                options={{
-                  headerShown: false,
-                  presentation: "modal",
-                  animationTypeForReplace: "push",
-                  animation: "slide_from_right",
-                }}
-                name="EditSubjectScreen"
-                component={EditSubjectScreen}
               />
             </Stack.Navigator>
           </NavigationContainer>

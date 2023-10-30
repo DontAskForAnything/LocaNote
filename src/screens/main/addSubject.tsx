@@ -21,17 +21,40 @@ import { SubjectItem } from "../../utils/types";
 import LoadingModal from "../../components/loadingModal";
 import { GoBackSignButton } from "../../components/goBackSignButton";
 import * as Crypto from "expo-crypto";
-import { ColorPicker } from "../../components/colorPicker";
-import { IconPicker } from "../../components/iconPicker";
 
+const icons: Array<string> = [
+  "book",
+  "book-open",
+  "dumbbell",
+  "graduation-cap",
+  "calculator",
+  "laptop-code",
+  "atom",
+  "flask",
+  "frog",
+  "pen-nib",
+];
+
+const colors: Array<string> = [
+  "#4287f5",
+  "#00ccff",
+  "#eb4034",
+  "#ff00b3",
+  "#72a872",
+  "#16a34a",
+  "#7a00ff",
+  "#996cff",
+];
 
 export const AddSubjectScreen = ({
   route,
   navigation,
 }: RootStackScreenProps<"AddSubjectScreen">) => {
   const { user } = useClerk();
-  const [selectedIcon, setSelectedIcon] = useState<string>("book");
-  const [selectedColor, setSelectedColor] = useState<string>("#4287f5");
+  const [selectedIcon, setSelectedIcon] = useState<string>(icons[0] as string);
+  const [selectedColor, setSelectedColor] = useState<string>(
+    colors[0] as string,
+  );
   const [loading, setLoading] = useState<boolean>(false);
 
   const {
@@ -99,20 +122,60 @@ export const AddSubjectScreen = ({
           {errors.lessonName.message.toString()}
         </Text>
       )}
-      <View>
+      <Text
+        className={"my-6 text-center font-poppins-medium text-lg text-white"}
+      >
+        Choose an Icon:
+      </Text>
+      <View className={"flex gap-12"}>
+        <FlatList
+          contentContainerStyle={{ alignItems: "center" }}
+          numColumns={5}
+          keyExtractor={(item) => item}
+          data={icons}
+          renderItem={({ item }) => {
+            return (
+              <TouchableOpacity
+                className={`m-1 h-16 w-16 items-center justify-center rounded-xl border-2 border-slate-300 bg-slate-700 ${
+                  selectedIcon === item && "border-primary"
+                }`}
+                onPress={() => {
+                  setSelectedIcon(item);
+                }}
+              >
+                <FontAwesome5
+                  name={item}
+                  size={32}
+                  color={selectedIcon === item ? "#16a34a" : "white"}
+                />
+              </TouchableOpacity>
+            );
+          }}
+        />
         <Text
-          className={"my-6 text-center font-poppins-medium text-lg text-white"}
-        >
-          Choose an Icon:
-        </Text>
-        <IconPicker selectedIcon={selectedIcon} onPress={(icon: string) => setSelectedIcon(icon)}/>
-        <Text
-          className={"mt-16 text-center font-poppins-medium text-lg text-white"}
+          className={"mt-6 text-center font-poppins-medium text-lg text-white"}
         >
           Pick a color:
         </Text>
+        <FlatList
+          numColumns={4}
+          keyExtractor={(item) => item}
+          data={colors}
+          renderItem={({ item }) => {
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedColor(item);
+                }}
+                style={{ backgroundColor: item }}
+                className={`m-1 flex h-20 flex-1 items-center justify-center overflow-hidden whitespace-nowrap rounded-xl border-2 p-4 ${
+                  selectedColor === item && "border-white"
+                }`}
+              ></TouchableOpacity>
+            );
+          }}
+        />
       </View>
-        <ColorPicker selectedColor={selectedColor} onPress={(color: string) => setSelectedColor(color)}/>
       <TouchableOpacity
         className={`absolute bottom-0 left-0 right-0 m-4 rounded-2xl bg-primary p-4`}
         onPress={handleSubmit(addToDB)}
