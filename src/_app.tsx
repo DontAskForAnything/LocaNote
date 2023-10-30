@@ -24,6 +24,8 @@ import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { AddSubjectScreen } from "./screens/main/addSubject";
 import { SubjectScreen } from "./screens/main/subject";
 import { SettingsScreen } from "./screens/account/settings/settings";
+import GenerateTopicsScreen from "./screens/main/generateTopics";
+import { TopicScreen } from "./screens/main/topic";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -77,8 +79,28 @@ export const App = () => {
                   animationTypeForReplace: "push",
                   animation: "slide_from_right",
                 }}
+                name="GenerateTopics"
+                component={GenerateTopicsScreen}
+              />
+              <Stack.Screen
+                options={{
+                  headerShown: false,
+                  presentation: "modal",
+                  animationTypeForReplace: "push",
+                  animation: "slide_from_right",
+                }}
                 name="SubjectScreen"
                 component={SubjectScreen}
+              />
+              <Stack.Screen
+                options={{
+                  headerShown: false,
+                  presentation: "modal",
+                  animationTypeForReplace: "push",
+                  animation: "slide_from_right",
+                }}
+                name="TopicScreen"
+                component={TopicScreen}
               />
             </Stack.Navigator>
           </NavigationContainer>
