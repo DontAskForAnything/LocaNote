@@ -21,7 +21,14 @@ export type RootStackParamList = {
   ForgotPasswordRestart: undefined;
   MainScreen: { refresh?: number };
   AddSubjectScreen: Array<SubjectItem>;
-  SubjectScreen: SubjectItem;
+  SubjectScreen: {
+    subject: SubjectItem;
+    subjects: Readonly<Array<SubjectItem>>;
+  };
+  EditSubjectScreen: {
+    subject: Readonly<SubjectItem>;
+    subjects: Readonly<Array<SubjectItem>>;
+  };
   TopicScreen: Topic;
   Settings: undefined;
   GenerateTopics: { subject: SubjectItem; topics: Topic[] | [] };

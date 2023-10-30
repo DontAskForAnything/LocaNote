@@ -16,9 +16,10 @@ import { useClerk } from "@clerk/clerk-expo";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
 
-export const SubjectScreen = (
-  params: RootStackScreenProps<"SubjectScreen">,
-) => {
+export const SubjectScreen = ({
+  route,
+  navigation,
+}: RootStackScreenProps<"SubjectScreen">) => {
   const insets = useSafeAreaInsets();
   const { user } = useClerk();
   const [topics, setTopics] = useState<Topic[] | []>([]);
@@ -28,7 +29,7 @@ export const SubjectScreen = (
     setLoading(true);
     setTopics([]);
     if (user) {
-      const ref = doc(firestore, "subjects", params.route.params.id);
+      const ref = doc(firestore, "subjects", route.params.subject.id);
       const userData = await getDoc(ref);
       if (userData.exists()) {
         if (userData.data().topics) {
@@ -54,19 +55,24 @@ export const SubjectScreen = (
       <SafeAreaView className="mx-12 w-11/12 flex-1 self-center bg-background dark:bg-background-dark">
         <View className="flex flex-row items-center justify-between ">
           <TouchableOpacity
-            onPress={() => params.navigation.goBack()}
+            onPress={() => navigation.goBack()}
             className=" flex aspect-square h-full w-1/12 items-center justify-center "
           >
             <AntDesign name="left" size={20} color={"white"} />
           </TouchableOpacity>
 
           <Text className="w-8/12 py-4 text-center font-open-sans-bold text-white">
-            {params.route.params.title}
+            {route.params.subject.title}
           </Text>
 
           <TouchableOpacity
             //TODO: add edit screen
-            // onPress={()=>params.navigation.goBack()}
+            onPress={() =>
+              navigation.navigate("EditSubjectScreen", {
+                subject: route.params.subject,
+                subjects: route.params.subjects,
+              })
+            }
             className=" flex aspect-square w-1/12 items-center justify-center"
           >
             <AntDesign name="edit" size={20} color={"white"} />
@@ -89,8 +95,8 @@ export const SubjectScreen = (
                   </Text>
                   <TouchableOpacity
                     onPress={() =>
-                      params.navigation.navigate("GenerateTopics", {
-                        subject: params.route.params,
+                      navigation.navigate("GenerateTopics", {
+                        subject: route.params.subject,
                         topics: topics,
                       })
                     }
@@ -129,9 +135,7 @@ export const SubjectScreen = (
             renderItem={({ item }) => {
               return (
                 <TouchableOpacity
-                  onPress={() =>
-                    params.navigation.navigate("TopicScreen", item)
-                  }
+                  onPress={() => navigation.navigate("TopicScreen", item)}
                   className="m-1 justify-center  rounded-xl bg-card-dark p-4 py-3"
                 >
                   <Text className=" font-open-sans-bold text-white ">
@@ -183,29 +187,24 @@ export const SubjectScreen = (
         )}
 
         {topics.length > 0 && (
-          <View className="w-11/12  flex-row items-center justify-around self-center">
-            {/* <View className="my-4  w-2/12  aspect-square flex-row items-center rounded-xl bg-primary-dark p-4">Search that opens </View> */}
-
-            <TouchableOpacity
-              onPress={() =>
-                params.navigation.navigate("GenerateTopics", {
-                  subject: params.route.params,
-                  topics: topics,
-                })
-              }
-              className="w-6/12 flex-row  items-center justify-around"
-            >
-              <View className="my-4 flex-row items-center rounded-xl bg-primary-dark p-4">
-                <View className=" opacity-90">
-                  <FontAwesome5 name="robot" size={18} color="white" />
-                </View>
-                <Text className="ml-2 font-open-sans-bold text-xs text-white opacity-90">
-                  Generate new topics
-                </Text>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("GenerateTopics", {
+                subject: route.params.subject,
+                topics: topics,
+              })
+            }
+            className="items-center justify-center"
+          >
+            <View className="my-4 flex-row items-center rounded-xl bg-primary-dark p-4">
+              <View className=" opacity-90">
+                <FontAwesome5 name="robot" size={18} color="white" />
               </View>
-            </TouchableOpacity>
-            {/* <View className="my-4  w-2/12  aspect-square flex-row items-center rounded-xl bg-primary-dark p-4"> // TODO: All flashcards</View> */}
-          </View>
+              <Text className="ml-2 font-open-sans-bold text-xs text-white opacity-90">
+                Generate new topics
+              </Text>
+            </View>
+          </TouchableOpacity>
         )}
       </SafeAreaView>
     </View>
