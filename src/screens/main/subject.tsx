@@ -17,7 +17,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
 
 export const SubjectScreen = (
-  params: RootStackScreenProps<"SubjectScreen">,
+  {route, navigation}: RootStackScreenProps<"SubjectScreen">,
 ) => {
   const insets = useSafeAreaInsets();
   const { user } = useClerk();
@@ -28,7 +28,7 @@ export const SubjectScreen = (
     setLoading(true);
     setTopics([]);
     if (user) {
-      const ref = doc(firestore, "subjects", params.route.params.id);
+      const ref = doc(firestore, "subjects", route.params.subject.id);
       const userData = await getDoc(ref);
       if (userData.exists()) {
         if (userData.data().topics) {
@@ -54,19 +54,19 @@ export const SubjectScreen = (
       <SafeAreaView className="mx-12 w-11/12 flex-1 self-center bg-background dark:bg-background-dark">
         <View className="flex flex-row items-center justify-between ">
           <TouchableOpacity
-            onPress={() => params.navigation.goBack()}
+            onPress={() => navigation.goBack()}
             className=" flex aspect-square h-full w-1/12 items-center justify-center "
           >
             <AntDesign name="left" size={20} color={"white"} />
           </TouchableOpacity>
 
           <Text className="w-8/12 py-4 text-center font-open-sans-bold text-white">
-            {params.route.params.title}
+            {route.params.subject.title}
           </Text>
 
           <TouchableOpacity
             //TODO: add edit screen
-            // onPress={()=>params.navigation.goBack()}
+            onPress={()=>navigation.navigate("EditSubjectScreen", {subject: route.params.subject, subjects: route.params.subjects})}
             className=" flex aspect-square w-1/12 items-center justify-center"
           >
             <AntDesign name="edit" size={20} color={"white"} />
@@ -87,8 +87,8 @@ export const SubjectScreen = (
                   </Text>
                   <TouchableOpacity
                     onPress={() =>
-                      params.navigation.navigate("GenerateTopics", {
-                        subject: params.route.params,
+                      navigation.navigate("GenerateTopics", {
+                        subject: route.params.subject,
                         topics: topics,
                       })
                     }
@@ -183,8 +183,8 @@ export const SubjectScreen = (
         {topics.length > 0 && (
           <TouchableOpacity
             onPress={() =>
-              params.navigation.navigate("GenerateTopics", {
-                subject: params.route.params,
+              navigation.navigate("GenerateTopics", {
+                subject: route.params.subject,
                 topics: topics,
               })
             }

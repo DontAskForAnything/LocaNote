@@ -24,14 +24,13 @@ import * as Crypto from "expo-crypto";
 import { ColorPicker } from "../../components/colorPicker";
 import { IconPicker } from "../../components/iconPicker";
 
-
-export const AddSubjectScreen = ({
+export const EditSubjectScreen = ({
   route,
   navigation,
-}: RootStackScreenProps<"AddSubjectScreen">) => {
+}: RootStackScreenProps<"EditSubjectScreen">) => {
   const { user } = useClerk();
-  const [selectedIcon, setSelectedIcon] = useState<string>("book");
-  const [selectedColor, setSelectedColor] = useState<string>("#4287f5");
+  const [selectedIcon, setSelectedIcon] = useState<string>(route.params.subject.icon);
+  const [selectedColor, setSelectedColor] = useState<string>(route.params.subject.color);
   const [loading, setLoading] = useState<boolean>(false);
 
   const {
@@ -40,7 +39,7 @@ export const AddSubjectScreen = ({
     formState: { errors },
   } = useForm({
     resolver: zodResolver(SubjectNameSchema),
-    defaultValues: { lessonName: "" },
+    defaultValues: { lessonName: route.params.subject.title },
   });
 
   const addToDB = (values: z.infer<typeof SubjectNameSchema>): void => {
@@ -48,22 +47,24 @@ export const AddSubjectScreen = ({
     setLoading(true);
     try {
       values = values as z.infer<typeof SubjectNameSchema>;
-      const subjects: Array<SubjectItem> = [...route.params];
+      const subjects: Array<SubjectItem> = [...route.params.subjects];
       subjects.pop();
+      let subjectToEdit = subjects.find((subject, index) => {
+        if(subject.id === route.params.subject.id) {
+          subjects[index] = {color: selectedColor, icon: selectedIcon, id: subject.id, title: values.lessonName}
+          return true;
+        }
+      })
+      subjectToEdit = {color: selectedColor, icon: selectedIcon, id: (subjectToEdit as SubjectItem).id, title: values.lessonName}
+      console.log(subjectToEdit)
+
       if (user) {
-        const id = Crypto.randomUUID();
         setDoc(doc(firestore, "users", user.id), {
           subjects: [
             ...subjects,
-            {
-              color: selectedColor,
-              icon: selectedIcon,
-              id,
-              title: values.lessonName,
-            },
           ],
         }).then(() => {
-          navigation.navigate("MainScreen", { refresh: Math.random() });
+          navigation.navigate("MainScreen",{ refresh: Math.random() });
         });
       }
     } catch (e) {
@@ -83,7 +84,7 @@ export const AddSubjectScreen = ({
         render={({ field: { onChange, value, onBlur } }) => (
           <TextInput
             autoCapitalize="none"
-            placeholder="Lesson Name"
+            placeholder="Edit Subject Name"
             value={value}
             onBlur={onBlur}
             onChangeText={(value) => onChange(value)}
@@ -105,20 +106,20 @@ export const AddSubjectScreen = ({
         >
           Choose an Icon:
         </Text>
-        <IconPicker selectedIcon={selectedIcon} onPress={(icon: string) => setSelectedIcon(icon)}/>
+        <IconPicker selectedIcon={selectedIcon} onPress={(icon) => setSelectedIcon(icon)} />
         <Text
           className={"mt-16 text-center font-poppins-medium text-lg text-white"}
         >
           Pick a color:
         </Text>
+        <ColorPicker selectedColor={selectedColor} onPress={(value: string) => setSelectedColor(value)}/>
       </View>
-        <ColorPicker selectedColor={selectedColor} onPress={(color: string) => setSelectedColor(color)}/>
       <TouchableOpacity
         className={`absolute bottom-0 left-0 right-0 m-4 rounded-2xl bg-primary p-4`}
         onPress={handleSubmit(addToDB)}
       >
         <Text className="text-center font-open-sans-bold text-white">
-          Add Subject
+          Update Subject
         </Text>
       </TouchableOpacity>
     </KeyboardAvoidingView>
