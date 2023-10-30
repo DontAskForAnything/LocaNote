@@ -111,12 +111,12 @@ const topics = [
 app.use(express.json());
 
 // No sleep
-app.post("/api/flashcards", (req, res) => {
+app.get("/api/flashcards", (req, res) => {
   res.json({ text: flashcards[Math.floor(Math.random() * flashcards.length)] });
 });
 
 // Sleep timeout
-app.post("/api/flashcardsSlow", (req, res) => {
+app.get("/api/flashcardsSlow", (req, res) => {
   const delay = Math.floor(Math.random() * 11000) + 10000;
 
   setTimeout(() => {
@@ -127,12 +127,12 @@ app.post("/api/flashcardsSlow", (req, res) => {
 });
 
 // No sleep
-app.post("/api/topics", (req, res) => {
+app.get("/api/topics", (req, res) => {
   res.json({ text: topics[Math.floor(Math.random() * topics.length)] });
 });
 
 // Sleep timeout
-app.post("/api/topicsSlow", (req, res) => {
+app.get("/api/topicsSlow", (req, res) => {
   const delay = Math.floor(Math.random() * 11000) + 10000;
 
   setTimeout(() => {
