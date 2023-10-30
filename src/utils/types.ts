@@ -14,7 +14,7 @@ export type Topic = {
   questions:
     | { question: string; correctAnswers: string; answers: string[] }
     | [];
-  notes: string[] | [];
+  notes: string | [];
 };
 
 export type SubjectPulledItem = {

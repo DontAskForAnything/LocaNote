@@ -79,6 +79,8 @@ export const SubjectScreen = (
             ListEmptyComponent={
               <>
                 <View className=" items-center justify-center">
+                  {/* //TODO: Open topic screen */}
+                  {/* //TODO: Options on hold element or 3 dots */}
                   <Text className="mx-2 mt-8 text-center font-open-sans-bold text-3xl text-white">
                     You don't have any topics in this subject
                   </Text>
@@ -127,9 +129,9 @@ export const SubjectScreen = (
             renderItem={({ item }) => {
               return (
                 <TouchableOpacity
-                  // onPress={() =>
-                  //   // params.navigation.push("SubjectScreen", item)
-                  // }
+                  onPress={() =>
+                    params.navigation.navigate("TopicScreen", item)
+                  }
                   className="m-1 justify-center  rounded-xl bg-card-dark p-4 py-3"
                 >
                   <Text className=" font-open-sans-bold text-white ">
@@ -181,26 +183,29 @@ export const SubjectScreen = (
         )}
 
         {topics.length > 0 && (
-          <TouchableOpacity
-            onPress={() =>
-              params.navigation.navigate("GenerateTopics", {
-                subject: params.route.params,
-                topics: topics,
-              })
-            }
-            className="items-center justify-center"
-          >
-            {/* // TODO: All flashcards */}
+          <View className="w-11/12  flex-row items-center justify-around self-center">
+            {/* <View className="my-4  w-2/12  aspect-square flex-row items-center rounded-xl bg-primary-dark p-4">Search that opens </View> */}
 
-            <View className="my-4 flex-row items-center rounded-xl bg-primary-dark p-4">
-              <View className=" opacity-90">
-                <FontAwesome5 name="robot" size={18} color="white" />
+            <TouchableOpacity
+              onPress={() =>
+                params.navigation.navigate("GenerateTopics", {
+                  subject: params.route.params,
+                  topics: topics,
+                })
+              }
+              className="w-6/12 flex-row  items-center justify-around"
+            >
+              <View className="my-4 flex-row items-center rounded-xl bg-primary-dark p-4">
+                <View className=" opacity-90">
+                  <FontAwesome5 name="robot" size={18} color="white" />
+                </View>
+                <Text className="ml-2 font-open-sans-bold text-xs text-white opacity-90">
+                  Generate new topics
+                </Text>
               </View>
-              <Text className="ml-2 font-open-sans-bold text-xs text-white opacity-90">
-                Generate new topics
-              </Text>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+            {/* <View className="my-4  w-2/12  aspect-square flex-row items-center rounded-xl bg-primary-dark p-4"> // TODO: All flashcards</View> */}
+          </View>
         )}
       </SafeAreaView>
     </View>
