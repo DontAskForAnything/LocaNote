@@ -89,33 +89,33 @@ export const FlashcardsScreen = ({
     swipe.setValue({ x: 0, y: 0 });
   }, [swipe]);
 
-  // Opacity animation for the "like" button
-  const likeOpacity = swipe.x.interpolate({
+  // Opacity animation for the "got it" text
+  const gotItOpacity = swipe.x.interpolate({
     inputRange: [25, 100],
     outputRange: [0, 1],
     extrapolate: "clamp",
   });
 
-  // Opacity animation for the "nope" button
-  const nopeOpacity = swipe.x.interpolate({
+  // Opacity animation for the "needs review" text
+  const needsReviewOpacity = swipe.x.interpolate({
     inputRange: [-100, -25],
     outputRange: [1, 0],
     extrapolate: "clamp",
   });
 
-  // Function to render the "like" and "nope" buttons conditionally
+  // Function to render the "got it" and "needs review" text conditionally
   const renderChoice = useCallback(() => {
     return (
       <Fragment>
         <Animated.View
           className={"absolute left-12 top-8"}
-          style={{ opacity: likeOpacity }}
+          style={{ opacity: gotItOpacity }}
         >
           <Text className="text-3xl font-bold text-primary">Got It</Text>
         </Animated.View>
         <Animated.View
           className={"absolute right-12 top-8"}
-          style={{ opacity: nopeOpacity }}
+          style={{ opacity: needsReviewOpacity }}
         >
           <Text className="text-3xl font-bold text-red-500">
             Needs{"\n"}Revision
@@ -123,12 +123,12 @@ export const FlashcardsScreen = ({
         </Animated.View>
       </Fragment>
     );
-  }, [likeOpacity, nopeOpacity]);
+  }, [gotItOpacity, needsReviewOpacity]);
   return (
     <View
       className={"flex flex-1 items-center justify-center bg-background-dark"}
     >
-      <GoBackSignButton onPress={() => navigation.navigate("MainScreen", {})} />
+      <GoBackSignButton onPress={() => navigation.goBack()} />
       {cards
         .map(({ question, answer }, index) => {
           const isFirst = index === 0;

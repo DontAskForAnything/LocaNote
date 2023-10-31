@@ -10,11 +10,28 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { noteAPI } from "../../test/apiTemp";
 import { useState } from "react";
-import { Flashcard } from "../../utils/types";
+import { Flashcard, QuizQuestion } from "../../utils/types";
 const flashcards: Array<Flashcard> = [
   { question: "What is?", answer: "It is indeed" },
   { question: "What was?", answer: "Yes, It was" },
   { question: "Is taxation theft?", answer: "I don't think so" },
+];
+const questions: Array<QuizQuestion> = [
+  {
+    question: "What is the capital of Poland?",
+    correctAnswerIndex: 0,
+    answers: ["Warsaw", "Stettin", "Breslau", "Danzig"],
+  },
+  {
+    question: "What is the capital of Germany?",
+    correctAnswerIndex: 2,
+    answers: ["Warsaw", "Stuttgart", "Berlin", "Hannover"],
+  },
+  {
+    question: "What is the capital of Switzerland?",
+    correctAnswerIndex: 3,
+    answers: ["Geneva", "Zurich", "Berlin", "Berno"],
+  },
 ];
 export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
   const insets = useSafeAreaInsets();
@@ -56,6 +73,9 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
             </TouchableOpacity>
             {/* //TODO: navigate to Quizz */}
             <TouchableOpacity
+              onPress={() =>
+                params.navigation.navigate("QuizScreen", questions)
+              }
               className="w-1/2 py-2"
               style={{ backgroundColor: "#1CD05E" }}
             >

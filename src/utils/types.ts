@@ -25,3 +25,8 @@ export type Flashcard = {
   question: string;
   answer: string;
 };
+export type QuizQuestion = {
+  question: string;
+  correctAnswerIndex: number;
+  answers: Array<string>;
+};

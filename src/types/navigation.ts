@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Flashcard, SubjectItem, Topic } from "../utils/types";
+import { Flashcard, QuizQuestion, SubjectItem, Topic } from "../utils/types";
 
 export type VerificationType = "email";
 
@@ -33,6 +33,7 @@ export type RootStackParamList = {
   Settings: undefined;
   GenerateTopics: { subject: SubjectItem; topics: Topic[] | [] };
   FlashcardsScreen: Array<Flashcard>;
+  QuizScreen: Array<QuizQuestion>;
 };
 
 declare module "@react-navigation/native" {
