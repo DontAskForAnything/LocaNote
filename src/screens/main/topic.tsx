@@ -10,6 +10,12 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { noteAPI } from "../../test/apiTemp";
 import { useState } from "react";
+import { Flashcard } from "../../utils/types";
+const flashcards: Array<Flashcard> = [
+  { question: "What is?", answer: "It is indeed" },
+  { question: "What was?", answer: "Yes, It was" },
+  { question: "Is taxation theft?", answer: "I don't think so" },
+];
 export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
   const insets = useSafeAreaInsets();
   const [note, setNote] = useState<string | []>(params.route.params.notes);
@@ -38,7 +44,12 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
         {note.length > 0 && (
           <View className="mb-4 flex flex-row overflow-hidden rounded-xl">
             {/* //TODO: navigate to flashcards */}
-            <TouchableOpacity className="w-1/2 bg-primary-dark py-2">
+            <TouchableOpacity
+              className="w-1/2 bg-primary-dark py-2"
+              onPress={() =>
+                params.navigation.navigate("FlashcardsScreen", flashcards)
+              }
+            >
               <Text className="text-center font-open-sans-bold text-white">
                 Flashcards
               </Text>
