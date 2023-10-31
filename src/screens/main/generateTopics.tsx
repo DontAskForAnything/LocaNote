@@ -13,11 +13,9 @@ import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import LoadingModal from "../../components/loadingModal";
-import { topicsAPI } from "../../test/apiTemp";
-import { Topic } from "../../utils/types";
 import { doc, setDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
-import * as Crypto from "expo-crypto";
+import { generateTopics } from "../../utils/ai/topics";
 
 const availableCount = ["10", "5", "1"];
 
@@ -47,41 +45,20 @@ export default function GenerateTopicsScreen(
     defaultValues: { topic: "" },
   });
 
-  async function addAiTopics() {
-    //TODO: Implement api call and ai to generate
-    if (topicsAPI) {
-      const csvLines =
-        //@ts-ignore
-        topicsAPI[Math.floor(Math.random() * topicsAPI.length)].split("\n");
-      const newTopics: Topic[] = [];
-
-      csvLines.forEach((line) => {
-        const [key, value] = line.split(":");
-        newTopics.push({
-          id: Crypto.randomUUID() as string,
-          title: key?.trim(),
-          description: value?.trim(),
-          flashcards: [],
-          questions: [],
-          notes: [],
-        } as Topic);
-      });
-
-      setDoc(doc(firestore, "subjects", params.route.params.subject.id), {
-        topics: [...params.route.params.topics, ...newTopics],
-      });
-    }
-  }
-
   const GenerateTopics = async ({ topic }: z.infer<typeof TopicSchema>) => {
-    //TODO: Implement api call and ai to generate
     setLoading(true);
-    console.log("Topic: ", topic);
-    console.log("Count Of Lessons: ", selectedCount);
-    addAiTopics();
-    setSuccess(true);
-    setLoading(false);
+    generateTopics(topic, Number(selectedCount))
+      .then((newTopics) => {
+        setDoc(doc(firestore, "subjects", params.route.params.subject.id), {
+          topics: [...params.route.params.topics, ...newTopics],
+        });
+      })
+      .then(() => setSuccess(true))
+      .finally(() => {
+        setLoading(false);
+      });
   };
+
   if (success) {
     return (
       <View

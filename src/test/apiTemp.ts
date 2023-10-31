@@ -36,47 +36,64 @@ export const topicsAPI = [
 ];
 
 export const noteAPI = [
-  `Title: An Introduction to Numbers
+  `**Mathematics Basics: Introduction to Numbers**
 
-Introduction:
-In the world of mathematics, numbers are the fundamental building blocks that underpin almost every mathematical concept and operation. Understanding numbers is essential for anyone seeking to explore and navigate the vast landscape of mathematical knowledge. This introductory note provides a comprehensive overview of the various types of numbers and their significance, setting the stage for a deeper exploration of mathematical concepts.
-
-Types of Numbers:
-1. Natural Numbers:
-   - Natural numbers are the set of positive integers, starting from 1 and extending infinitely (1, 2, 3, 4, ...).
-   - They are used for counting and ordering, making them one of the most basic and intuitive types of numbers.
-
-2. Whole Numbers:
-   - Whole numbers include all the natural numbers as well as zero (0, 1, 2, 3, ...).
-   - They are used for measuring and representing quantities, including the absence of quantity.
-
-3. Integers:
-   - Integers consist of all positive and negative whole numbers and zero (..., -3, -2, -1, 0, 1, 2, 3, ...).
-   - They are used to represent both counting and ordering, as well as situations involving positive and negative values.
-
-4. Rational Numbers:
-   - Rational numbers are numbers that can be expressed as a ratio of two integers, where the denominator is not zero (e.g., 3/4, -2/5).
-   - They are used to represent fractions and decimals and can be finite or repeating.
-
-5. Irrational Numbers:
-   - Irrational numbers cannot be expressed as a simple fraction and have non-repeating, non-terminating decimal expansions (e.g., √2, π).
-   - They introduce the concept of numbers that cannot be precisely represented.
-
-6. Real Numbers:
-   - Real numbers encompass all rational and irrational numbers and can be plotted on a number line.
-   - They represent quantities in the real world and are used extensively in calculus and analysis.
-
-7. Imaginary Numbers:
-   - Imaginary numbers are multiples of the imaginary unit 'i,' where i = √(-1) (e.g., 2i, -3i).
-   - They are fundamental in complex numbers and are often used in electrical engineering and physics.
-
-8. Complex Numbers:
-   - Complex numbers are a combination of real and imaginary numbers, written in the form a + bi, where 'a' and 'b' are real numbers.
-   - They are crucial in many areas of mathematics and science, including complex analysis and electrical engineering.
-
-Significance of Numbers:
-Numbers serve as the foundation for mathematical operations, including addition, subtraction, multiplication, division, exponentiation, and more. They play a pivotal role in solving equations, modeling real-world phenomena, and understanding the world from a quantitative perspective.
-
-Conclusion:
-An understanding of the different types of numbers is a fundamental step in building a strong foundation in mathematics. This knowledge not only opens the doors to mathematical concepts and applications but is also essential in various fields, from science and engineering to finance and data analysis. As you progress in your mathematical journey, you will encounter numbers in various contexts and applications, making them an integral part of your mathematical toolkit.`,
+  Mathematics is the language of the universe, and at its core are numbers. Numbers are fundamental to virtually every aspect of mathematics and are used to describe, quantify, and analyze the world around us. In this overview, we will delve into the fundamental concepts of numbers, number systems, arithmetic operations, and their properties, providing a mid-length introduction to this crucial mathematical foundation.
+  
+  ### Number Systems
+  
+  1. **Natural Numbers (N):** These are the counting numbers that begin with 1 and continue indefinitely: 1, 2, 3, 4, and so on. They are used for basic counting and are represented by the symbol N.
+  
+  2. **Whole Numbers (W):** Whole numbers include all the natural numbers along with zero: 0, 1, 2, 3, 4, and so forth. They are particularly useful for representing quantities and are denoted by W.
+  
+  3. **Integers (Z):** Integers are a set of numbers that encompasses positive and negative whole numbers along with zero: ..., -3, -2, -1, 0, 1, 2, 3, ... They are represented by the symbol Z.
+  
+  4. **Rational Numbers (Q):** Rational numbers are those that can be expressed as a fraction of two integers. They include fractions, decimals with finite or repeating digits, and whole numbers. For example, 1/2, -3/4, and 0.25 are rational numbers, and they are represented by Q.
+  
+  5. **Irrational Numbers (I):** Irrational numbers cannot be expressed as fractions and have non-repeating, non-terminating decimal expansions. Examples include the square root of 2 (√2), π, and Euler's number (e).
+  
+  6. **Real Numbers (R):** Real numbers encompass all rational and irrational numbers. They represent the entire number line, including positive and negative numbers, fractions, and decimals.
+  
+  7. **Complex Numbers (C):** Complex numbers have a real part (a) and an imaginary part (bi), where "a" and "b" are real numbers, and "i" is the imaginary unit (i² = -1). Complex numbers are used in various fields, particularly in algebra and electrical engineering.
+  
+  ### Arithmetic Operations
+  
+  #### 1. Addition (+): 
+     - **Associative Property:** Changing the grouping of numbers doesn't affect the result: (a + b) + c = a + (b + c).
+     - **Commutative Property:** The order of addition doesn't matter: a + b = b + a.
+     - **Identity Element:** Adding zero to any number doesn't change the number: a + 0 = a.
+  
+  #### 2. Subtraction (-): 
+     - Subtraction is the inverse operation of addition. a - b is equivalent to a + (-b).
+  
+  #### 3. Multiplication (*): 
+     - **Associative Property:** The grouping of numbers doesn't affect the result: (a * b) * c = a * (b * c).
+     - **Commutative Property:** The order of multiplication doesn't matter: a * b = b * a.
+     - **Identity Element:** Multiplying any number by one doesn't change the number: a * 1 = a.
+     - **Distributive Property:** Multiplication distributes over addition: a * (b + c) = a * b + a * c.
+  
+  #### 4. Division (/): 
+     - Division is the inverse operation of multiplication. a / b is equivalent to a * (1/b).
+  
+  ### Number Properties
+  
+  1. **Commutative Property:** For addition and multiplication, changing the order of the numbers doesn't affect the result.
+  
+  2. **Associative Property:** For addition and multiplication, changing the grouping of numbers doesn't affect the result.
+  
+  3. **Distributive Property:** Multiplication distributes over addition.
+  
+  4. **Identity Elements:** In addition, the identity element is zero, and in multiplication, it's one.
+  
+  5. **Inverse Elements:** For addition, every real number has an additive inverse (a number that, when added, yields zero). For multiplication, every non-zero number has a multiplicative inverse (a number that, when multiplied, yields one).
+  
+  ### Number Classification
+  
+  Numbers can be classified based on various characteristics:
+  - **Even and Odd Numbers:** Even numbers are divisible by 2, while odd numbers are not.
+  - **Prime and Composite Numbers:** Prime numbers have only two divisors (1 and themselves), while composite numbers have more than two divisors.
+  - **Positive and Negative Numbers:** Positive numbers are greater than zero, negative numbers are less than zero, and zero is neither positive nor negative.
+  - **Fraction and Decimal Numbers:** Fractional numbers are expressed as a ratio of two integers, while decimal numbers are expressed in base 10.
+  
+  These fundamental concepts about numbers form the cornerstone of mathematics. A solid understanding of numbers and their properties is essential for all mathematical endeavors, from basic calculations to advanced mathematical theories. Numbers are the building blocks upon which the edifice of mathematics stands.`,
 ];

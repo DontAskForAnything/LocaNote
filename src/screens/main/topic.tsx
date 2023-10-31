@@ -1,15 +1,11 @@
 import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
 import { RootStackScreenProps } from "../../types/navigation";
-import {
-  SafeAreaView,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { SafeAreaView, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { noteAPI } from "../../test/apiTemp";
 import { useState } from "react";
+import Markdown from "react-native-marked";
+
 export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
   const insets = useSafeAreaInsets();
   const [note, setNote] = useState<string | []>(params.route.params.notes);
@@ -55,18 +51,20 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
           </View>
         )}
 
-        {note.length > 0 ? (
+        {note.length > 0 && !Array.isArray(note) ? (
           <>
             <Text className="mx-2 font-open-sans-bold text-base text-white opacity-50">
               Note:
             </Text>
 
             <View className="mb-4 flex-1 p-2">
-              <ScrollView className="h-1/2">
-                <Text className="font-open-sans-semibold text-sm text-white opacity-80">
-                  {note}
-                </Text>
-              </ScrollView>
+              <Markdown
+                value={note}
+                flatListProps={{
+                  contentContainerStyle: { backgroundColor: "#141416" },
+                  initialNumToRender: 8,
+                }}
+              />
             </View>
           </>
         ) : (
@@ -82,7 +80,25 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
             <TouchableOpacity
               //TODO: generate notes, flashcards and quiz
               //@ts-ignore
-              onPress={() => setNote(noteAPI[0])}
+              onPress={() => {
+                //@ts-ignore
+                const lines = noteAPI[0].split("\n");
+
+                // Define a regular expression pattern to match lines starting with '-'
+                function removeStarsFromDashLines(line: string) {
+                  if (/^[^\S\r\n]*-/.test(line)) {
+                    console.log(line);
+                    return line.replace(/\*\*/g, "");
+                  }
+                  return line;
+                }
+
+                const modifiedText = lines
+                  .map(removeStarsFromDashLines)
+                  .join("\n");
+
+                setNote(modifiedText);
+              }}
               className="mt-4 flex-row items-center self-center rounded-xl bg-primary-dark p-2 py-3"
             >
               <Text className="px-8 font-open-sans-bold text-base text-white opacity-90">
