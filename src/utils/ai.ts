@@ -10,4 +10,3 @@ export const _client = axios.create({
     "Content-Type": "application/json",
   },
 });
-

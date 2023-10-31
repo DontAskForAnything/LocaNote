@@ -1,7 +1,6 @@
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { RootStackScreenProps } from "../../types/navigation";
 import {
-  ActivityIndicator,
   FlatList,
   RefreshControl,
   SafeAreaView,
@@ -15,6 +14,7 @@ import { Topic } from "../../utils/types";
 import { useClerk } from "@clerk/clerk-expo";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
+import LoadingModal from "../../components/loadingModal";
 
 export const SubjectScreen = ({
   route,
@@ -47,6 +47,14 @@ export const SubjectScreen = ({
     getData();
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      getData();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
   return (
     <View
       style={{ paddingTop: insets.top }}
@@ -78,112 +86,116 @@ export const SubjectScreen = ({
             <AntDesign name="edit" size={20} color={"white"} />
           </TouchableOpacity>
         </View>
-
-        {topics && !loading ? (
-          <FlatList
-            className="mb-2"
-            ListEmptyComponent={
-              <>
-                <View className=" items-center justify-center">
-                  {/* //TODO: Open topic screen */}
-                  {/* //TODO: Options on hold element or 3 dots */}
-                  <Text className="mx-2 mt-8 text-center font-open-sans-bold text-3xl text-white">
-                    You don't have any topics in this subject
-                  </Text>
-                  <Text className="mx-2 mt-4 text-center  font-open-sans-bold  text-sm text-white opacity-50">
-                    Don't worry just start by clicking button below!
-                  </Text>
+        {loading ? (
+          <LoadingModal visible={loading} />
+        ) : (
+          <>
+            <FlatList
+              className="mb-2"
+              ListEmptyComponent={
+                <>
+                  <View className=" items-center justify-center">
+                    {/* //TODO: Open topic screen */}
+                    {/* //TODO: Options on hold element or 3 dots */}
+                    <Text className="mx-2 mt-8 text-center font-open-sans-bold text-3xl text-white">
+                      You don't have any topics in this subject
+                    </Text>
+                    <Text className="mx-2 mt-4 text-center  font-open-sans-bold  text-sm text-white opacity-50">
+                      Don't worry just start by clicking button below!
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate("GenerateTopics", {
+                          subject: route.params.subject,
+                          topics: topics,
+                        })
+                      }
+                      className="mt-4 items-center justify-center"
+                    >
+                      <View className="my-4 flex-row items-center rounded-xl bg-primary-dark p-4">
+                        <View className="opacity-90">
+                          <FontAwesome5 name="robot" size={18} color="white" />
+                        </View>
+                        <Text className="ml-2 font-open-sans-bold text-xs text-white opacity-90">
+                          Generate new topics
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              }
+              refreshControl={
+                <RefreshControl
+                  colors={["#16a34a"]}
+                  progressBackgroundColor={"black"}
+                  refreshing={loading}
+                  onRefresh={() => getData()}
+                />
+              }
+              onRefresh={() => getData()}
+              refreshing={loading}
+              data={topics}
+              ListHeaderComponent={
+                <Text className="mx-2 font-open-sans-bold text-base text-white opacity-50">
+                  {topics.length > 0 && "Topics:"}
+                </Text>
+              }
+              keyExtractor={(el) => el.id}
+              numColumns={1}
+              renderItem={({ item }) => {
+                return (
                   <TouchableOpacity
                     onPress={() =>
-                      navigation.navigate("GenerateTopics", {
-                        subject: route.params.subject,
+                      navigation.navigate("TopicScreen", {
+                        subjectID: route.params.subject.id,
                         topics: topics,
+                        topic: item,
                       })
                     }
-                    className="mt-4 items-center justify-center"
+                    className="m-1 justify-center  rounded-xl bg-card-dark p-4 py-3"
                   >
-                    <View className="my-4 flex-row items-center rounded-xl bg-primary-dark p-4">
-                      <View className="opacity-90">
-                        <FontAwesome5 name="robot" size={18} color="white" />
+                    <Text className=" font-open-sans-bold text-white ">
+                      {item.title}
+                    </Text>
+                    <Text className="font-open-sans-bold text-xs text-white opacity-50">
+                      {item.description}
+                    </Text>
+
+                    <View className="mt-2 flex flex-row ">
+                      <View
+                        className={`rounded-full px-2 py-1 ${
+                          item.notes.length > 0
+                            ? "bg-green-700"
+                            : "bg-neutral-800 opacity-50"
+                        }`}
+                      >
+                        <Text
+                          className="font-open-sans-semibold text-white"
+                          style={{ fontSize: 10 }}
+                        >
+                          Notes
+                        </Text>
                       </View>
-                      <Text className="ml-2 font-open-sans-bold text-xs text-white opacity-90">
-                        Generate new topics
-                      </Text>
+                      <View
+                        className={`ml-2 rounded-full px-2 py-1 ${
+                          item.flashcards.length > 0
+                            ? "bg-green-600"
+                            : "bg-neutral-800 opacity-50"
+                        }`}
+                      >
+                        <Text
+                          className="font-open-sans-semibold text-white"
+                          style={{ fontSize: 10 }}
+                        >
+                          Flashcards
+                        </Text>
+                      </View>
                     </View>
                   </TouchableOpacity>
-                </View>
-              </>
-            }
-            refreshControl={
-              <RefreshControl
-                colors={["#16a34a"]}
-                progressBackgroundColor={"black"}
-                refreshing={loading}
-                onRefresh={() => getData()}
-              />
-            }
-            onRefresh={() => getData()}
-            refreshing={loading}
-            data={topics}
-            ListHeaderComponent={
-              <Text className="mx-2 font-open-sans-bold text-base text-white opacity-50">
-                {topics.length > 0 && "Topics:"}
-              </Text>
-            }
-            keyExtractor={(el) => el.id}
-            numColumns={1}
-            renderItem={({ item }) => {
-              return (
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("TopicScreen", item)}
-                  className="m-1 justify-center  rounded-xl bg-card-dark p-4 py-3"
-                >
-                  <Text className=" font-open-sans-bold text-white ">
-                    {item.title}
-                  </Text>
-                  <Text className="font-open-sans-bold text-xs text-white opacity-50">
-                    {item.description}
-                  </Text>
-
-                  <View className="mt-2 flex flex-row ">
-                    <View
-                      className={`rounded-full px-2 py-1 ${
-                        item.notes.length > 0
-                          ? "bg-red-500"
-                          : "bg-neutral-800 opacity-50"
-                      }`}
-                    >
-                      <Text
-                        className="font-open-sans-semibold text-white"
-                        style={{ fontSize: 10 }}
-                      >
-                        Notes
-                      </Text>
-                    </View>
-                    <View
-                      className={`ml-2 rounded-full px-2 py-1 ${
-                        item.flashcards.length > 0
-                          ? "bg-green-500"
-                          : "bg-neutral-800 opacity-50"
-                      }`}
-                    >
-                      <Text
-                        className="font-open-sans-semibold text-white"
-                        style={{ fontSize: 10 }}
-                      >
-                        Flashcards
-                      </Text>
-                    </View>
-                    {/* <View className={`py-1 px-2 rounded-full ${item.notes.length > 0 ? 'bg-blue-500' : 'bg-neutral-800 opacity-50'}`} ><Text className="font-open-sans-semibold text-white" style={{fontSize: 10}}>Quiz</Text></View> */}
-                  </View>
-                </TouchableOpacity>
-              );
-            }}
-          />
-        ) : (
-          <View className="flex-1 justify-center">
-            <ActivityIndicator size="large" color={"#16a34a"} />
-          </View>
+                );
+              }}
+            />
+          </>
         )}
 
         {topics.length > 0 && (
