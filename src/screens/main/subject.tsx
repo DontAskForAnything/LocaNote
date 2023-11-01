@@ -135,7 +135,11 @@ export const SubjectScreen = ({
             renderItem={({ item }) => {
               return (
                 <TouchableOpacity
-                  onPress={() => navigation.navigate("TopicScreen", item)}
+                  onPress={() => navigation.navigate("TopicScreen", {
+                    subjectID: route.params.subject.id,
+                    topics: topics,
+                    topic: item,
+                  })}
                   className="m-1 justify-center  rounded-xl bg-card-dark p-4 py-3"
                 >
                   <Text className=" font-open-sans-bold text-white ">

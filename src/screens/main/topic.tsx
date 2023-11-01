@@ -1,24 +1,64 @@
-import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
+import { AntDesign, FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 import { RootStackScreenProps } from "../../types/navigation";
 import {
+  ActivityIndicator,
   SafeAreaView,
-  ScrollView,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { noteAPI } from "../../test/apiTemp";
 import { useState } from "react";
 import { Flashcard } from "../../utils/types";
+import { generateNote } from "../../utils/ai/note";
+import { doc, setDoc } from "firebase/firestore";
+import { firestore } from "../../utils/firebaseConfig";
+import Markdown from "react-native-marked";
+
+
 const flashcards: Array<Flashcard> = [
   { question: "What is?", answer: "It is indeed" },
   { question: "What was?", answer: "Yes, It was" },
   { question: "Is taxation theft?", answer: "I don't think so" },
 ];
+
+
 export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
   const insets = useSafeAreaInsets();
-  const [note, setNote] = useState<string | []>(params.route.params.notes);
+  const [note, setNote] = useState<string | []>(params.route.params.topic.notes);
+  const [loading, setLoading] = useState<boolean>(false);
+
+
+  if (loading) {
+    return (
+      <View
+        style={{ paddingTop: insets.top }}
+        className="flex-1 bg-background-dark"
+      >
+        <SafeAreaView className="mx-12 w-11/12 flex-1 self-center bg-background dark:bg-background-dark">
+          <View className=" flex-1 items-center justify-center">
+            <FontAwesome5 name="robot" size={54} color="#16a34a" />
+            <Text className="mt-4 text-center font-open-sans-bold text-2xl text-white">
+              AI is thinking
+            </Text>
+
+            <View className="mt-4 flex-row items-center justify-center">
+              <ActivityIndicator size="small" color={"#16a34a"} />
+              <Text className="ml-4  text-center font-open-sans-bold text-white opacity-70">
+                Generating notes...
+              </Text>
+            </View>
+
+          </View>
+
+          <Text className="absolute bottom-4 self-center font-open-sans-semibold text-xs text-white opacity-50">
+            AI generating make take around 1 min
+          </Text>
+        </SafeAreaView>
+      </View>
+    );
+  }
+
 
   return (
     <View
@@ -35,49 +75,33 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
           </TouchableOpacity>
 
           <Text className="w-8/12 py-4 text-center font-open-sans-bold text-white">
-            {params.route.params.title}
+            {params.route.params.topic.title}
           </Text>
 
-          <View className=" flex aspect-square w-1/12 items-center justify-center"></View>
+          <TouchableOpacity className={`flex p-1 items-center justify-center rounded-xl bg-primary-dark ${note.length <= 0 && 'opacity-20'}`} onPress={() =>
+            params.navigation.navigate("FlashcardsScreen", flashcards)
+          } disabled={note.length <= 0}>
+            <MaterialCommunityIcons name="cards-outline" size={20} color="white" />
+            <Text className="font-open-sans-bold text-xs text-white">Flashcards</Text>
+          </TouchableOpacity>
         </View>
 
-        {note.length > 0 && (
-          <View className="mb-4 flex flex-row overflow-hidden rounded-xl">
-            {/* //TODO: navigate to flashcards */}
-            <TouchableOpacity
-              className="w-1/2 bg-primary-dark py-2"
-              onPress={() =>
-                params.navigation.navigate("FlashcardsScreen", flashcards)
-              }
-            >
-              <Text className="text-center font-open-sans-bold text-white">
-                Flashcards
-              </Text>
-            </TouchableOpacity>
-            {/* //TODO: navigate to Quizz */}
-            <TouchableOpacity
-              className="w-1/2 py-2"
-              style={{ backgroundColor: "#1CD05E" }}
-            >
-              <Text className="text-center font-open-sans-bold text-white">
-                Quiz
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
 
-        {note.length > 0 ? (
+        {!Array.isArray(note) ? (
           <>
             <Text className="mx-2 font-open-sans-bold text-base text-white opacity-50">
               Note:
             </Text>
 
             <View className="mb-4 flex-1 p-2">
-              <ScrollView className="h-1/2">
-                <Text className="font-open-sans-semibold text-sm text-white opacity-80">
-                  {note}
-                </Text>
-              </ScrollView>
+              <Markdown
+                value={note}
+                flatListProps={{
+                  style: { backgroundColor: '#141416' },
+                  contentContainerStyle: { backgroundColor: "#141416" },
+                  initialNumToRender: 8,
+                }}
+              />
             </View>
           </>
         ) : (
@@ -87,19 +111,67 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
               This topic is empty
             </Text>
             <Text className="mt-2 text-center font-open-sans-bold text-white opacity-50">
-              Generate note, flashcards and quiz{"\n"} using button below...
+              What would you like to do?
             </Text>
 
-            <TouchableOpacity
-              //TODO: generate notes, flashcards and quiz
-              //@ts-ignore
-              onPress={() => setNote(noteAPI[0])}
-              className="mt-4 flex-row items-center self-center rounded-xl bg-primary-dark p-2 py-3"
-            >
-              <Text className="px-8 font-open-sans-bold text-base text-white opacity-90">
-                Generate
-              </Text>
-            </TouchableOpacity>
+            <View className="flex-row justify-center w-screen">
+
+              <TouchableOpacity
+                onPress={() => {
+                  setLoading(true);
+                  generateNote(
+                    params.route.params.topic.title as string,
+                    params.route.params.topic.description as string,
+                  ).then((note) => {
+                    console.log(note);
+                    setNote(note);
+                    const topics = params.route.params.topics;
+                    if (topics) {
+                      // Ignore because we use targetTopic but eslint doesn't see this
+                      // eslint-disable-next-line
+                      let targetTopic = topics.find(
+                        (topic) => topic.id === params.route.params.topic.id,
+                      );
+
+                      if (targetTopic) {
+                        targetTopic.notes = note;
+
+                        setDoc(
+                          doc(
+                            firestore,
+                            "subjects",
+                            params.route.params.subjectID,
+                          ),
+                          {
+                            topics: [...topics],
+                          },
+                        );
+
+
+                      }
+                    }
+                  })
+                    .finally(() => setLoading(false));
+
+                }}
+                className="mt-4  w-1/3 h-24 flex-row items-center self-center rounded-xl bg-primary-dark  p-2 justify-center"
+              >
+                <Text className="font-open-sans-bold text-base text-white text-center">
+                  Generate note
+                </Text>
+              </TouchableOpacity>
+
+
+              <TouchableOpacity
+                onPress={() => setNote("A")}
+                className="ml-12 mt-4  w-1/3 h-24  flex-row items-center self-center rounded-xl bg-primary-dark p-2 justify-center"
+              >
+
+                <Text className="font-open-sans-bold text-base text-white text-center">
+                  Create own note
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
       </SafeAreaView>
