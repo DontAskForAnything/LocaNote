@@ -2,8 +2,10 @@ import { AntDesign, FontAwesome5, MaterialCommunityIcons } from "@expo/vector-ic
 import { RootStackScreenProps } from "../../types/navigation";
 import {
   ActivityIndicator,
+  Pressable,
   SafeAreaView,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -27,6 +29,8 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
   const insets = useSafeAreaInsets();
   const [note, setNote] = useState<string | []>(params.route.params.topic.notes);
   const [loading, setLoading] = useState<boolean>(false);
+  const [editing, setEditing] = useState<boolean>(false);
+  const [ preview , setPreview ] = useState<boolean>(false)
 
 
   if (loading) {
@@ -52,14 +56,41 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
           </View>
 
           <Text className="absolute bottom-4 self-center font-open-sans-semibold text-xs text-white opacity-50">
-            AI generating make take around 1 min
+            AI generating may take around 1 min
           </Text>
         </SafeAreaView>
       </View>
     );
   }
 
+  function saveInDatabase(note: string) {
+    const topics = params.route.params.topics;
+    if (topics) {
+      // Ignore because we use targetTopic but eslint doesn't see this
+      // eslint-disable-next-line
+      let targetTopic = topics.find(
+        (topic) => topic.id === params.route.params.topic.id,
+      );
 
+      if (targetTopic) {
+        targetTopic.notes = note;
+
+        setDoc(
+          doc(
+            firestore,
+            "subjects",
+            params.route.params.subjectID,
+          ),
+          {
+            topics: [...topics],
+          },
+        );
+      }
+    }
+
+  }
+
+// TODO: Add "are you sure you want to leave?"
   return (
     <View
       style={{ paddingTop: insets.top }}
@@ -87,6 +118,53 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
         </View>
 
 
+          {(editing && !Array.isArray(note) )?   <>
+  <View className="flex-row justify-between mb-4">
+    <Pressable  onPress={()=>setPreview(true)}className={`w-1/2 p-1 justify-center items-center ${preview ? 'border-b-primary-dark' : "border-b-neutral-400"} border-b-2`}>
+    <Text className="font-open-sans-semibold text-sm text-white text-center">Preview</Text>
+    </Pressable>
+    <Pressable onPress={()=>setPreview(false)} className={`w-1/2 p-1 justify-center items-center ${!preview ? 'border-b-primary-dark' : "border-b-neutral-400"} border-b-2`}>
+    <Text className="font-open-sans-semibold text-sm text-white text-center">Edit</Text>
+    </Pressable>
+    </View>
+  {preview ? 
+  <View className="mb-4 flex-1 p-2">
+  <Markdown
+    value={note}
+    flatListProps={{
+      style: { backgroundColor: '#141416' },
+      contentContainerStyle: { backgroundColor: "#141416" },
+      initialNumToRender: 8,
+    }}
+  />
+</View>  :
+  <View className=" flex-1  rounded-2xl p-2 ">
+    <TextInput
+      autoCapitalize="none"
+      placeholder="Notes"
+      multiline={true}
+      value={note}
+      onChangeText={(value) => {setNote(value)}}
+      placeholderTextColor="#6B7280"
+      underlineColorAndroid="transparent"
+      style={{ textAlignVertical: 'top' }}
+      className={`flex-1 font-open-sans-regular dark:text-white`}
+      />
+</View>
+}
+
+<TouchableOpacity
+          onPress={()=> {saveInDatabase(note); setEditing(false);}}
+          className="my-2  flex-row items-center self-end rounded-xl bg-primary-dark p-3"
+        >
+          
+          <Text className="px-4 font-open-sans-bold text-base text-white opacity-90">
+            Save
+          </Text>
+        </TouchableOpacity>
+      
+</>
+ : <>
         {!Array.isArray(note) ? (
           <>
             <Text className="mx-2 font-open-sans-bold text-base text-white opacity-50">
@@ -123,33 +201,8 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
                     params.route.params.topic.title as string,
                     params.route.params.topic.description as string,
                   ).then((note) => {
-                    console.log(note);
                     setNote(note);
-                    const topics = params.route.params.topics;
-                    if (topics) {
-                      // Ignore because we use targetTopic but eslint doesn't see this
-                      // eslint-disable-next-line
-                      let targetTopic = topics.find(
-                        (topic) => topic.id === params.route.params.topic.id,
-                      );
-
-                      if (targetTopic) {
-                        targetTopic.notes = note;
-
-                        setDoc(
-                          doc(
-                            firestore,
-                            "subjects",
-                            params.route.params.subjectID,
-                          ),
-                          {
-                            topics: [...topics],
-                          },
-                        );
-
-
-                      }
-                    }
+                    saveInDatabase(note);
                   })
                     .finally(() => setLoading(false));
 
@@ -173,8 +226,22 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
               </TouchableOpacity>
             </View>
           </View>
-        )}
+        )} 
+        </>}
+        {!editing  && 
+        <TouchableOpacity
+          onPress={()=> {setEditing(true);}}
+          className="my-2 flex-row items-center self-start rounded-xl bg-primary-dark p-3"
+        >
+          
+          <Text className="px-4 font-open-sans-bold text-base text-white opacity-90">
+            Edit
+          </Text>
+        </TouchableOpacity>
+}
       </SafeAreaView>
     </View>
   );
 };
+
+
