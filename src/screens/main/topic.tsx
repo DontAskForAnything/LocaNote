@@ -1,7 +1,12 @@
-import { AntDesign, FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  AntDesign,
+  FontAwesome5,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import { RootStackScreenProps } from "../../types/navigation";
 import {
   ActivityIndicator,
+  Alert,
   Pressable,
   SafeAreaView,
   Text,
@@ -17,21 +22,20 @@ import { doc, setDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
 import Markdown from "react-native-marked";
 
-
 const flashcards: Array<Flashcard> = [
   { question: "What is?", answer: "It is indeed" },
   { question: "What was?", answer: "Yes, It was" },
   { question: "Is taxation theft?", answer: "I don't think so" },
 ];
 
-
 export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
   const insets = useSafeAreaInsets();
-  const [note, setNote] = useState<string | []>(params.route.params.topic.notes);
+  const [note, setNote] = useState<string | []>(
+    params.route.params.topic.notes,
+  );
   const [loading, setLoading] = useState<boolean>(false);
   const [editing, setEditing] = useState<boolean>(false);
-  const [ preview , setPreview ] = useState<boolean>(false)
-
+  const [preview, setPreview] = useState<boolean>(false);
 
   if (loading) {
     return (
@@ -52,7 +56,6 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
                 Generating notes...
               </Text>
             </View>
-
           </View>
 
           <Text className="absolute bottom-4 self-center font-open-sans-semibold text-xs text-white opacity-50">
@@ -75,22 +78,13 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
       if (targetTopic) {
         targetTopic.notes = note;
 
-        setDoc(
-          doc(
-            firestore,
-            "subjects",
-            params.route.params.subjectID,
-          ),
-          {
-            topics: [...topics],
-          },
-        );
+        setDoc(doc(firestore, "subjects", params.route.params.subjectID), {
+          topics: [...topics],
+        });
       }
     }
-
   }
 
-// TODO: Add "are you sure you want to leave?"
   return (
     <View
       style={{ paddingTop: insets.top }}
@@ -99,7 +93,25 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
       <SafeAreaView className="mx-12 w-11/12 flex-1 self-center bg-background dark:bg-background-dark">
         <View className="flex flex-row items-center justify-between">
           <TouchableOpacity
-            onPress={() => params.navigation.goBack()}
+            onPress={() => {
+              if (editing) {
+                Alert.alert(
+                  "Dismiss all changes?",
+                  "Are you sure you want to dismiss all changes?",
+                  [
+                    { text: "Yes", onPress: () => params.navigation.goBack() },
+                    {
+                      text: "No",
+                      onPress: () => {},
+                      style: "cancel",
+                    },
+                  ],
+                  { cancelable: true },
+                );
+              } else {
+                params.navigation.goBack();
+              }
+            }}
             className="flex aspect-square h-full w-1/12 items-center justify-center "
           >
             <AntDesign name="left" size={20} color={"white"} />
@@ -109,139 +121,190 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
             {params.route.params.topic.title}
           </Text>
 
-          <TouchableOpacity className={`flex p-1 items-center justify-center rounded-xl bg-primary-dark ${note.length <= 0 && 'opacity-20'}`} onPress={() =>
-            params.navigation.navigate("FlashcardsScreen", flashcards)
-          } disabled={note.length <= 0}>
-            <MaterialCommunityIcons name="cards-outline" size={20} color="white" />
-            <Text className="font-open-sans-bold text-xs text-white">Flashcards</Text>
+          <TouchableOpacity
+            className={`flex items-center justify-center rounded-xl bg-primary-dark p-1 ${
+              note.length <= 0 && "opacity-20"
+            }`}
+            onPress={() => {
+              if (editing) {
+                Alert.alert(
+                  "Dismiss all changes?",
+                  "Are you sure you want to dismiss all changes?",
+                  [
+                    {
+                      text: "Yes",
+                      onPress: () =>
+                        params.navigation.navigate(
+                          "FlashcardsScreen",
+                          flashcards,
+                        ),
+                    },
+                    {
+                      text: "No",
+                      onPress: () => {},
+                      style: "cancel",
+                    },
+                  ],
+                  { cancelable: true },
+                );
+              } else {
+                params.navigation.navigate("FlashcardsScreen", flashcards);
+              }
+            }}
+            disabled={note.length <= 0}
+          >
+            <MaterialCommunityIcons
+              name="cards-outline"
+              size={20}
+              color="white"
+            />
+            <Text className="font-open-sans-bold text-xs text-white">
+              Flashcards
+            </Text>
           </TouchableOpacity>
         </View>
 
-
-          {(editing && !Array.isArray(note) )?   <>
-  <View className="flex-row justify-between mb-4">
-    <Pressable  onPress={()=>setPreview(true)}className={`w-1/2 p-1 justify-center items-center ${preview ? 'border-b-primary-dark' : "border-b-neutral-400"} border-b-2`}>
-    <Text className="font-open-sans-semibold text-sm text-white text-center">Preview</Text>
-    </Pressable>
-    <Pressable onPress={()=>setPreview(false)} className={`w-1/2 p-1 justify-center items-center ${!preview ? 'border-b-primary-dark' : "border-b-neutral-400"} border-b-2`}>
-    <Text className="font-open-sans-semibold text-sm text-white text-center">Edit</Text>
-    </Pressable>
-    </View>
-  {preview ? 
-  <View className="mb-4 flex-1 p-2">
-  <Markdown
-    value={note}
-    flatListProps={{
-      style: { backgroundColor: '#141416' },
-      contentContainerStyle: { backgroundColor: "#141416" },
-      initialNumToRender: 8,
-    }}
-  />
-</View>  :
-  <View className=" flex-1  rounded-2xl p-2 ">
-    <TextInput
-      autoCapitalize="none"
-      placeholder="Notes"
-      multiline={true}
-      value={note}
-      onChangeText={(value) => {setNote(value)}}
-      placeholderTextColor="#6B7280"
-      underlineColorAndroid="transparent"
-      style={{ textAlignVertical: 'top' }}
-      className={`flex-1 font-open-sans-regular dark:text-white`}
-      />
-</View>
-}
-
-<TouchableOpacity
-          onPress={()=> {saveInDatabase(note); setEditing(false);}}
-          className="my-2  flex-row items-center self-end rounded-xl bg-primary-dark p-3"
-        >
-          
-          <Text className="px-4 font-open-sans-bold text-base text-white opacity-90">
-            Save
-          </Text>
-        </TouchableOpacity>
-      
-</>
- : <>
-        {!Array.isArray(note) ? (
+        {editing && !Array.isArray(note) ? (
           <>
-            <Text className="mx-2 font-open-sans-bold text-base text-white opacity-50">
-              Note:
-            </Text>
-
-            <View className="mb-4 flex-1 p-2">
-              <Markdown
-                value={note}
-                flatListProps={{
-                  style: { backgroundColor: '#141416' },
-                  contentContainerStyle: { backgroundColor: "#141416" },
-                  initialNumToRender: 8,
-                }}
-              />
+            <View className="mb-4 flex-row justify-between">
+              <Pressable
+                onPress={() => setPreview(true)}
+                className={`w-1/2 items-center justify-center p-1 ${
+                  preview ? "border-b-primary-dark" : "border-b-neutral-400"
+                } border-b-2`}
+              >
+                <Text className="text-center font-open-sans-semibold text-sm text-white">
+                  Preview
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => setPreview(false)}
+                className={`w-1/2 items-center justify-center p-1 ${
+                  !preview ? "border-b-primary-dark" : "border-b-neutral-400"
+                } border-b-2`}
+              >
+                <Text className="text-center font-open-sans-semibold text-sm text-white">
+                  Edit
+                </Text>
+              </Pressable>
             </View>
+            {preview ? (
+              <View className="mb-4 flex-1 p-2">
+                <Markdown
+                  value={note}
+                  flatListProps={{
+                    style: { backgroundColor: "#141416" },
+                    contentContainerStyle: { backgroundColor: "#141416" },
+                    initialNumToRender: 8,
+                  }}
+                />
+              </View>
+            ) : (
+              <View className=" flex-1  rounded-2xl p-2 ">
+                <TextInput
+                  autoCapitalize="none"
+                  placeholder="Notes"
+                  multiline={true}
+                  value={note}
+                  onChangeText={(value) => {
+                    setNote(value);
+                  }}
+                  placeholderTextColor="#6B7280"
+                  underlineColorAndroid="transparent"
+                  style={{ textAlignVertical: "top" }}
+                  className={`flex-1 font-open-sans-regular dark:text-white`}
+                />
+              </View>
+            )}
+
+            <TouchableOpacity
+              onPress={() => {
+                saveInDatabase(note);
+                setEditing(false);
+              }}
+              className="my-2  flex-row items-center self-end rounded-xl bg-primary-dark p-3"
+            >
+              <Text className="px-4 font-open-sans-bold text-base text-white opacity-90">
+                Save
+              </Text>
+            </TouchableOpacity>
           </>
         ) : (
-          <View className=" mt-12 items-center justify-center">
-            <FontAwesome5 name="lightbulb" size={54} color="#16a34a" />
-            <Text className="mt-4 text-center font-open-sans-bold text-2xl text-white">
-              This topic is empty
-            </Text>
-            <Text className="mt-2 text-center font-open-sans-bold text-white opacity-50">
-              What would you like to do?
-            </Text>
-
-            <View className="flex-row justify-center w-screen">
-
-              <TouchableOpacity
-                onPress={() => {
-                  setLoading(true);
-                  generateNote(
-                    params.route.params.topic.title as string,
-                    params.route.params.topic.description as string,
-                  ).then((note) => {
-                    setNote(note);
-                    saveInDatabase(note);
-                  })
-                    .finally(() => setLoading(false));
-
-                }}
-                className="mt-4  w-1/3 h-24 flex-row items-center self-center rounded-xl bg-primary-dark  p-2 justify-center"
-              >
-                <Text className="font-open-sans-bold text-base text-white text-center">
-                  Generate note
+          <>
+            {!Array.isArray(note) ? (
+              <>
+                <Text className="mx-2 font-open-sans-bold text-base text-white opacity-50">
+                  Note:
                 </Text>
-              </TouchableOpacity>
 
-
-              <TouchableOpacity
-                onPress={() => setNote("A")}
-                className="ml-12 mt-4  w-1/3 h-24  flex-row items-center self-center rounded-xl bg-primary-dark p-2 justify-center"
-              >
-
-                <Text className="font-open-sans-bold text-base text-white text-center">
-                  Create own note
+                <View className="mb-4 flex-1 p-2">
+                  <Markdown
+                    value={note}
+                    flatListProps={{
+                      style: { backgroundColor: "#141416" },
+                      contentContainerStyle: { backgroundColor: "#141416" },
+                      initialNumToRender: 8,
+                    }}
+                  />
+                </View>
+              </>
+            ) : (
+              <View className=" mt-12 items-center justify-center">
+                <FontAwesome5 name="lightbulb" size={54} color="#16a34a" />
+                <Text className="mt-4 text-center font-open-sans-bold text-2xl text-white">
+                  This topic is empty
                 </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        )} 
-        </>}
-        {!editing  && 
-        <TouchableOpacity
-          onPress={()=> {setEditing(true);}}
-          className="my-2 flex-row items-center self-start rounded-xl bg-primary-dark p-3"
-        >
-          
-          <Text className="px-4 font-open-sans-bold text-base text-white opacity-90">
-            Edit
-          </Text>
-        </TouchableOpacity>
-}
+                <Text className="mt-2 text-center font-open-sans-bold text-white opacity-50">
+                  What would you like to do?
+                </Text>
+
+                <View className="w-screen flex-row justify-center">
+                  <TouchableOpacity
+                    onPress={() => {
+                      setLoading(true);
+                      generateNote(
+                        params.route.params.topic.title as string,
+                        params.route.params.topic.description as string,
+                      )
+                        .then((note) => {
+                          setNote(note);
+                          saveInDatabase(note);
+                        })
+                        .finally(() => setLoading(false));
+                    }}
+                    className="mt-4  h-24 w-1/3 flex-row items-center justify-center self-center rounded-xl  bg-primary-dark p-2"
+                  >
+                    <Text className="text-center font-open-sans-bold text-base text-white">
+                      Generate note
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => setNote("A")}
+                    className="ml-12 mt-4  h-24 w-1/3  flex-row items-center justify-center self-center rounded-xl bg-primary-dark p-2"
+                  >
+                    <Text className="text-center font-open-sans-bold text-base text-white">
+                      Create own note
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+          </>
+        )}
+        {!editing && !Array.isArray(note) && (
+          <TouchableOpacity
+            onPress={() => {
+              setEditing(true);
+            }}
+            className="my-2 flex-row items-center self-start rounded-xl bg-primary-dark p-3"
+          >
+            <Text className="px-4 font-open-sans-bold text-base text-white opacity-90">
+              Edit
+            </Text>
+          </TouchableOpacity>
+        )}
       </SafeAreaView>
     </View>
   );
 };
-
-
