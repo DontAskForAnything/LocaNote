@@ -33,6 +33,7 @@ export type RootStackParamList = {
   Settings: undefined;
   GenerateTopics: { subject: SubjectItem; topics: Topic[] | [] };
   FlashcardsScreen: Array<Flashcard>;
+  AiErrorScreen: { error: Readonly<string> };
 };
 
 declare module "@react-navigation/native" {
