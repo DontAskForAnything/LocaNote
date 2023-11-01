@@ -280,7 +280,7 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    onPress={() => setNote("A")}
+                    onPress={() => setNote("")}
                     className="ml-12 mt-4  h-24 w-1/3  flex-row items-center justify-center self-center rounded-xl bg-primary-dark p-2"
                   >
                     <Text className="text-center font-open-sans-bold text-base text-white">
