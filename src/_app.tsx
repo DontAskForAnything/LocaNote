@@ -28,6 +28,7 @@ import GenerateTopicsScreen from "./screens/main/generateTopics";
 import { EditSubjectScreen } from "./screens/main/EditSubjectScreen";
 import { TopicScreen } from "./screens/main/topic";
 import { FlashcardsScreen } from "./screens/main/flashcards";
+import { PrepareFlashcardsScreen } from "./screens/main/prepareFlashcards";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -123,6 +124,16 @@ export const App = () => {
                 }}
                 name="FlashcardsScreen"
                 component={FlashcardsScreen}
+              />
+              <Stack.Screen
+                options={{
+                  headerShown: false,
+                  presentation: "modal",
+                  animationTypeForReplace: "push",
+                  animation: "slide_from_right",
+                }}
+                name="PrepareFlashcardsScreen"
+                component={PrepareFlashcardsScreen}
               />
             </Stack.Navigator>
           </NavigationContainer>

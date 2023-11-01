@@ -10,7 +10,7 @@ export type Topic = {
   id: string;
   title: string | null;
   description: string | null;
-  flashcards: { front: string; back: string }[] | [];
+  flashcards: { question: string; answer: string }[] | [];
   questions:
     | { question: string; correctAnswers: string; answers: string[] }
     | [];

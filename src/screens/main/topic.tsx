@@ -16,17 +16,10 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useState } from "react";
-import { Flashcard } from "../../utils/types";
 import { generateNote } from "../../utils/ai/note";
 import { doc, setDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
 import Markdown from "react-native-marked";
-
-const flashcards: Array<Flashcard> = [
-  { question: "What is?", answer: "It is indeed" },
-  { question: "What was?", answer: "Yes, It was" },
-  { question: "Is taxation theft?", answer: "I don't think so" },
-];
 
 export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
   const insets = useSafeAreaInsets();
@@ -134,10 +127,13 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
                     {
                       text: "Yes",
                       onPress: () =>
-                        params.navigation.navigate(
-                          "FlashcardsScreen",
-                          flashcards,
-                        ),
+                        params.navigation.navigate("PrepareFlashcardsScreen", {
+                          topics: params.route.params.topics,
+                          index: params.route.params.topics.indexOf(
+                            params.route.params.topic,
+                          ),
+                          subjectID: params.route.params.subjectID,
+                        }),
                     },
                     {
                       text: "No",
@@ -148,7 +144,13 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
                   { cancelable: true },
                 );
               } else {
-                params.navigation.navigate("FlashcardsScreen", flashcards);
+                params.navigation.navigate("PrepareFlashcardsScreen", {
+                  topics: params.route.params.topics,
+                  index: params.route.params.topics.indexOf(
+                    params.route.params.topic,
+                  ),
+                  subjectID: params.route.params.subjectID,
+                });
               }
             }}
             disabled={note.length <= 0}
