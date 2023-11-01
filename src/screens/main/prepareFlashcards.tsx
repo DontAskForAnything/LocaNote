@@ -51,8 +51,6 @@ export const PrepareFlashcardsScreen = ({
   const handleDeleteFlashcard = (index: number): void => {
     const tempCards = [...currentFlashcards];
     tempCards.splice(index, 1);
-    console.log(JSON.stringify(tempCards));
-    console.log(JSON.stringify(lastState[route.params.index]));
     setIsChanged(JSON.stringify(tempCards) !== JSON.stringify(lastState));
     setCurrentFlashcards(tempCards);
   };
@@ -61,7 +59,6 @@ export const PrepareFlashcardsScreen = ({
     const tempSubject = [...route.params.topics];
     const tempTopic = route.params.topics[route.params.index];
     if (tempTopic) {
-      console.log(tempSubject);
       tempTopic.flashcards = currentFlashcards;
       tempSubject[route.params.index] = tempTopic;
       updateDoc(doc(firestore, "subjects", route.params.subjectID), {
@@ -188,19 +185,22 @@ export const PrepareFlashcardsScreen = ({
           </TouchableOpacity>
         </ScrollView>
       )}
-      <View className={"absolute bottom-8 w-4/5"}>
+      {
+        currentFlashcards.length > 0 &&
+        <View className={"absolute bottom-8 w-4/5"}>
         <TouchableOpacity
           onPress={() => {
             handleSave();
             navigation.navigate("FlashcardsScreen", currentFlashcards);
           }}
           className={"rounded-xl bg-primary p-4"}
-        >
+          >
           <Text className={"text-center text-lg font-bold text-white"}>
-            Start cards
+            Show Flashcards
           </Text>
         </TouchableOpacity>
       </View>
+        }
     </View>
   );
 };
