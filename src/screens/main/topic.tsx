@@ -238,14 +238,25 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
                 </Text>
 
                 <View className="mb-4 flex-1 p-2">
-                  <Markdown
-                    value={note}
-                    flatListProps={{
-                      style: { backgroundColor: "#141416" },
-                      contentContainerStyle: { backgroundColor: "#141416" },
-                      initialNumToRender: 8,
-                    }}
-                  />
+                  {note.length > 0 ? (
+                    <Markdown
+                      value={note}
+                      flatListProps={{
+                        style: { backgroundColor: "#141416" },
+                        contentContainerStyle: { backgroundColor: "#141416" },
+                        initialNumToRender: 8,
+                      }}
+                    />
+                  ) : (
+                    <>
+                      <Text className="mt-4 text-center font-open-sans-bold text-2xl text-white">
+                        This note is empty!
+                      </Text>
+                      <Text className="mt-4 text-center font-open-sans-semibold text-sm text-white opacity-70">
+                        Start by clicking "Edit" in left down corner!
+                      </Text>
+                    </>
+                  )}
                 </View>
               </>
             ) : (
@@ -280,7 +291,10 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    onPress={() => setNote("")}
+                    onPress={() => {
+                      setNote("");
+                      setEditing(true);
+                    }}
                     className="ml-12 mt-4  h-24 w-1/3  flex-row items-center justify-center self-center rounded-xl bg-primary-dark p-2"
                   >
                     <Text className="text-center font-open-sans-bold text-base text-white">
