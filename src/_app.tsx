@@ -28,6 +28,7 @@ import GenerateTopicsScreen from "./screens/main/generateTopics";
 import { EditSubjectScreen } from "./screens/main/EditSubjectScreen";
 import { TopicScreen } from "./screens/main/topic";
 import { FlashcardsScreen } from "./screens/main/flashcards";
+import AiErrorScreen from "./screens/error/ai";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -124,6 +125,7 @@ export const App = () => {
                 name="FlashcardsScreen"
                 component={FlashcardsScreen}
               />
+              <Stack.Screen name="AiErrorScreen" component={AiErrorScreen} />
             </Stack.Navigator>
           </NavigationContainer>
         </SignedIn>
