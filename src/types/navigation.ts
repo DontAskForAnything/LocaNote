@@ -29,7 +29,7 @@ export type RootStackParamList = {
     subject: Readonly<SubjectItem>;
     subjects: Readonly<Array<SubjectItem>>;
   };
-  TopicScreen: Topic;
+  TopicScreen: { subjectID: string; topics: Topic[]; topic: Topic };
   Settings: undefined;
   GenerateTopics: { subject: SubjectItem; topics: Topic[] | [] };
   FlashcardsScreen: Array<Flashcard>;
