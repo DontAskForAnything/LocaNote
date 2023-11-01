@@ -18,6 +18,10 @@ module.exports = {
           DEFAULT: "#EBEBEB",
           dark: "#1B1B1B",
         },
+        cardLight: {
+          DEFAULT: "#EBEBEB",
+          dark: "#2A2A2A",
+        },
         backgroundLight: {
           DEFAULT: "#EBEBEB",
           dark: "#212121",

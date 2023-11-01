@@ -20,3 +20,8 @@ export type Topic = {
 export type SubjectPulledItem = {
   topics: Topic[] | null | [];
 };
+
+export type Flashcard = {
+  question: string;
+  answer: string;
+};

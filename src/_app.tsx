@@ -27,6 +27,7 @@ import { SettingsScreen } from "./screens/account/settings/settings";
 import GenerateTopicsScreen from "./screens/main/generateTopics";
 import { EditSubjectScreen } from "./screens/main/EditSubjectScreen";
 import { TopicScreen } from "./screens/main/topic";
+import { FlashcardsScreen } from "./screens/main/flashcards";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -57,7 +58,7 @@ export const App = () => {
                   headerShown: false,
                   presentation: "modal",
                   animationTypeForReplace: "push",
-                  animation: "fade_from_bottom",
+                  animation: "slide_from_left",
                 }}
                 name="Settings"
                 component={SettingsScreen}
@@ -112,6 +113,16 @@ export const App = () => {
                 }}
                 name="TopicScreen"
                 component={TopicScreen}
+              />
+              <Stack.Screen
+                options={{
+                  headerShown: false,
+                  presentation: "modal",
+                  animationTypeForReplace: "push",
+                  animation: "slide_from_right",
+                }}
+                name="FlashcardsScreen"
+                component={FlashcardsScreen}
               />
             </Stack.Navigator>
           </NavigationContainer>

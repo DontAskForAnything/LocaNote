@@ -19,7 +19,6 @@ import { SubjectItem } from "../../utils/types";
 import LogoTop from "../../components/logoTop";
 
 type SubjectObject = SubjectItem[] | [];
-
 export const MainScreen = (params: RootStackScreenProps<"MainScreen">) => {
   const { user, isLoaded } = useUser();
   const [subjects, setSubjects] = useState<SubjectObject>([]);
