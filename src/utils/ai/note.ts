@@ -1,8 +1,11 @@
 import { _client, _endpoint, _model } from "../ai";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../types/navigation";
 
 export const generateNote = async (
   topic: Readonly<string>,
   description: Readonly<string>,
+  navigation: NativeStackNavigationProp<RootStackParamList>,
 ) => {
   return new Promise<string>((resolve) => {
     const params = {
@@ -14,8 +17,10 @@ export const generateNote = async (
         },
       ],
     };
-    try {
-      _client.post(_endpoint, params).then((response) => {
+
+    _client
+      .post(_endpoint, params)
+      .then((response) => {
         const lines =
           response.data["choices"][0]["message"]["content"].split("\n");
 
@@ -30,12 +35,10 @@ export const generateNote = async (
         const modifiedText = lines.map(removeStarsFromDashLines).join("\n");
 
         resolve(modifiedText as string);
+      })
+      .catch((err) => {
+        const errString = JSON.stringify(err);
+        navigation.replace("AiErrorScreen", { error: errString });
       });
-    } catch (err) {
-      console.log(err);
-      // reject(err);
-      //TODO: add not matching response error
-      //TODO: navigate to error screen
-    }
   });
 };

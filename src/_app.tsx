@@ -29,6 +29,7 @@ import { EditSubjectScreen } from "./screens/main/EditSubjectScreen";
 import { TopicScreen } from "./screens/main/topic";
 import { FlashcardsScreen } from "./screens/main/flashcards";
 import { PrepareFlashcardsScreen } from "./screens/main/prepareFlashcards";
+import AiErrorScreen from "./screens/error/ai";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -135,6 +136,7 @@ export const App = () => {
                 name="PrepareFlashcardsScreen"
                 component={PrepareFlashcardsScreen}
               />
+              <Stack.Screen name="AiErrorScreen" component={AiErrorScreen} />
             </Stack.Navigator>
           </NavigationContainer>
         </SignedIn>

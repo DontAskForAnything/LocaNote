@@ -278,6 +278,7 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
                       generateNote(
                         params.route.params.topic.title as string,
                         params.route.params.topic.description as string,
+                        params.navigation,
                       )
                         .then((note) => {
                           setNote(note);

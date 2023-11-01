@@ -38,6 +38,7 @@ export type RootStackParamList = {
     index: number;
     subjectID: Readonly<string>;
   };
+  AiErrorScreen: { error: Readonly<string> };
 };
 
 declare module "@react-navigation/native" {
