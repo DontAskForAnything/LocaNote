@@ -19,6 +19,8 @@ export type RootStackParamList = {
     identifier: string;
   };
   ForgotPasswordRestart: undefined;
+  AppStack: undefined;
+  HomeStack: undefined;
   MainScreen: { refresh?: number };
   AddSubjectScreen: Array<SubjectItem>;
   SubjectScreen: {
@@ -39,6 +41,8 @@ export type RootStackParamList = {
     subjectID: Readonly<string>;
   };
   AiErrorScreen: { error: Readonly<string> };
+  // Shared
+  MainShared: undefined;
 };
 
 declare module "@react-navigation/native" {

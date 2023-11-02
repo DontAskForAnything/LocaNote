@@ -59,9 +59,9 @@ export default function CreateTopicScreen(
       description: description?.trim(),
       flashcards: [],
       notes: [],
-      authorId: user.user?.id as string,
     };
     setDoc(doc(firestore, "subjects", params.route.params.subject.id), {
+      authorId: user.user?.id as string,
       topics: [...params.route.params.topics, newTopic],
     });
     setSuccess(true);

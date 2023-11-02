@@ -4,6 +4,7 @@ export type SubjectItem = {
   // Because this will be icon name if will be wrong big question mark will appear
   icon: any; // eslint-disable-line
   color: string;
+  authorId:string;
 };
 
 export type Topic = {
@@ -12,7 +13,6 @@ export type Topic = {
   description: string | null;
   flashcards: { question: string; answer: string }[] | [];
   notes: string | [];
-  authorId: string;
 };
 
 export type SubjectPulledItem = {

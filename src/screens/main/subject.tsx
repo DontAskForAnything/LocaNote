@@ -92,7 +92,10 @@ export const SubjectScreen = ({
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => setDisplayCode(true)}
-            className=" flex aspect-square w-1/12 items-center justify-center"
+            className={`flex aspect-square w-1/12 items-center justify-center ${
+              topics.length <= 0 && "opacity-20"
+            }`}
+            disabled={topics.length <= 0}
           >
             <Feather name="share" size={20} color="white" />
           </TouchableOpacity>
