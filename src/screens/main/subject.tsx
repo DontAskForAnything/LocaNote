@@ -3,13 +3,15 @@ import { RootStackScreenProps } from "../../types/navigation";
 import {
   ActivityIndicator,
   FlatList,
+  Modal,
+  Pressable,
   RefreshControl,
   SafeAreaView,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
+import { AntDesign, Entypo, Feather, FontAwesome5 } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { Topic } from "../../utils/types";
 import { useClerk } from "@clerk/clerk-expo";
@@ -24,6 +26,7 @@ export const SubjectScreen = ({
   const { user } = useClerk();
   const [topics, setTopics] = useState<Topic[] | []>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [displayCode, setDisplayCode] = useState<boolean>(false);
 
   const getData = async (): Promise<void> => {
     setLoading(true);
@@ -59,6 +62,11 @@ export const SubjectScreen = ({
       className="flex-1 bg-background-dark"
     >
       <SafeAreaView className="mx-12 w-11/12 flex-1 self-center bg-background dark:bg-background-dark">
+        <CodeModal
+          displayCode={displayCode}
+          setDisplayCode={setDisplayCode}
+          code={route.params.subject.id}
+        />
         <View className="flex flex-row items-center justify-between ">
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -72,7 +80,6 @@ export const SubjectScreen = ({
           </Text>
 
           <TouchableOpacity
-            //TODO: add edit screen
             onPress={() =>
               navigation.navigate("EditSubjectScreen", {
                 subject: route.params.subject,
@@ -82,6 +89,12 @@ export const SubjectScreen = ({
             className=" flex aspect-square w-1/12 items-center justify-center"
           >
             <AntDesign name="edit" size={20} color={"white"} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setDisplayCode(true)}
+            className=" flex aspect-square w-1/12 items-center justify-center"
+          >
+            <Feather name="share" size={20} color="white" />
           </TouchableOpacity>
         </View>
 
@@ -223,5 +236,50 @@ export const SubjectScreen = ({
         )}
       </SafeAreaView>
     </View>
+  );
+};
+
+const CodeModal = ({
+  displayCode,
+  setDisplayCode,
+  code,
+}: {
+  displayCode: boolean;
+  setDisplayCode: React.Dispatch<React.SetStateAction<boolean>>;
+  code: string;
+}) => {
+  return (
+    <Modal visible={displayCode} transparent={true}>
+      <Pressable
+        className="flex-1 justify-center"
+        style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
+        onPress={() => setDisplayCode(false)}
+      >
+        <View className="w-8/12 items-center justify-center self-center rounded-xl bg-card-dark p-8">
+          <Feather name="share" size={40} color="white" />
+
+          <Text className="mt-2 text-center font-open-sans-bold text-lg text-white ">
+            Share
+          </Text>
+          <Text className="mt-4 text-center font-open-sans-bold text-3xl text-primary-dark">
+            {code}
+          </Text>
+
+          <Text className="mt-4 text-center font-open-sans-bold text-white opacity-70">
+            Share this 8-character code to distribute all topics from this
+            subject.
+          </Text>
+
+          <TouchableOpacity
+            className="absolute right-4 top-4 opacity-70"
+            onPress={() => setDisplayCode(false)}
+          >
+            <Entypo name="cross" size={24} color="white" />
+          </TouchableOpacity>
+
+          {/* <Button color={"#16a34a"} title="Close" onPress={() => setDisplayCode(false)} /> */}
+        </View>
+      </Pressable>
+    </Modal>
   );
 };

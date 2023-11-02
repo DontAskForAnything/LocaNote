@@ -12,6 +12,7 @@ export type Topic = {
   description: string | null;
   flashcards: { question: string; answer: string }[] | [];
   notes: string | [];
+  authorId: string;
 };
 
 export type SubjectPulledItem = {
