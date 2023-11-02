@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { MainScreen } from "./screens/main/welcome";
@@ -30,10 +30,24 @@ import { TopicScreen } from "./screens/main/topic";
 import { FlashcardsScreen } from "./screens/main/flashcards";
 import { PrepareFlashcardsScreen } from "./screens/main/prepareFlashcards";
 import AiErrorScreen from "./screens/error/ai";
+import NetInfo from "@react-native-community/netinfo";
+import { NoInternetScreen } from "./screens/error/noInternet";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const App = () => {
+  const [isConnected, setIsConnected] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setIsConnected(state.isConnected != null ? state.isConnected : false);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
   const [fontsLoaded] = useFonts({
     Poppins_500Medium,
     OpenSans_400Regular,
@@ -43,6 +57,11 @@ export const App = () => {
   if (!fontsLoaded) {
     return <></>;
   }
+
+  if (!isConnected) {
+    return <NoInternetScreen />;
+  }
+
   return (
     <ActionSheetProvider>
       <ClerkProvider
