@@ -26,12 +26,18 @@ export type RootStackParamList = {
   SubjectScreen: {
     subject: SubjectItem;
     subjects: Readonly<Array<SubjectItem>>;
+    author: boolean;
   };
   EditSubjectScreen: {
     subject: Readonly<SubjectItem>;
     subjects: Readonly<Array<SubjectItem>>;
   };
-  TopicScreen: { subjectID: string; topics: Topic[]; topic: Topic };
+  TopicScreen: {
+    subjectID: string;
+    topics: Topic[];
+    topic: Topic;
+    author: boolean;
+  };
   Settings: undefined;
   CreateTopic: { subject: SubjectItem; topics: Topic[] | [] };
   FlashcardsScreen: Array<Flashcard>;

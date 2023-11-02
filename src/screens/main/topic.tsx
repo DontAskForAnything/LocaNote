@@ -144,13 +144,20 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
                   { cancelable: true },
                 );
               } else {
-                params.navigation.navigate("PrepareFlashcardsScreen", {
-                  topics: params.route.params.topics,
-                  index: params.route.params.topics.indexOf(
-                    params.route.params.topic,
-                  ),
-                  subjectID: params.route.params.subjectID,
-                });
+                if (params.route.params.author) {
+                  params.navigation.navigate("PrepareFlashcardsScreen", {
+                    topics: params.route.params.topics,
+                    index: params.route.params.topics.indexOf(
+                      params.route.params.topic,
+                    ),
+                    subjectID: params.route.params.subjectID,
+                  });
+                } else {
+                  params.navigation.navigate(
+                    "FlashcardsScreen",
+                    params.route.params.topic.flashcards,
+                  );
+                }
               }
             }}
             disabled={note.length <= 0}
@@ -267,49 +274,55 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
                 <Text className="mt-4 text-center font-open-sans-bold text-2xl text-white">
                   This topic is empty
                 </Text>
+
                 <Text className="mt-2 text-center font-open-sans-bold text-white opacity-50">
-                  What would you like to do?
+                  {params.route.params.author
+                    ? "What would you like to do?"
+                    : "Owner of this topic didn't wrote anything..."}
                 </Text>
+                {params.route.params.author && (
+                  <>
+                    <View className="w-screen flex-row justify-center">
+                      <TouchableOpacity
+                        onPress={() => {
+                          setLoading(true);
+                          generateNote(
+                            params.route.params.topic.title as string,
+                            params.route.params.topic.description as string,
+                            params.navigation,
+                          )
+                            .then((note) => {
+                              setNote(note);
+                              saveInDatabase(note);
+                            })
+                            .finally(() => setLoading(false));
+                        }}
+                        className="mt-4  h-24 w-1/3 flex-row items-center justify-center self-center rounded-xl  bg-primary-dark p-2"
+                      >
+                        <Text className="text-center font-open-sans-bold text-base text-white">
+                          Generate note
+                        </Text>
+                      </TouchableOpacity>
 
-                <View className="w-screen flex-row justify-center">
-                  <TouchableOpacity
-                    onPress={() => {
-                      setLoading(true);
-                      generateNote(
-                        params.route.params.topic.title as string,
-                        params.route.params.topic.description as string,
-                        params.navigation,
-                      )
-                        .then((note) => {
-                          setNote(note);
-                          saveInDatabase(note);
-                        })
-                        .finally(() => setLoading(false));
-                    }}
-                    className="mt-4  h-24 w-1/3 flex-row items-center justify-center self-center rounded-xl  bg-primary-dark p-2"
-                  >
-                    <Text className="text-center font-open-sans-bold text-base text-white">
-                      Generate note
-                    </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    onPress={() => {
-                      setNote("");
-                      setEditing(true);
-                    }}
-                    className="ml-12 mt-4  h-24 w-1/3  flex-row items-center justify-center self-center rounded-xl bg-primary-dark p-2"
-                  >
-                    <Text className="text-center font-open-sans-bold text-base text-white">
-                      Create own note
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+                      <TouchableOpacity
+                        onPress={() => {
+                          setNote("");
+                          setEditing(true);
+                        }}
+                        className="ml-12 mt-4  h-24 w-1/3  flex-row items-center justify-center self-center rounded-xl bg-primary-dark p-2"
+                      >
+                        <Text className="text-center font-open-sans-bold text-base text-white">
+                          Create own note
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </>
+                )}
               </View>
             )}
           </>
         )}
-        {!editing && !Array.isArray(note) && (
+        {!editing && !Array.isArray(note) && params.route.params.author && (
           <TouchableOpacity
             onPress={() => {
               setEditing(true);
@@ -320,6 +333,11 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
               Edit
             </Text>
           </TouchableOpacity>
+        )}
+        {!params.route.params.author && (
+          <Text className="absolute bottom-4 self-center font-open-sans-semibold text-xs text-white opacity-50">
+            You are not owner of this subject
+          </Text>
         )}
       </SafeAreaView>
     </View>

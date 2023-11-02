@@ -47,11 +47,11 @@ const AppStack = () => {
         headerShown: false,
         tabBarLabelStyle: { display: "none" },
         // Set the colors for both active and inactive icons below.
-        tabBarActiveTintColor: "black",
-        tabBarInactiveTintColor: "black",
+        tabBarActiveTintColor: "white",
+        tabBarInactiveTintColor: "white",
         tabBarStyle: {
           borderTopColor: "transparent",
-          backgroundColor: "transparent",
+          backgroundColor: "#1B1B1B",
           elevation: 0,
         },
       }}

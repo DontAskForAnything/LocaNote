@@ -78,18 +78,19 @@ export const SubjectScreen = ({
           <Text className="w-8/12 py-4 text-center font-open-sans-bold text-white">
             {route.params.subject.title}
           </Text>
-
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("EditSubjectScreen", {
-                subject: route.params.subject,
-                subjects: route.params.subjects,
-              })
-            }
-            className=" flex aspect-square w-1/12 items-center justify-center"
-          >
-            <AntDesign name="edit" size={20} color={"white"} />
-          </TouchableOpacity>
+          {route.params.author && (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("EditSubjectScreen", {
+                  subject: route.params.subject,
+                  subjects: route.params.subjects,
+                })
+              }
+              className=" flex aspect-square w-1/12 items-center justify-center"
+            >
+              <AntDesign name="edit" size={20} color={"white"} />
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             onPress={() => setDisplayCode(true)}
             className={`flex aspect-square w-1/12 items-center justify-center ${
@@ -166,6 +167,7 @@ export const SubjectScreen = ({
                       subjectID: route.params.subject.id,
                       topics: topics,
                       topic: item,
+                      author: route.params.author,
                     })
                   }
                   className="m-1 justify-center  rounded-xl bg-card-dark p-4 py-3"
@@ -192,6 +194,7 @@ export const SubjectScreen = ({
                         Notes
                       </Text>
                     </View>
+
                     <View
                       className={`ml-2 rounded-full px-2 py-1 ${
                         item.flashcards.length > 0
@@ -217,7 +220,7 @@ export const SubjectScreen = ({
           </View>
         )}
 
-        {topics.length > 0 && (
+        {topics.length > 0 && route.params.author && (
           <TouchableOpacity
             onPress={() =>
               navigation.navigate("CreateTopic", {
@@ -237,6 +240,12 @@ export const SubjectScreen = ({
             </View>
           </TouchableOpacity>
         )}
+
+        {!route.params.author ? (
+          <Text className="absolute bottom-4 self-center font-open-sans-semibold text-xs text-white opacity-50">
+            You are not owner of this subject
+          </Text>
+        ) : null}
       </SafeAreaView>
     </View>
   );
@@ -279,7 +288,6 @@ const CodeModal = ({
           >
             <Entypo name="cross" size={24} color="white" />
           </TouchableOpacity>
-
           {/* <Button color={"#16a34a"} title="Close" onPress={() => setDisplayCode(false)} /> */}
         </View>
       </Pressable>

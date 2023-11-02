@@ -38,7 +38,7 @@ export const MainScreen = (params: RootStackScreenProps<"MainScreen">) => {
     }
     setSubjects((prevSubjects) => [
       ...prevSubjects,
-      { id: "footer", title: "", icon: "", color: "" },
+      { id: "footer", title: "", icon: "", color: "", authorId: "" },
     ]);
     setLoading(false);
   };
@@ -126,6 +126,7 @@ export const MainScreen = (params: RootStackScreenProps<"MainScreen">) => {
                       params.navigation.push("SubjectScreen", {
                         subject: item,
                         subjects: subjects,
+                        author: true,
                       })
                     }
                     style={{ backgroundColor: item.color }}

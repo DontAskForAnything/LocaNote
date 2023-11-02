@@ -1,4 +1,4 @@
-import { Entypo, Feather, FontAwesome5 } from "@expo/vector-icons";
+import { Entypo, FontAwesome5 } from "@expo/vector-icons";
 import {
   ActivityIndicator,
   FlatList,
@@ -7,14 +7,12 @@ import {
   Pressable,
   RefreshControl,
   SafeAreaView,
-  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { RootStackScreenProps } from "../../types/navigation";
-import { CodeInput } from "../../components/auth/codeInput";
 import { useEffect, useState } from "react";
 import { CodeInputAlpha } from "../../components/auth/codeInputAlpha";
 import { doc, getDoc, setDoc } from "firebase/firestore";
@@ -30,7 +28,6 @@ import { z } from "zod";
 import { SubjectItem } from "../../utils/types";
 import LogoTop from "../../components/logoTop";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { randomUUID } from "../../utils/random";
 
 type SubjectObject = SubjectItem[] | [];
 
@@ -42,7 +39,7 @@ export const MainSharedScreen = (
   const [loading, setLoading] = useState<boolean>(true);
   const user = useClerk();
   const getSharedSubjects = async () => {
-    setLoading(true)
+    setLoading(true);
     const query = await getDoc(
       doc(firestore, "shared", user.user?.id as string),
     );
@@ -51,8 +48,7 @@ export const MainSharedScreen = (
         setSubjects(query.data().subjects);
       }
     }
-    setLoading(false)
-
+    setLoading(false);
   };
   useEffect(() => {
     getSharedSubjects();
@@ -60,27 +56,30 @@ export const MainSharedScreen = (
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={{ paddingTop: insets.top }} className="flex-1 bg-background dark:bg-background-dark">
-        <LoadingModal visible={loading} />
-        <CodeModal
-              displayCode={displayCode}
-              setDisplayCode={setDisplayCode}
-              getSharedSubjects={getSharedSubjects}
-            />
-        {subjects.length > 0 ? (
-                  <SafeAreaView className="w-11/12 flex-1 self-center bg-background dark:bg-background-dark">
-                  <LogoTop />
-            <TouchableOpacity
-              onPress={() => {
-                setDisplayCode(true);
-              }}
-              className="absolute bottom-2 right-0 z-20 items-center justify-center"
-            >
-              <View className=" aspect-square flex-row items-center justify-center rounded-xl bg-primary-dark p-4 ">
-                <FontAwesome5 name={"plus"} size={20} color={"white"} />
-              </View>
-            </TouchableOpacity>
-            <Text className="my-4 font-open-sans-bold  text-xl text-neutral-500">
+    <View
+      style={{ paddingTop: insets.top }}
+      className="flex-1 bg-background dark:bg-background-dark"
+    >
+      <LoadingModal visible={loading} />
+      <CodeModal
+        displayCode={displayCode}
+        setDisplayCode={setDisplayCode}
+        getSharedSubjects={getSharedSubjects}
+      />
+      {subjects.length > 0 ? (
+        <SafeAreaView className="w-11/12 flex-1 self-center bg-background dark:bg-background-dark">
+          <LogoTop />
+          <TouchableOpacity
+            onPress={() => {
+              setDisplayCode(true);
+            }}
+            className="absolute bottom-2 right-0 z-20 items-center justify-center"
+          >
+            <View className=" aspect-square flex-row items-center justify-center rounded-xl bg-primary-dark p-4 ">
+              <FontAwesome5 name={"plus"} size={20} color={"white"} />
+            </View>
+          </TouchableOpacity>
+          <Text className="my-4 font-open-sans-bold  text-xl text-neutral-500">
             Your shared subjects:
           </Text>
           {!loading ? (
@@ -97,25 +96,25 @@ export const MainSharedScreen = (
               onRefresh={() => getSharedSubjects()}
               refreshing={loading}
               data={subjects}
-              keyExtractor={(i,id) => id.toString()}
+              keyExtractor={(i, id) => id.toString()}
               numColumns={1}
-              renderItem={({ item, index }) => {
+              renderItem={({ item }) => {
                 return (
                   <TouchableOpacity
-                  
                     onPress={() =>
                       params.navigation.push("SubjectScreen", {
                         subject: item,
                         subjects: subjects,
+                        author: false,
                       })
                     }
                     style={{ backgroundColor: item.color }}
-                    className="m-1 flex h-24 flex-1  flex-row items-center rounded-xl p-4"
+                    className="m-1 flex h-14 flex-1  flex-row items-center rounded-xl p-4"
                   >
-                    <FontAwesome5 name={item.icon} size={35} color={"white"} />
+                    <FontAwesome5 name={item.icon} size={20} color={"white"} />
 
                     <Text className="ml-8 text-center font-open-sans-bold text-white ">
-                      {item.title} {item.authorId}
+                      {item.title}
                     </Text>
                   </TouchableOpacity>
                 );
@@ -124,12 +123,10 @@ export const MainSharedScreen = (
           ) : (
             <ActivityIndicator size="large" color={"#16a34a"} />
           )}
-          </SafeAreaView>
-        ) : (
-          <>
-                <SafeAreaView className="flex h-screen w-9/12 items-center justify-center self-center bg-background dark:bg-background-dark">
-
-        
+        </SafeAreaView>
+      ) : (
+        <>
+          <SafeAreaView className="flex h-screen w-9/12 items-center justify-center self-center bg-background dark:bg-background-dark">
             <FontAwesome5 name="wifi" size={54} color="#16a34a" />
 
             <Text className="mt-4 self-stretch text-center font-open-sans-bold text-3xl text-white">
@@ -151,9 +148,9 @@ export const MainSharedScreen = (
                 </Text>
               </View>
             </TouchableOpacity>
-      </SafeAreaView>
-          </>
-        )}
+          </SafeAreaView>
+        </>
+      )}
     </View>
   );
 };
@@ -179,7 +176,7 @@ const CodeModal = ({
       if (query.data().authorId === (user.user?.id as string)) {
         setCodeError("You can't add your own subject");
       } else {
-        setAuthorId(query.data().authorId)
+        setAuthorId(query.data().authorId);
         setSubjectCreate(true);
       }
       return;
@@ -254,7 +251,7 @@ const SubjectModal = ({
   getSharedSubjects,
 }: {
   code: string;
-  authorId:string;
+  authorId: string;
   closeModule: () => void;
   getSharedSubjects: () => void;
 }) => {
@@ -284,6 +281,7 @@ const SubjectModal = ({
             subjects = query.data().subjects;
           }
         }
+
         setDoc(doc(firestore, "shared", user.id), {
           subjects: [
             ...subjects,
@@ -292,7 +290,7 @@ const SubjectModal = ({
               icon: selectedIcon,
               id: code,
               title: values.lessonName,
-              authorId: authorId
+              authorId: authorId ? authorId : "",
             },
           ],
         }).then(() => {
