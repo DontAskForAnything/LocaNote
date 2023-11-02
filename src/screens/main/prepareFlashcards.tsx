@@ -185,22 +185,21 @@ export const PrepareFlashcardsScreen = ({
           </TouchableOpacity>
         </ScrollView>
       )}
-      {
-        currentFlashcards.length > 0 &&
+      {currentFlashcards.length > 0 && (
         <View className={"absolute bottom-8 w-4/5"}>
-        <TouchableOpacity
-          onPress={() => {
-            handleSave();
-            navigation.navigate("FlashcardsScreen", currentFlashcards);
-          }}
-          className={"rounded-xl bg-primary p-4"}
+          <TouchableOpacity
+            onPress={() => {
+              handleSave();
+              navigation.navigate("FlashcardsScreen", currentFlashcards);
+            }}
+            className={"rounded-xl bg-primary p-4"}
           >
-          <Text className={"text-center text-lg font-bold text-white"}>
-            Show Flashcards
-          </Text>
-        </TouchableOpacity>
-      </View>
-        }
+            <Text className={"text-center text-lg font-bold text-white"}>
+              Show Flashcards
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
