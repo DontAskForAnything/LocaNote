@@ -13,23 +13,27 @@ import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import LoadingModal from "../../components/loadingModal";
-
-const availableCount = ["10", "5", "1"];
+import { doc, setDoc } from "firebase/firestore";
+import { firestore } from "../../utils/firebaseConfig";
+import { Topic } from "../../utils/types";
+import { randomUUID } from "../../utils/random";
 
 const TopicSchema = z.object({
   topic: z
+    .string()
+    .trim()
+    .min(4, "Topic must be at least 4 characters.")
+    .max(32, "Topic must be shorter than 32 characters."),
+  description: z
     .string()
     .trim()
     .min(4, "Description must be at least 4 characters.")
     .max(32, "Description must be shorter than 32 characters."),
 });
 
-export default function GenerateTopicsScreen(
-  params: RootStackScreenProps<"GenerateTopics">,
+export default function CreateTopicScreen(
+  params: RootStackScreenProps<"CreateTopic">,
 ) {
-  const [selectedCount, setSelectedCount] = useState<string>(
-    availableCount[0] as string,
-  );
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
   const insets = useSafeAreaInsets();
@@ -39,39 +43,24 @@ export default function GenerateTopicsScreen(
     formState: { errors },
   } = useForm({
     resolver: zodResolver(TopicSchema),
-    defaultValues: { topic: "" },
+    defaultValues: { topic: "", description: "" },
   });
 
-  async function addAiTopics() {
-    //TODO: Change this to let user create own topics
-    // if (topicsAPI) {
-    //   const csvLines =
-    //     //@ts-ignore
-    //     topicsAPI[Math.floor(Math.random() * topicsAPI.length)].split("\n");
-    //   const newTopics: Topic[] = [];
-    //   csvLines.forEach((line) => {
-    //     const [key, value] = line.split(":");
-    //     newTopics.push({
-    //       id: Crypto.randomUUID() as string,
-    //       title: key?.trim(),
-    //       description: value?.trim(),
-    //       flashcards: [],
-    //       questions: [],
-    //       notes: [],
-    //     } as Topic);
-    //   });
-    //   setDoc(doc(firestore, "subjects", params.route.params.subject.id), {
-    //     topics: [...params.route.params.topics, ...newTopics],
-    //   });
-    // }
-  }
-
-  const GenerateTopics = async ({ topic }: z.infer<typeof TopicSchema>) => {
-    //TODO: Implement api call and ai to generate
+  const createTopic = async ({
+    topic,
+    description,
+  }: z.infer<typeof TopicSchema>) => {
     setLoading(true);
-    console.log("Topic: ", topic);
-    console.log("Count Of Lessons: ", selectedCount);
-    addAiTopics();
+    const newTopic: Topic = {
+      id: randomUUID(15) as string,
+      title: topic?.trim(),
+      description: description?.trim(),
+      flashcards: [],
+      notes: [],
+    };
+    setDoc(doc(firestore, "subjects", params.route.params.subject.id), {
+      topics: [...params.route.params.topics, newTopic],
+    });
     setSuccess(true);
     setLoading(false);
   };
@@ -89,7 +78,7 @@ export default function GenerateTopicsScreen(
                 Successfully created!
               </Text>
               <Text className="mt-2 text-center font-open-sans-bold text-white opacity-50">
-                Go back and refresh topics...
+                Go back and enjoy your new topic...
               </Text>
 
               <TouchableOpacity
@@ -130,10 +119,10 @@ export default function GenerateTopicsScreen(
             <View className="mt-4 flex-row items-center justify-center ">
               <View className="opacity-90">
                 {/* //TODO: add new topics */}
-                <FontAwesome5 name="robot" size={18} color="white" />
+                <FontAwesome5 name="lightbulb" size={18} color="white" />
               </View>
               <Text className="ml-2 font-open-sans-bold text-lg text-white opacity-90">
-                Generate new topics
+                Create new topic
               </Text>
             </View>
             <Text className="text-center font-open-sans-semibold text-xs text-white opacity-60">
@@ -142,7 +131,7 @@ export default function GenerateTopicsScreen(
           </View>
 
           <Text className="mt-2 font-open-sans-semibold text-base text-white opacity-70">
-            What would you like to learn?
+            Topic name:
           </Text>
 
           <Controller
@@ -151,7 +140,7 @@ export default function GenerateTopicsScreen(
             render={({ field: { onChange, value, onBlur } }) => (
               <TextInput
                 autoCapitalize="none"
-                placeholder="Describe it!"
+                placeholder="Name it!"
                 value={value}
                 onBlur={onBlur}
                 onChangeText={(value) => onChange(value)}
@@ -166,39 +155,40 @@ export default function GenerateTopicsScreen(
             </Text>
           )}
 
-          <Text className="mt-4 font-open-sans-semibold text-base text-white opacity-70">
-            How many lessons related to this topic would you like?
+          <Text className="mt-8 font-open-sans-semibold text-base text-white opacity-70">
+            Description:
           </Text>
 
-          <View className=" mt-4 flex-row justify-around">
-            {availableCount.map((el) => (
-              <TouchableOpacity
-                onPress={() => setSelectedCount(el)}
-                key={el}
-                className={`aspect-square h-14 rounded-lg ${
-                  selectedCount !== el ? `bg-card-dark` : `bg-primary`
-                } items-center justify-center`}
-              >
-                <Text className="font-open-sans-bold text-xl text-white opacity-70">
-                  {el}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+          <Controller
+            control={control}
+            name="description"
+            render={({ field: { onChange, value, onBlur } }) => (
+              <TextInput
+                autoCapitalize="none"
+                placeholder="Describe it!"
+                value={value}
+                onBlur={onBlur}
+                onChangeText={(value) => onChange(value)}
+                placeholderTextColor="#6B7280"
+                className={`mt-3 h-10 rounded-lg bg-card-dark px-2  font-open-sans-semibold text-base text-black dark:text-white`}
+              />
+            )}
+          />
+          {errors.description?.message && (
+            <Text className="mt-2 font-open-sans-semibold text-red-500">
+              {errors.description.message.toString()}
+            </Text>
+          )}
         </View>
 
         <TouchableOpacity
-          onPress={handleSubmit(GenerateTopics)}
+          onPress={handleSubmit(createTopic)}
           className="my-2  mt-8 flex-row items-center self-center rounded-xl bg-primary-dark p-4"
         >
           <Text className="px-8 font-open-sans-bold text-base text-white opacity-90">
-            Generate!
+            Create!
           </Text>
         </TouchableOpacity>
-
-        <Text className="absolute bottom-4 self-center font-open-sans-semibold text-xs text-white opacity-50">
-          Note that AI may give inaccurate data!
-        </Text>
       </SafeAreaView>
     </View>
   );

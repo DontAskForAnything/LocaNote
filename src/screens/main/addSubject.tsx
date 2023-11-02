@@ -18,9 +18,9 @@ import { z } from "zod";
 import { SubjectItem } from "../../utils/types";
 import LoadingModal from "../../components/loadingModal";
 import { GoBackSignButton } from "../../components/goBackSignButton";
-import * as Crypto from "expo-crypto";
 import { ColorPicker } from "../../components/colorPicker";
 import { IconPicker } from "../../components/iconPicker";
+import { randomUUID } from "../../utils/random";
 
 export const AddSubjectScreen = ({
   route,
@@ -48,7 +48,7 @@ export const AddSubjectScreen = ({
       const subjects: Array<SubjectItem> = [...route.params];
       subjects.pop();
       if (user) {
-        const id = Crypto.randomUUID();
+        const id = randomUUID(8);
         setDoc(doc(firestore, "users", user.id), {
           subjects: [
             ...subjects,

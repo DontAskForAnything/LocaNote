@@ -31,7 +31,7 @@ export type RootStackParamList = {
   };
   TopicScreen: { subjectID: string; topics: Topic[]; topic: Topic };
   Settings: undefined;
-  GenerateTopics: { subject: SubjectItem; topics: Topic[] | [] };
+  CreateTopic: { subject: SubjectItem; topics: Topic[] | [] };
   FlashcardsScreen: Array<Flashcard>;
   PrepareFlashcardsScreen: {
     topics: Topic[];
