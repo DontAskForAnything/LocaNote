@@ -11,9 +11,6 @@ export type Topic = {
   title: string | null;
   description: string | null;
   flashcards: { question: string; answer: string }[] | [];
-  questions:
-    | { question: string; correctAnswers: string; answers: string[] }
-    | [];
   notes: string | [];
 };
 

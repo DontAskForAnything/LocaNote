@@ -24,7 +24,6 @@ import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { AddSubjectScreen } from "./screens/main/addSubject";
 import { SubjectScreen } from "./screens/main/subject";
 import { SettingsScreen } from "./screens/account/settings/settings";
-import GenerateTopicsScreen from "./screens/main/generateTopics";
 import { EditSubjectScreen } from "./screens/main/EditSubjectScreen";
 import { TopicScreen } from "./screens/main/topic";
 import { FlashcardsScreen } from "./screens/main/flashcards";
@@ -32,6 +31,7 @@ import { PrepareFlashcardsScreen } from "./screens/main/prepareFlashcards";
 import AiErrorScreen from "./screens/error/ai";
 import NetInfo from "@react-native-community/netinfo";
 import { NoInternetScreen } from "./screens/error/noInternet";
+import CreateTopicScreen from "./screens/main/createTopic";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -102,8 +102,8 @@ export const App = () => {
                   animationTypeForReplace: "push",
                   animation: "slide_from_right",
                 }}
-                name="GenerateTopics"
-                component={GenerateTopicsScreen}
+                name="CreateTopic"
+                component={CreateTopicScreen}
               />
               <Stack.Screen
                 options={{

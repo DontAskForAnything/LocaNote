@@ -101,7 +101,7 @@ export const SubjectScreen = ({
                   </Text>
                   <TouchableOpacity
                     onPress={() =>
-                      navigation.navigate("GenerateTopics", {
+                      navigation.navigate("CreateTopic", {
                         subject: route.params.subject,
                         topics: topics,
                       })
@@ -110,10 +110,14 @@ export const SubjectScreen = ({
                   >
                     <View className="my-4 flex-row items-center rounded-xl bg-primary-dark p-4">
                       <View className="opacity-90">
-                        <FontAwesome5 name="robot" size={18} color="white" />
+                        <FontAwesome5
+                          name="lightbulb"
+                          size={18}
+                          color="white"
+                        />
                       </View>
-                      <Text className="ml-2 font-open-sans-bold text-xs text-white opacity-90">
-                        Generate new topics
+                      <Text className="ml-2 font-open-sans-bold text-sm text-white opacity-90">
+                        Create your first topic
                       </Text>
                     </View>
                   </TouchableOpacity>
@@ -161,7 +165,7 @@ export const SubjectScreen = ({
                     <View
                       className={`rounded-full px-2 py-1 ${
                         item.notes.length > 0
-                          ? "bg-red-500"
+                          ? "bg-green-700"
                           : "bg-neutral-800 opacity-50"
                       }`}
                     >
@@ -186,7 +190,6 @@ export const SubjectScreen = ({
                         Flashcards
                       </Text>
                     </View>
-                    {/* <View className={`py-1 px-2 rounded-full ${item.notes.length > 0 ? 'bg-blue-500' : 'bg-neutral-800 opacity-50'}`} ><Text className="font-open-sans-semibold text-white" style={{fontSize: 10}}>Quiz</Text></View> */}
                   </View>
                 </TouchableOpacity>
               );
@@ -201,7 +204,7 @@ export const SubjectScreen = ({
         {topics.length > 0 && (
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate("GenerateTopics", {
+              navigation.navigate("CreateTopic", {
                 subject: route.params.subject,
                 topics: topics,
               })
@@ -210,10 +213,10 @@ export const SubjectScreen = ({
           >
             <View className="my-4 flex-row items-center rounded-xl bg-primary-dark p-4">
               <View className=" opacity-90">
-                <FontAwesome5 name="robot" size={18} color="white" />
+                <FontAwesome5 name="lightbulb" size={18} color="white" />
               </View>
               <Text className="ml-2 font-open-sans-bold text-xs text-white opacity-90">
-                Generate new topics
+                Create new topic
               </Text>
             </View>
           </TouchableOpacity>
