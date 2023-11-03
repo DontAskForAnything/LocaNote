@@ -15,7 +15,13 @@ import { AntDesign, Entypo, Feather, FontAwesome5 } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { Topic } from "../../utils/types";
 import { useClerk } from "@clerk/clerk-expo";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  arrayRemove,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
 import { Alert } from "react-native";
 
@@ -28,6 +34,7 @@ export const SubjectScreen = ({
   const [topics, setTopics] = useState<Topic[] | []>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [displayCode, setDisplayCode] = useState<boolean>(false);
+  const [isDeleted, setIsDeleted] = useState<boolean>(false);
 
   const getData = async (): Promise<void> => {
     setLoading(true);
@@ -38,6 +45,7 @@ export const SubjectScreen = ({
       if (userData.exists()) {
         if (userData.data().topics) {
           setTopics(userData.data().topics as Topic[]);
+          setIsDeleted(userData.data().deleted as boolean);
           setLoading(false);
 
           return;
@@ -47,19 +55,27 @@ export const SubjectScreen = ({
     setLoading(false);
   };
 
-  const handleDelete = (topic: Topic): void => {
+  const handleSubjectDelete = (): void => {
     Alert.alert(
-      "Delete topic?",
-      "Are you sure you want to delete this topic and all flashcards associated with it?",
+      "Delete subject?",
+      "Are you sure you want to delete this subject and all topics associated with it?",
       [
-        { text: "Yes", onPress: () => {
-          let tempTopics = [...topics];
-          tempTopics = tempTopics.filter(el => el.id !== topic.id);
-          updateDoc(doc(firestore, "subjects", route.params.subject.id), {
-            topics: tempTopics
-          })
-          setTopics(tempTopics)
-        }},
+        {
+          text: "Yes",
+          onPress: () => {
+            setDoc(doc(firestore, "subjects", route.params.subject.id), {
+              topics: [],
+              deleted: true,
+            }).then(() => {
+              if (user) {
+                updateDoc(doc(firestore, "users", user?.id), {
+                  subjects: arrayRemove(route.params.subject),
+                });
+                navigation.navigate("MainScreen", { refresh: Math.random() });
+              }
+            });
+          },
+        },
         {
           text: "No",
           onPress: () => {},
@@ -68,7 +84,33 @@ export const SubjectScreen = ({
       ],
       { cancelable: true },
     );
-  }
+  };
+
+  const handleDelete = (topic: Topic): void => {
+    Alert.alert(
+      "Delete topic?",
+      "Are you sure you want to delete this topic and all flashcards associated with it?",
+      [
+        {
+          text: "Yes",
+          onPress: () => {
+            let tempTopics = [...topics];
+            tempTopics = tempTopics.filter((el) => el.id !== topic.id);
+            updateDoc(doc(firestore, "subjects", route.params.subject.id), {
+              topics: tempTopics,
+            });
+            setTopics(tempTopics);
+          },
+        },
+        {
+          text: "No",
+          onPress: () => {},
+          style: "cancel",
+        },
+      ],
+      { cancelable: true },
+    );
+  };
 
   useEffect(() => {
     getData();
@@ -80,6 +122,33 @@ export const SubjectScreen = ({
 
     return unsubscribe;
   }, [navigation]);
+
+  if (isDeleted) {
+    return (
+      <View
+        style={{ paddingTop: insets.top }}
+        className="flex-1 items-center justify-center bg-background-dark"
+      >
+        <Text className={"text-2xl text-white"}>
+          This subject has been deleted!
+        </Text>
+        <TouchableOpacity
+          onPress={() => {
+            if (user) {
+              updateDoc(doc(firestore, "shared", user?.id), {
+                subjects: arrayRemove(route.params.subject),
+              });
+              navigation.navigate("MainShared", { refresh: Math.random() });
+            }
+          }}
+          className="my-4 items-center justify-center rounded-2xl bg-primary p-4"
+        >
+          <Text className={"font-bold text-white"}>Go Back</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   return (
     <View
       style={{ paddingTop: insets.top }}
@@ -103,17 +172,26 @@ export const SubjectScreen = ({
             {route.params.subject.title}
           </Text>
           {route.params.author && (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("EditSubjectScreen", {
-                  subject: route.params.subject,
-                  subjects: route.params.subjects,
-                })
-              }
-              className=" flex aspect-square w-1/12 items-center justify-center"
-            >
-              <AntDesign name="edit" size={20} color={"white"} />
-            </TouchableOpacity>
+            <>
+              <TouchableOpacity
+                onPress={handleSubjectDelete}
+                className=" flex aspect-square w-1/12 items-center justify-center"
+              >
+                <AntDesign name="delete" size={20} color={"red"} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("EditSubjectScreen", {
+                    subject: route.params.subject,
+                    subjects: route.params.subjects,
+                  })
+                }
+                className=" flex aspect-square w-1/12 items-center justify-center"
+              >
+                <AntDesign name="edit" size={20} color={"white"} />
+              </TouchableOpacity>
+            </>
           )}
           <TouchableOpacity
             onPress={() => setDisplayCode(true)}
@@ -204,7 +282,6 @@ export const SubjectScreen = ({
             renderItem={({ item }) => {
               return (
                 <TouchableOpacity
-                  
                   onPress={() =>
                     navigation.navigate("TopicScreen", {
                       subjectID: route.params.subject.id,
@@ -216,20 +293,31 @@ export const SubjectScreen = ({
                   className="m-1 justify-center  rounded-xl bg-card-dark p-4 py-3"
                 >
                   <View className={"flex-row justify-between"}>
-                  <Text className=" font-open-sans-bold text-white ">
-                    {item.title}
-                  </Text>
-                  {
-                    route.params.author &&
-                    <View className={"flex-row"}>
-                      <TouchableOpacity className={"mx-2"} onPress={() => navigation.navigate("EditTopicScreen", {subject: route.params.subject, topics: topics, topic: item})}>
-                        <AntDesign name="edit" size={20} color={"white"}/>
-                      </TouchableOpacity>
-                      <TouchableOpacity className={"mx-2"} onPress={()=>handleDelete(item)}>
-                        <AntDesign name="delete" size={20} color={"red"}/>
-                      </TouchableOpacity>
-                    </View>
-                  }
+                    <Text className=" font-open-sans-bold text-white ">
+                      {item.title}
+                    </Text>
+                    {route.params.author && (
+                      <View className={"flex-row"}>
+                        <TouchableOpacity
+                          className={"mx-2"}
+                          onPress={() =>
+                            navigation.navigate("EditTopicScreen", {
+                              subject: route.params.subject,
+                              topics: topics,
+                              topic: item,
+                            })
+                          }
+                        >
+                          <AntDesign name="edit" size={20} color={"white"} />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          className={"mx-2"}
+                          onPress={() => handleDelete(item)}
+                        >
+                          <AntDesign name="delete" size={20} color={"red"} />
+                        </TouchableOpacity>
+                      </View>
+                    )}
                   </View>
                   <Text className="font-open-sans-bold text-xs text-white opacity-50">
                     {item.description}

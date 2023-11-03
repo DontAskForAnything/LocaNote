@@ -9,16 +9,13 @@ import {
 } from "react-native";
 import { RootStackScreenProps } from "../../types/navigation";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { AntDesign, Feather, FontAwesome5 } from "@expo/vector-icons";
+import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import LoadingModal from "../../components/loadingModal";
-import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
-import { Topic } from "../../utils/types";
-import { randomUUID } from "../../utils/random";
-import { useUser } from "@clerk/clerk-expo";
 
 const TopicSchema = z.object({
   topic: z
@@ -39,14 +36,16 @@ export default function EditTopicScreen(
   const [loading, setLoading] = useState<boolean>(false);
   // const [success, setSuccess] = useState<boolean>(false);
   const insets = useSafeAreaInsets();
-  const user = useUser();
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(TopicSchema),
-    defaultValues: { topic: params.route.params.topic.title as string, description: params.route.params.topic.description as string },
+    defaultValues: {
+      topic: params.route.params.topic.title as string,
+      description: params.route.params.topic.description as string,
+    },
   });
 
   const editTopic = async ({
@@ -54,15 +53,15 @@ export default function EditTopicScreen(
     description,
   }: z.infer<typeof TopicSchema>) => {
     setLoading(true);
-    let tempTopics = [...params.route.params.topics];
-    let index = tempTopics.indexOf(params.route.params.topic);
+    const tempTopics = [...params.route.params.topics];
+    const index = tempTopics.indexOf(params.route.params.topic);
     tempTopics[index] = {
       id: params.route.params.topic.id,
       title: topic,
       description: description,
       notes: params.route.params.topic.notes,
-      flashcards: params.route.params.topic.flashcards
-    }
+      flashcards: params.route.params.topic.flashcards,
+    };
     updateDoc(doc(firestore, "subjects", params.route.params.subject.id), {
       topics: tempTopics,
     });

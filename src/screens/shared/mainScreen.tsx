@@ -53,6 +53,11 @@ export const MainSharedScreen = (
   useEffect(() => {
     getSharedSubjects();
   }, []);
+  useEffect(() => {
+    if (params.route?.params?.refresh) {
+      getSharedSubjects();
+    }
+  }, [params.route.params?.refresh]);
   const insets = useSafeAreaInsets();
 
   return (
