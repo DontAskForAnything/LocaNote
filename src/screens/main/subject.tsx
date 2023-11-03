@@ -17,6 +17,7 @@ import { Topic } from "../../utils/types";
 import { useClerk } from "@clerk/clerk-expo";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
+import { Alert } from "react-native";
 
 export const SubjectScreen = ({
   route,
@@ -47,12 +48,26 @@ export const SubjectScreen = ({
   };
 
   const handleDelete = (topic: Topic): void => {
-    let tempTopics = [...topics];
-    tempTopics = tempTopics.filter(el => el.id !== topic.id);
-    updateDoc(doc(firestore, "subjects", route.params.subject.id), {
-      topics: tempTopics
-    })
-    setTopics(tempTopics)
+    Alert.alert(
+      "Delete topic?",
+      "Are you sure you want to delete this topic and all flashcards associated with it?",
+      [
+        { text: "Yes", onPress: () => {
+          let tempTopics = [...topics];
+          tempTopics = tempTopics.filter(el => el.id !== topic.id);
+          updateDoc(doc(firestore, "subjects", route.params.subject.id), {
+            topics: tempTopics
+          })
+          setTopics(tempTopics)
+        }},
+        {
+          text: "No",
+          onPress: () => {},
+          style: "cancel",
+        },
+      ],
+      { cancelable: true },
+    );
   }
 
   useEffect(() => {
