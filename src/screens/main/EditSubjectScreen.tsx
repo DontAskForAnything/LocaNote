@@ -57,6 +57,7 @@ export const EditSubjectScreen = ({
             icon: selectedIcon,
             id: subject.id,
             title: values.lessonName,
+            authorId: user?.id as string,
           };
           return true;
         }

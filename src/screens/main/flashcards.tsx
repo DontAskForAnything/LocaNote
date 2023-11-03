@@ -128,7 +128,7 @@ export const FlashcardsScreen = ({
     <View
       className={"flex flex-1 items-center justify-center bg-background-dark"}
     >
-      <GoBackSignButton onPress={() => navigation.navigate("MainScreen", {})} />
+      <GoBackSignButton onPress={() => navigation.goBack()} />
       {cards
         .map(({ question, answer }, index) => {
           const isFirst = index === 0;
@@ -179,7 +179,9 @@ export const FlashcardsScreen = ({
         }
       >
         <Text className={"my-4 text-center text-3xl text-white"}>
-          That's all, good job!
+          {route.params.length > 0
+            ? "That's all, good job!"
+            : "This flashcards set is empty!"}
         </Text>
         <TouchableOpacity
           className={"rounded-xl bg-primary p-2"}
@@ -191,7 +193,7 @@ export const FlashcardsScreen = ({
       <Text className={"absolute bottom-16 text-xl text-white"}>
         {index <= route.params.length
           ? `${index} / ${route.params.length}`
-          : "All done! Good job!"}
+          : `${route.params.length > 0 ? "All done! Good job!" : ""}`}
       </Text>
     </View>
   );

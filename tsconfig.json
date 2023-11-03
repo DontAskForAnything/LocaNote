@@ -16,5 +16,6 @@
     "incremental": true,
     "noUncheckedIndexedAccess": true
   },
-  "include": ["src", "index.ts", "app.config.ts", ".eslintrc.cjs"]
+  "include": ["src", "index.ts", "app.config.ts", ".eslintrc.cjs"],
+  "extends": "expo/tsconfig.base"
 }

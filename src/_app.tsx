@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MainScreen } from "./screens/main/welcome";
 import { RootStackParamList } from "./types/navigation";
 import { ClerkProvider, SignedIn, SignedOut } from "@clerk/clerk-expo";
@@ -32,9 +33,58 @@ import AiErrorScreen from "./screens/error/ai";
 import NetInfo from "@react-native-community/netinfo";
 import { NoInternetScreen } from "./screens/error/noInternet";
 import CreateTopicScreen from "./screens/main/createTopic";
+import { Ionicons } from "@expo/vector-icons";
+import { MainSharedScreen } from "./screens/shared/mainScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
+const Tab = createBottomTabNavigator<RootStackParamList>();
 
+const AppStack = () => {
+  return (
+    <Tab.Navigator
+      initialRouteName="MainScreen"
+      screenOptions={{
+        headerShown: false,
+        tabBarLabelStyle: { display: "none" },
+        // Set the colors for both active and inactive icons below.
+        tabBarActiveTintColor: "white",
+        tabBarInactiveTintColor: "white",
+        tabBarStyle: {
+          borderTopColor: "transparent",
+          backgroundColor: "#1B1B1B",
+          elevation: 0,
+        },
+      }}
+    >
+      <Tab.Screen
+        name="MainScreen"
+        options={{
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "home" : "home-outline"}
+              size={24}
+              color={color}
+            />
+          ),
+        }}
+        component={MainScreen}
+      />
+      <Tab.Screen
+        name="MainShared"
+        options={{
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "folder" : "folder-outline"}
+              size={24}
+              color={color}
+            />
+          ),
+        }}
+        component={MainSharedScreen}
+      />
+    </Tab.Navigator>
+  );
+};
 export const App = () => {
   const [isConnected, setIsConnected] = useState(true);
 
@@ -70,10 +120,10 @@ export const App = () => {
         <SignedIn>
           <NavigationContainer>
             <Stack.Navigator
-              initialRouteName="MainScreen"
+              initialRouteName="AppStack"
               screenOptions={{ headerShown: false }}
             >
-              <Stack.Screen name="MainScreen" component={MainScreen} />
+              <Stack.Screen name="AppStack" component={AppStack} />
               <Stack.Screen
                 options={{
                   headerShown: false,

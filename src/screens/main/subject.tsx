@@ -3,13 +3,15 @@ import { RootStackScreenProps } from "../../types/navigation";
 import {
   ActivityIndicator,
   FlatList,
+  Modal,
+  Pressable,
   RefreshControl,
   SafeAreaView,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
+import { AntDesign, Entypo, Feather, FontAwesome5 } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { Topic } from "../../utils/types";
 import { useClerk } from "@clerk/clerk-expo";
@@ -24,6 +26,7 @@ export const SubjectScreen = ({
   const { user } = useClerk();
   const [topics, setTopics] = useState<Topic[] | []>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [displayCode, setDisplayCode] = useState<boolean>(false);
 
   const getData = async (): Promise<void> => {
     setLoading(true);
@@ -59,6 +62,11 @@ export const SubjectScreen = ({
       className="flex-1 bg-background-dark"
     >
       <SafeAreaView className="mx-12 w-11/12 flex-1 self-center bg-background dark:bg-background-dark">
+        <CodeModal
+          displayCode={displayCode}
+          setDisplayCode={setDisplayCode}
+          code={route.params.subject.id}
+        />
         <View className="flex flex-row items-center justify-between ">
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -70,18 +78,27 @@ export const SubjectScreen = ({
           <Text className="w-8/12 py-4 text-center font-open-sans-bold text-white">
             {route.params.subject.title}
           </Text>
-
+          {route.params.author && (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("EditSubjectScreen", {
+                  subject: route.params.subject,
+                  subjects: route.params.subjects,
+                })
+              }
+              className=" flex aspect-square w-1/12 items-center justify-center"
+            >
+              <AntDesign name="edit" size={20} color={"white"} />
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
-            //TODO: add edit screen
-            onPress={() =>
-              navigation.navigate("EditSubjectScreen", {
-                subject: route.params.subject,
-                subjects: route.params.subjects,
-              })
-            }
-            className=" flex aspect-square w-1/12 items-center justify-center"
+            onPress={() => setDisplayCode(true)}
+            className={`flex aspect-square w-1/12 items-center justify-center ${
+              topics.length <= 0 && "opacity-20"
+            }`}
+            disabled={topics.length <= 0}
           >
-            <AntDesign name="edit" size={20} color={"white"} />
+            <Feather name="share" size={20} color="white" />
           </TouchableOpacity>
         </View>
 
@@ -91,36 +108,54 @@ export const SubjectScreen = ({
             ListEmptyComponent={
               <>
                 <View className=" items-center justify-center">
-                  {/* //TODO: Open topic screen */}
-                  {/* //TODO: Options on hold element or 3 dots */}
-                  <Text className="mx-2 mt-8 text-center font-open-sans-bold text-3xl text-white">
-                    You don't have any topics in this subject
-                  </Text>
-                  <Text className="mx-2 mt-4 text-center  font-open-sans-bold  text-sm text-white opacity-50">
-                    Don't worry just start by clicking button below!
-                  </Text>
-                  <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate("CreateTopic", {
-                        subject: route.params.subject,
-                        topics: topics,
-                      })
-                    }
-                    className="mt-4 items-center justify-center"
-                  >
-                    <View className="my-4 flex-row items-center rounded-xl bg-primary-dark p-4">
-                      <View className="opacity-90">
-                        <FontAwesome5
-                          name="lightbulb"
-                          size={18}
-                          color="white"
-                        />
-                      </View>
-                      <Text className="ml-2 font-open-sans-bold text-sm text-white opacity-90">
-                        Create your first topic
+                  {!route.params.author ? (
+                    <>
+                      <Text className="mx-2 mt-8 text-center font-open-sans-bold text-3xl text-white">
+                        This topic is empty.
                       </Text>
-                    </View>
-                  </TouchableOpacity>
+                      <Text className="mx-2 mt-8 text-center font-open-sans-bold text-xl text-white opacity-70">
+                        Please get in touch with the subject's owner, if you
+                        think this topic should not be empty.
+                      </Text>
+                      <Text className="mx-2 mt-4 text-center  font-open-sans-bold  text-sm text-white opacity-50">
+                        Subject id:{" "}
+                        <Text className="text-primary-dark">
+                          {route.params.subject.id}
+                        </Text>
+                      </Text>
+                    </>
+                  ) : (
+                    <>
+                      <Text className="mx-2 mt-8 text-center font-open-sans-bold text-3xl text-white">
+                        You don't have any topics in this subject
+                      </Text>
+                      <Text className="mx-2 mt-4 text-center  font-open-sans-bold  text-sm text-white opacity-50">
+                        Don't worry just start by clicking button below!
+                      </Text>
+                      <TouchableOpacity
+                        onPress={() =>
+                          navigation.navigate("CreateTopic", {
+                            subject: route.params.subject,
+                            topics: topics,
+                          })
+                        }
+                        className="mt-4 items-center justify-center"
+                      >
+                        <View className="my-4 flex-row items-center rounded-xl bg-primary-dark p-4">
+                          <View className="opacity-90">
+                            <FontAwesome5
+                              name="lightbulb"
+                              size={18}
+                              color="white"
+                            />
+                          </View>
+                          <Text className="ml-2 font-open-sans-bold text-sm text-white opacity-90">
+                            Create your first topic
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </>
+                  )}
                 </View>
               </>
             }
@@ -150,6 +185,7 @@ export const SubjectScreen = ({
                       subjectID: route.params.subject.id,
                       topics: topics,
                       topic: item,
+                      author: route.params.author,
                     })
                   }
                   className="m-1 justify-center  rounded-xl bg-card-dark p-4 py-3"
@@ -176,6 +212,7 @@ export const SubjectScreen = ({
                         Notes
                       </Text>
                     </View>
+
                     <View
                       className={`ml-2 rounded-full px-2 py-1 ${
                         item.flashcards.length > 0
@@ -201,7 +238,7 @@ export const SubjectScreen = ({
           </View>
         )}
 
-        {topics.length > 0 && (
+        {topics.length > 0 && route.params.author && (
           <TouchableOpacity
             onPress={() =>
               navigation.navigate("CreateTopic", {
@@ -221,7 +258,57 @@ export const SubjectScreen = ({
             </View>
           </TouchableOpacity>
         )}
+
+        {!route.params.author ? (
+          <Text className="absolute bottom-1 self-center font-open-sans-semibold text-xs text-white opacity-50">
+            You are not owner of this subject
+          </Text>
+        ) : null}
       </SafeAreaView>
     </View>
+  );
+};
+
+const CodeModal = ({
+  displayCode,
+  setDisplayCode,
+  code,
+}: {
+  displayCode: boolean;
+  setDisplayCode: React.Dispatch<React.SetStateAction<boolean>>;
+  code: string;
+}) => {
+  return (
+    <Modal visible={displayCode} transparent={true}>
+      <Pressable
+        className="flex-1 justify-center"
+        style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
+        onPress={() => setDisplayCode(false)}
+      >
+        <View className="w-8/12 items-center justify-center self-center rounded-xl bg-card-dark p-8">
+          <Feather name="share" size={40} color="white" />
+
+          <Text className="mt-2 text-center font-open-sans-bold text-lg text-white ">
+            Share
+          </Text>
+          <Text className="mt-4 text-center font-open-sans-bold text-3xl text-primary-dark">
+            {code}
+          </Text>
+
+          <Text className="mt-4 text-center font-open-sans-bold text-white opacity-70">
+            Share this 6-character code to distribute all topics from this
+            subject.
+          </Text>
+
+          <TouchableOpacity
+            className="absolute right-4 top-4 opacity-70"
+            onPress={() => setDisplayCode(false)}
+          >
+            <Entypo name="cross" size={24} color="white" />
+          </TouchableOpacity>
+          {/* <Button color={"#16a34a"} title="Close" onPress={() => setDisplayCode(false)} /> */}
+        </View>
+      </Pressable>
+    </Modal>
   );
 };

@@ -48,7 +48,7 @@ export const AddSubjectScreen = ({
       const subjects: Array<SubjectItem> = [...route.params];
       subjects.pop();
       if (user) {
-        const id = randomUUID(8);
+        const id = randomUUID(6);
         setDoc(doc(firestore, "users", user.id), {
           subjects: [
             ...subjects,
@@ -80,12 +80,12 @@ export const AddSubjectScreen = ({
         render={({ field: { onChange, value, onBlur } }) => (
           <TextInput
             autoCapitalize="none"
-            placeholder="Lesson Name"
+            placeholder="Subject name"
             value={value}
             onBlur={onBlur}
             onChangeText={(value) => onChange(value)}
             placeholderTextColor="#6B7280"
-            className={`bg-input mt-10 rounded-2xl p-4 font-open-sans-regular text-black dark:bg-card-dark dark:text-white ${
+            className={`bg-input mt-10 rounded-2xl p-4 font-open-sans-regular text-black dark:bg-cardLight-dark dark:text-white ${
               errors.lessonName?.message && "border-2 border-red-500"
             }`}
           />

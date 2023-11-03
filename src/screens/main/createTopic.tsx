@@ -17,6 +17,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
 import { Topic } from "../../utils/types";
 import { randomUUID } from "../../utils/random";
+import { useUser } from "@clerk/clerk-expo";
 
 const TopicSchema = z.object({
   topic: z
@@ -37,6 +38,7 @@ export default function CreateTopicScreen(
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
   const insets = useSafeAreaInsets();
+  const user = useUser();
   const {
     control,
     handleSubmit,
@@ -59,6 +61,7 @@ export default function CreateTopicScreen(
       notes: [],
     };
     setDoc(doc(firestore, "subjects", params.route.params.subject.id), {
+      authorId: user.user?.id as string,
       topics: [...params.route.params.topics, newTopic],
     });
     setSuccess(true);
