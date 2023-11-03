@@ -15,7 +15,7 @@ import { AntDesign, Entypo, Feather, FontAwesome5 } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { Topic } from "../../utils/types";
 import { useClerk } from "@clerk/clerk-expo";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
 
 export const SubjectScreen = ({
@@ -45,6 +45,15 @@ export const SubjectScreen = ({
     }
     setLoading(false);
   };
+
+  const handleDelete = (topic: Topic): void => {
+    let tempTopics = [...topics];
+    tempTopics = tempTopics.filter(el => el.id !== topic.id);
+    updateDoc(doc(firestore, "subjects", route.params.subject.id), {
+      topics: tempTopics
+    })
+    setTopics(tempTopics)
+  }
 
   useEffect(() => {
     getData();
@@ -180,6 +189,7 @@ export const SubjectScreen = ({
             renderItem={({ item }) => {
               return (
                 <TouchableOpacity
+                  
                   onPress={() =>
                     navigation.navigate("TopicScreen", {
                       subjectID: route.params.subject.id,
@@ -190,9 +200,22 @@ export const SubjectScreen = ({
                   }
                   className="m-1 justify-center  rounded-xl bg-card-dark p-4 py-3"
                 >
+                  <View className={"flex-row justify-between"}>
                   <Text className=" font-open-sans-bold text-white ">
                     {item.title}
                   </Text>
+                  {
+                    route.params.author &&
+                    <View className={"flex-row"}>
+                      <TouchableOpacity className={"mx-2"} onPress={() => navigation.navigate("EditTopicScreen", {subject: route.params.subject, topics: topics, topic: item})}>
+                        <AntDesign name="edit" size={20} color={"white"}/>
+                      </TouchableOpacity>
+                      <TouchableOpacity className={"mx-2"} onPress={()=>handleDelete(item)}>
+                        <AntDesign name="delete" size={20} color={"red"}/>
+                      </TouchableOpacity>
+                    </View>
+                  }
+                  </View>
                   <Text className="font-open-sans-bold text-xs text-white opacity-50">
                     {item.description}
                   </Text>

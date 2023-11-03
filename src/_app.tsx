@@ -35,6 +35,7 @@ import { NoInternetScreen } from "./screens/error/noInternet";
 import CreateTopicScreen from "./screens/main/createTopic";
 import { Ionicons } from "@expo/vector-icons";
 import { MainSharedScreen } from "./screens/shared/mainScreen";
+import EditTopicScreen from "./screens/main/editTopicScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -184,6 +185,16 @@ export const App = () => {
                 }}
                 name="TopicScreen"
                 component={TopicScreen}
+              />
+              <Stack.Screen
+                options={{
+                  headerShown: false,
+                  presentation: "modal",
+                  animationTypeForReplace: "push",
+                  animation: "slide_from_right",
+                }}
+                name="EditTopicScreen"
+                component={EditTopicScreen}
               />
               <Stack.Screen
                 options={{

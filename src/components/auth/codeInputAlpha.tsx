@@ -64,6 +64,7 @@ export const CodeInputAlpha = ({
 
       <TextInput
         value={code}
+        autoCapitalize="none"
         maxLength={length}
         onChangeText={(code) => {
           setCode(code);
