@@ -108,36 +108,54 @@ export const SubjectScreen = ({
             ListEmptyComponent={
               <>
                 <View className=" items-center justify-center">
-                  {/* //TODO: Open topic screen */}
-                  {/* //TODO: Options on hold element or 3 dots */}
-                  <Text className="mx-2 mt-8 text-center font-open-sans-bold text-3xl text-white">
-                    You don't have any topics in this subject
-                  </Text>
-                  <Text className="mx-2 mt-4 text-center  font-open-sans-bold  text-sm text-white opacity-50">
-                    Don't worry just start by clicking button below!
-                  </Text>
-                  <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate("CreateTopic", {
-                        subject: route.params.subject,
-                        topics: topics,
-                      })
-                    }
-                    className="mt-4 items-center justify-center"
-                  >
-                    <View className="my-4 flex-row items-center rounded-xl bg-primary-dark p-4">
-                      <View className="opacity-90">
-                        <FontAwesome5
-                          name="lightbulb"
-                          size={18}
-                          color="white"
-                        />
-                      </View>
-                      <Text className="ml-2 font-open-sans-bold text-sm text-white opacity-90">
-                        Create your first topic
+                  {!route.params.author ? (
+                    <>
+                      <Text className="mx-2 mt-8 text-center font-open-sans-bold text-3xl text-white">
+                        This topic is empty.
                       </Text>
-                    </View>
-                  </TouchableOpacity>
+                      <Text className="mx-2 mt-8 text-center font-open-sans-bold text-xl text-white opacity-70">
+                        Please get in touch with the subject's owner, if you
+                        think this topic should not be empty.
+                      </Text>
+                      <Text className="mx-2 mt-4 text-center  font-open-sans-bold  text-sm text-white opacity-50">
+                        Subject id:{" "}
+                        <Text className="text-primary-dark">
+                          {route.params.subject.id}
+                        </Text>
+                      </Text>
+                    </>
+                  ) : (
+                    <>
+                      <Text className="mx-2 mt-8 text-center font-open-sans-bold text-3xl text-white">
+                        You don't have any topics in this subject
+                      </Text>
+                      <Text className="mx-2 mt-4 text-center  font-open-sans-bold  text-sm text-white opacity-50">
+                        Don't worry just start by clicking button below!
+                      </Text>
+                      <TouchableOpacity
+                        onPress={() =>
+                          navigation.navigate("CreateTopic", {
+                            subject: route.params.subject,
+                            topics: topics,
+                          })
+                        }
+                        className="mt-4 items-center justify-center"
+                      >
+                        <View className="my-4 flex-row items-center rounded-xl bg-primary-dark p-4">
+                          <View className="opacity-90">
+                            <FontAwesome5
+                              name="lightbulb"
+                              size={18}
+                              color="white"
+                            />
+                          </View>
+                          <Text className="ml-2 font-open-sans-bold text-sm text-white opacity-90">
+                            Create your first topic
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </>
+                  )}
                 </View>
               </>
             }
