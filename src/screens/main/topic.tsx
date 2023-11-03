@@ -335,7 +335,7 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
           </TouchableOpacity>
         )}
         {!params.route.params.author && (
-          <Text className="absolute bottom-4 self-center font-open-sans-semibold text-xs text-white opacity-50">
+          <Text className="absolute bottom-1 self-center font-open-sans-semibold text-xs text-white opacity-50">
             You are not owner of this subject
           </Text>
         )}

@@ -4,7 +4,7 @@ import { ExpoConfig } from "@expo/config";
 const defineConfig = (): ExpoConfig => ({
   name: "locanote",
   slug: "locanote",
-  version: "0.8.0",
+  version: "0.9.0",
   orientation: "portrait",
   icon: "./assets/icon.png",
   userInterfaceStyle: "dark",

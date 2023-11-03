@@ -242,7 +242,7 @@ export const SubjectScreen = ({
         )}
 
         {!route.params.author ? (
-          <Text className="absolute bottom-4 self-center font-open-sans-semibold text-xs text-white opacity-50">
+          <Text className="absolute bottom-1 self-center font-open-sans-semibold text-xs text-white opacity-50">
             You are not owner of this subject
           </Text>
         ) : null}
@@ -278,7 +278,7 @@ const CodeModal = ({
           </Text>
 
           <Text className="mt-4 text-center font-open-sans-bold text-white opacity-70">
-            Share this 8-character code to distribute all topics from this
+            Share this 6-character code to distribute all topics from this
             subject.
           </Text>
 
