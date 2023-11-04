@@ -23,7 +23,8 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
-import { Alert } from "react-native";
+import { useActionSheet } from "@expo/react-native-action-sheet";
+import Dialog from "react-native-dialog";
 
 export const SubjectScreen = ({
   route,
@@ -33,7 +34,9 @@ export const SubjectScreen = ({
   const { user } = useClerk();
   const [topics, setTopics] = useState<Topic[] | []>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [visibleDelete, setVisibleDelete] = useState<boolean>(false);
   const [displayCode, setDisplayCode] = useState<boolean>(false);
+  const [deleteTopic, setDeleteTopic] = useState<undefined | Topic>(undefined);
   const [isDeleted, setIsDeleted] = useState<boolean>(false);
 
   const getData = async (): Promise<void> => {
@@ -54,61 +57,88 @@ export const SubjectScreen = ({
     }
     setLoading(false);
   };
+  const { showActionSheetWithOptions } = useActionSheet();
 
-  const handleSubjectDelete = (): void => {
-    Alert.alert(
-      "Delete subject?",
-      "Are you sure you want to delete this subject and all topics associated with it?",
-      [
-        {
-          text: "Yes",
-          onPress: () => {
-            setDoc(doc(firestore, "subjects", route.params.subject.id), {
-              topics: [],
-              deleted: true,
-            }).then(() => {
-              if (user) {
-                updateDoc(doc(firestore, "users", user?.id), {
-                  subjects: arrayRemove(route.params.subject),
-                });
-                navigation.navigate("MainScreen", { refresh: Math.random() });
-              }
-            });
-          },
-        },
-        {
-          text: "No",
-          onPress: () => {},
-          style: "cancel",
-        },
-      ],
-      { cancelable: true },
+  const AudienceSelector = () => {
+    const icons = [
+      <AntDesign name="edit" size={20} color={"white"} />,
+      <AntDesign name="delete" size={20} color={"red"} />,
+      <Entypo name="cross" size={20} color="white" />,
+    ];
+
+    const options = ["Edit", "Delete", "Cancel"];
+    const cancelButtonIndex = 2;
+    const destructiveButtonIndex = 1;
+    showActionSheetWithOptions(
+      {
+        textStyle: { color: "white", fontWeight: "bold" },
+        containerStyle: { backgroundColor: "#1B1B1B", padding: 12 },
+        options,
+        cancelButtonIndex,
+        destructiveButtonIndex,
+        icons,
+      },
+      (selectedIndex: number | undefined) => {
+        if (selectedIndex !== undefined) {
+          switch (selectedIndex) {
+            case 0:
+              navigation.navigate("EditSubjectScreen", {
+                subject: route.params.subject,
+                subjects: route.params.subjects,
+              });
+
+              break;
+            case 1:
+              setVisibleDelete(true);
+              break;
+
+            case cancelButtonIndex:
+              break;
+          }
+        }
+      },
     );
   };
 
-  const handleDelete = (topic: Topic): void => {
-    Alert.alert(
-      "Delete topic?",
-      "Are you sure you want to delete this topic and all flashcards associated with it?",
-      [
-        {
-          text: "Yes",
-          onPress: () => {
-            let tempTopics = [...topics];
-            tempTopics = tempTopics.filter((el) => el.id !== topic.id);
-            updateDoc(doc(firestore, "subjects", route.params.subject.id), {
-              topics: tempTopics,
-            });
-            setTopics(tempTopics);
-          },
-        },
-        {
-          text: "No",
-          onPress: () => {},
-          style: "cancel",
-        },
-      ],
-      { cancelable: true },
+  const TopicEditSelection = (item: Topic) => {
+    const icons = [
+      <AntDesign name="edit" size={20} color={"white"} />,
+      <AntDesign name="delete" size={20} color={"red"} />,
+      <Entypo name="cross" size={20} color="white" />,
+    ];
+
+    const options = ["Edit", "Delete", "Cancel"];
+    const cancelButtonIndex = 2;
+    const destructiveButtonIndex = 1;
+    showActionSheetWithOptions(
+      {
+        textStyle: { color: "white", fontWeight: "bold" },
+        containerStyle: { backgroundColor: "#1B1B1B", padding: 12 },
+        options,
+        cancelButtonIndex,
+        destructiveButtonIndex,
+        icons,
+      },
+      (selectedIndex: number | undefined) => {
+        if (selectedIndex !== undefined) {
+          switch (selectedIndex) {
+            case 0:
+              navigation.navigate("EditTopicScreen", {
+                subject: route.params.subject,
+                topics: topics,
+                topic: item,
+              });
+
+              break;
+            case 1:
+              setDeleteTopic(item);
+              break;
+
+            case cancelButtonIndex:
+              break;
+          }
+        }
+      },
     );
   };
 
@@ -155,6 +185,79 @@ export const SubjectScreen = ({
       className="flex-1 bg-background-dark"
     >
       <SafeAreaView className="mx-12 w-11/12 flex-1 self-center bg-background dark:bg-background-dark">
+        <Dialog.Container
+          contentStyle={{ backgroundColor: "#1B1B1B", borderRadius: 20 }}
+          visible={visibleDelete}
+        >
+          <Dialog.Title>Delete subject?</Dialog.Title>
+          <Dialog.Description>
+            Are you sure you want to delete this subject and all topics
+            associated with it?
+          </Dialog.Description>
+          <Dialog.Button
+            bold={true}
+            color="white"
+            label="No"
+            style={{}}
+            onPress={() => {
+              setVisibleDelete(false);
+            }}
+          />
+          <Dialog.Button
+            bold={true}
+            color="red"
+            label="Yes"
+            onPress={() => {
+              setDoc(doc(firestore, "subjects", route.params.subject.id), {
+                topics: [],
+                deleted: true,
+              }).then(() => {
+                if (user) {
+                  updateDoc(doc(firestore, "users", user?.id), {
+                    subjects: arrayRemove(route.params.subject),
+                  });
+                  navigation.navigate("MainScreen", { refresh: Math.random() });
+                }
+              });
+              setVisibleDelete(false);
+            }}
+          />
+        </Dialog.Container>
+        <Dialog.Container
+          contentStyle={{ backgroundColor: "#1B1B1B", borderRadius: 20 }}
+          visible={deleteTopic !== undefined}
+        >
+          <Dialog.Title>Delete topic?</Dialog.Title>
+          <Dialog.Description>
+            Are you sure you want to delete this topic and all flashcards
+            associated with it?
+          </Dialog.Description>
+          <Dialog.Button
+            bold={true}
+            color="white"
+            label="No"
+            style={{}}
+            onPress={() => {
+              setDeleteTopic(undefined);
+            }}
+          />
+          <Dialog.Button
+            bold={true}
+            color="red"
+            label="Yes"
+            onPress={() => {
+              let tempTopics = [...topics];
+              if (!deleteTopic) return;
+              tempTopics = tempTopics.filter((el) => el.id !== deleteTopic.id);
+              updateDoc(doc(firestore, "subjects", route.params.subject.id), {
+                topics: tempTopics,
+              });
+              setTopics(tempTopics);
+              setDeleteTopic(undefined);
+            }}
+          />
+        </Dialog.Container>
+
         <CodeModal
           displayCode={displayCode}
           setDisplayCode={setDisplayCode}
@@ -171,28 +274,6 @@ export const SubjectScreen = ({
           <Text className="w-8/12 py-4 text-center font-open-sans-bold text-white">
             {route.params.subject.title}
           </Text>
-          {route.params.author && (
-            <>
-              <TouchableOpacity
-                onPress={handleSubjectDelete}
-                className=" flex aspect-square w-1/12 items-center justify-center"
-              >
-                <AntDesign name="delete" size={20} color={"red"} />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("EditSubjectScreen", {
-                    subject: route.params.subject,
-                    subjects: route.params.subjects,
-                  })
-                }
-                className=" flex aspect-square w-1/12 items-center justify-center"
-              >
-                <AntDesign name="edit" size={20} color={"white"} />
-              </TouchableOpacity>
-            </>
-          )}
           <TouchableOpacity
             onPress={() => setDisplayCode(true)}
             className={`flex aspect-square w-1/12 items-center justify-center ${
@@ -202,6 +283,16 @@ export const SubjectScreen = ({
           >
             <Feather name="share" size={20} color="white" />
           </TouchableOpacity>
+          {route.params.author && (
+            <>
+              <TouchableOpacity
+                onPress={AudienceSelector}
+                className=" flex aspect-square w-1/12 items-center justify-center"
+              >
+                <Entypo name="dots-three-vertical" size={20} color="white" />
+              </TouchableOpacity>
+            </>
+          )}
         </View>
 
         {topics && !loading ? (
@@ -297,26 +388,16 @@ export const SubjectScreen = ({
                       {item.title}
                     </Text>
                     {route.params.author && (
-                      <View className={"flex-row"}>
-                        <TouchableOpacity
-                          className={"mx-2"}
-                          onPress={() =>
-                            navigation.navigate("EditTopicScreen", {
-                              subject: route.params.subject,
-                              topics: topics,
-                              topic: item,
-                            })
-                          }
-                        >
-                          <AntDesign name="edit" size={20} color={"white"} />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          className={"mx-2"}
-                          onPress={() => handleDelete(item)}
-                        >
-                          <AntDesign name="delete" size={20} color={"red"} />
-                        </TouchableOpacity>
-                      </View>
+                      <TouchableOpacity
+                        className="-mr-1 opacity-60"
+                        onPress={() => TopicEditSelection(item)}
+                      >
+                        <Entypo
+                          name="dots-three-vertical"
+                          size={20}
+                          color="white"
+                        />
+                      </TouchableOpacity>
                     )}
                   </View>
                   <Text className="font-open-sans-bold text-xs text-white opacity-50">

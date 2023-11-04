@@ -11,6 +11,7 @@ import React, { Fragment, useCallback, useRef, useState } from "react";
 import { RootStackScreenProps } from "../../types/navigation";
 import { Flashcard } from "../../utils/types";
 import { GoBackSignButton } from "../../components/goBackSignButton";
+import ConfettiCannon from "react-native-confetti-cannon";
 
 const { height } = Dimensions.get("screen");
 
@@ -24,6 +25,7 @@ export const FlashcardsScreen = ({
   const swipe = useRef(new Animated.ValueXY()).current;
   const tiltCard = useRef(new Animated.Value(1)).current;
   const [index, setIndex] = useState<number>(1);
+
   // PanResponder configuration
   const panResponder = PanResponder.create({
     // Allow pan responder to activate
@@ -108,16 +110,16 @@ export const FlashcardsScreen = ({
     return (
       <Fragment>
         <Animated.View
-          className={"absolute left-12 top-8"}
+          className={"absolute left-12 top-8 "}
           style={{ opacity: likeOpacity }}
         >
-          <Text className="text-3xl font-bold text-primary">Got It</Text>
+          <Text className="text-xl font-bold text-primary">Got It</Text>
         </Animated.View>
         <Animated.View
           className={"absolute right-12 top-8"}
           style={{ opacity: nopeOpacity }}
         >
-          <Text className="text-3xl font-bold text-red-500">
+          <Text className="text-xl font-bold text-red-500">
             Needs{"\n"}Revision
           </Text>
         </Animated.View>
@@ -128,6 +130,10 @@ export const FlashcardsScreen = ({
     <View
       className={"flex flex-1 items-center justify-center bg-background-dark"}
     >
+      {!(index <= route.params.length) && route.params.length > 0 && (
+        <ConfettiCannon count={300} origin={{ x: 0, y: 0 }} fallSpeed={5000} />
+      )}
+
       <GoBackSignButton onPress={() => navigation.goBack()} />
       {cards
         .map(({ question, answer }, index) => {
@@ -146,7 +152,7 @@ export const FlashcardsScreen = ({
             <Animated.View
               key={index}
               className={
-                "absolute h-3/5 w-4/5 rounded-3xl border-2 border-slate-500 bg-cardLight-dark p-4"
+                "absolute h-3/5 w-4/5 rounded-3xl border-2 border-card-dark bg-cardLight-dark p-4 "
               }
               {...dragHandler.panHandlers}
               style={[isFirst && animatedCardStyle]}
@@ -159,12 +165,16 @@ export const FlashcardsScreen = ({
                   {isFirst && renderChoice()}
                   <Text
                     className={
-                      "absolute top-0 text-3xl font-semibold text-white"
+                      "absolute top-0 font-open-sans-semibold text-xl text-white"
                     }
                   >
                     {showAnswer && isFirst ? "Answer:" : "Question: "}
                   </Text>
-                  <Text className={"text-center text-xl text-white"}>
+                  <Text
+                    className={
+                      "text-center font-open-sans-bold text-2xl text-white"
+                    }
+                  >
                     {showAnswer && isFirst ? answer : question}
                   </Text>
                 </Fragment>
@@ -173,12 +183,38 @@ export const FlashcardsScreen = ({
           );
         })
         .reverse()}
+
+      {/*
+THIS MAY LOOK NICE, however i don't like it
+<Animated.View
+      style={{ shadowColor: 'green',
+      shadowOpacity: 1,
+      shadowRadius: 5,
+      elevation: 50, opacity:likeOpacity}}
+      className={
+        "absolute -z-50 h-3/5 w-4/5 justify-center rounded-3xl p-4"
+      }
+      />
+<Animated.View
+      style={{ shadowColor: 'red',
+      shadowOpacity: 1,
+      shadowRadius: 5,
+      elevation: 50, opacity:nopeOpacity}}
+      className={
+        "absolute -z-50 h-3/5 w-4/5 justify-center rounded-3xl border-2 p-4"
+      }
+      /> */}
+
       <View
         className={
-          "absolute -z-50 h-3/5 w-4/5 justify-center rounded-3xl border-2 border-slate-500 bg-cardLight-dark p-4"
+          "absolute -z-50 h-3/5 w-4/5 justify-center rounded-3xl bg-cardLight-dark p-4"
         }
       >
-        <Text className={"my-4 text-center text-3xl text-white"}>
+        <Text
+          className={
+            "my-4 text-center font-open-sans-semibold text-3xl text-white"
+          }
+        >
           {route.params.length > 0
             ? "That's all, good job!"
             : "This flashcards set is empty!"}
@@ -187,7 +223,13 @@ export const FlashcardsScreen = ({
           className={"rounded-xl bg-primary p-2"}
           onPress={() => navigation.goBack()}
         >
-          <Text className={"text-center text-base text-white"}>Go back</Text>
+          <Text
+            className={
+              "py-2 text-center font-open-sans-semibold text-base text-white"
+            }
+          >
+            Go back
+          </Text>
         </TouchableOpacity>
       </View>
       <Text className={"absolute bottom-16 text-xl text-white"}>

@@ -71,89 +71,97 @@ export const MainSharedScreen = (
         setDisplayCode={setDisplayCode}
         getSharedSubjects={getSharedSubjects}
       />
-      {subjects.length > 0 ? (
-        <SafeAreaView className="w-11/12 flex-1 self-center bg-background dark:bg-background-dark">
-          <LogoTop />
-          <TouchableOpacity
-            onPress={() => {
-              setDisplayCode(true);
-            }}
-            className="absolute bottom-2 right-0 z-20 items-center justify-center"
-          >
-            <View className=" aspect-square flex-row items-center justify-center rounded-xl bg-primary-dark p-4 ">
-              <FontAwesome5 name={"plus"} size={20} color={"white"} />
-            </View>
-          </TouchableOpacity>
-          <Text className="my-4 font-open-sans-bold  text-xl text-neutral-500">
-            Your shared subjects:
-          </Text>
-          {!loading ? (
-            <FlatList
-              className="mb-2"
-              refreshControl={
-                <RefreshControl
-                  colors={["#16a34a"]}
-                  progressBackgroundColor={"black"}
-                  refreshing={loading}
-                  onRefresh={() => getSharedSubjects()}
-                />
-              }
-              onRefresh={() => getSharedSubjects()}
-              refreshing={loading}
-              data={subjects}
-              keyExtractor={(i, id) => id.toString()}
-              numColumns={1}
-              renderItem={({ item }) => {
-                return (
-                  <TouchableOpacity
-                    onPress={() =>
-                      params.navigation.push("SubjectScreen", {
-                        subject: item,
-                        subjects: subjects,
-                        author: false,
-                      })
-                    }
-                    style={{ backgroundColor: item.color }}
-                    className="m-1 flex h-14 flex-1  flex-row items-center rounded-xl p-4"
-                  >
-                    <FontAwesome5 name={item.icon} size={20} color={"white"} />
-
-                    <Text className="ml-8 text-center font-open-sans-bold text-white ">
-                      {item.title}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              }}
-            />
-          ) : (
-            <ActivityIndicator size="large" color={"#16a34a"} />
-          )}
-        </SafeAreaView>
-      ) : (
+      {!loading && (
         <>
-          <SafeAreaView className="flex h-screen w-9/12 items-center justify-center self-center bg-background dark:bg-background-dark">
-            <FontAwesome5 name="wifi" size={54} color="#16a34a" />
+          {subjects.length > 0 ? (
+            <SafeAreaView className="w-11/12 flex-1 self-center bg-background dark:bg-background-dark">
+              <LogoTop />
+              <TouchableOpacity
+                onPress={() => {
+                  setDisplayCode(true);
+                }}
+                className="absolute bottom-2 right-0 z-20 items-center justify-center"
+              >
+                <View className=" aspect-square flex-row items-center justify-center rounded-xl bg-primary-dark p-4 ">
+                  <FontAwesome5 name={"plus"} size={20} color={"white"} />
+                </View>
+              </TouchableOpacity>
+              <Text className="my-4 font-open-sans-bold  text-xl text-neutral-500">
+                Your shared subjects:
+              </Text>
+              {!loading ? (
+                <FlatList
+                  className="mb-2"
+                  refreshControl={
+                    <RefreshControl
+                      colors={["#16a34a"]}
+                      progressBackgroundColor={"black"}
+                      refreshing={loading}
+                      onRefresh={() => getSharedSubjects()}
+                    />
+                  }
+                  onRefresh={() => getSharedSubjects()}
+                  refreshing={loading}
+                  data={subjects}
+                  keyExtractor={(i, id) => id.toString()}
+                  numColumns={1}
+                  renderItem={({ item }) => {
+                    return (
+                      <TouchableOpacity
+                        onPress={() =>
+                          params.navigation.push("SubjectScreen", {
+                            subject: item,
+                            subjects: subjects,
+                            author: false,
+                          })
+                        }
+                        style={{ backgroundColor: item.color }}
+                        className="m-1 flex h-14 flex-1  flex-row items-center rounded-xl p-4"
+                      >
+                        <FontAwesome5
+                          name={item.icon}
+                          size={20}
+                          color={"white"}
+                        />
 
-            <Text className="mt-4 self-stretch text-center font-open-sans-bold text-3xl text-white">
-              No shared topics
-            </Text>
-            <Text className="mt-1 self-stretch text-center font-open-sans-semibold text-sm text-white opacity-70">
-              No one has shared any topics with you.
-            </Text>
+                        <Text className="ml-8 text-center font-open-sans-bold text-white ">
+                          {item.title}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  }}
+                />
+              ) : (
+                <ActivityIndicator size="large" color={"#16a34a"} />
+              )}
+            </SafeAreaView>
+          ) : (
+            <>
+              <SafeAreaView className="flex h-screen w-9/12 items-center justify-center self-center bg-background dark:bg-background-dark">
+                <FontAwesome5 name="wifi" size={54} color="#16a34a" />
 
-            <TouchableOpacity
-              onPress={() => {
-                setDisplayCode(true);
-              }}
-              className="mt-4 items-center justify-center"
-            >
-              <View className=" flex-row items-center rounded-xl bg-primary-dark p-4">
-                <Text className="font-open-sans-bold text-sm text-white opacity-90">
-                  I have code
+                <Text className="mt-4 self-stretch text-center font-open-sans-bold text-3xl text-white">
+                  No shared topics
                 </Text>
-              </View>
-            </TouchableOpacity>
-          </SafeAreaView>
+                <Text className="mt-1 self-stretch text-center font-open-sans-semibold text-sm text-white opacity-70">
+                  No one has shared any topics with you.
+                </Text>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    setDisplayCode(true);
+                  }}
+                  className="mt-4 items-center justify-center"
+                >
+                  <View className=" flex-row items-center rounded-xl bg-primary-dark p-4">
+                    <Text className="font-open-sans-bold text-sm text-white opacity-90">
+                      I have code
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </SafeAreaView>
+            </>
+          )}
         </>
       )}
     </View>

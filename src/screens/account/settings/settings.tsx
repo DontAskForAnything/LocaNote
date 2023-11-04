@@ -1,5 +1,4 @@
 import {
-  Alert,
   Text,
   TextInput,
   Image,
@@ -12,7 +11,7 @@ import {
 import { RootStackScreenProps } from "../../../types/navigation";
 import { useClerk } from "@clerk/clerk-expo";
 import * as ImagePicker from "expo-image-picker";
-import React from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,13 +22,15 @@ import { GoBackSignButton } from "../../../components/goBackSignButton";
 import LoadingModal from "../../../components/loadingModal";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Base64Images from "../../../../json/images.json";
+import Dialog from "react-native-dialog";
 
 export const SettingsScreen = ({
   navigation,
 }: RootStackScreenProps<"Settings">) => {
   const { user, signOut } = useClerk();
   const insets = useSafeAreaInsets();
-
+  const [visibleLogOut, setVisibleLogOut] = useState(false);
+  const [visibleDiscardChanges, setVisibleDiscardChanges] = useState(false);
   const [profileUrl, setProfileUrl] = React.useState(user?.imageUrl ?? "");
   const [profileUrlError, setProfileUrlError] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -91,12 +92,17 @@ export const SettingsScreen = ({
       "Remove current picture",
       "Cancel",
     ];
-    const cancelButtonIndex = 3;
+    const cancelButtonIndex = 2;
+    const destructiveButtonIndex = 1;
 
     showActionSheetWithOptions(
       {
+        textStyle: { color: "white", fontWeight: "bold" },
+        containerStyle: { backgroundColor: "#1B1B1B", padding: 12 },
+
         options,
         cancelButtonIndex,
+        destructiveButtonIndex,
       },
       (selectedIndex: number | undefined) => {
         if (selectedIndex !== undefined) {
@@ -127,34 +133,70 @@ export const SettingsScreen = ({
       className="flex bg-background dark:bg-background-dark"
     >
       <SafeAreaView className="flex w-11/12 self-center bg-background dark:bg-background-dark">
+        <Dialog.Container
+          contentStyle={{ backgroundColor: "#1B1B1B", borderRadius: 20 }}
+          visible={visibleLogOut}
+        >
+          <Dialog.Title>Log Out?</Dialog.Title>
+          <Dialog.Description>
+            Are you sure you want to log out?
+          </Dialog.Description>
+          <Dialog.Button
+            bold={true}
+            color="white"
+            label="No"
+            style={{}}
+            onPress={() => {
+              setVisibleLogOut(false);
+            }}
+          />
+          <Dialog.Button
+            bold={true}
+            color="red"
+            label="Yes"
+            onPress={() => signOut()}
+          />
+        </Dialog.Container>
+
+        <Dialog.Container
+          contentStyle={{ backgroundColor: "#1B1B1B", borderRadius: 20 }}
+          visible={visibleDiscardChanges}
+        >
+          <Dialog.Title>Discard all changes?</Dialog.Title>
+          <Dialog.Description>
+            Are you sure you want to exit without saving?
+          </Dialog.Description>
+          <Dialog.Button
+            bold={true}
+            color="white"
+            label="No"
+            style={{}}
+            onPress={() => {
+              setVisibleDiscardChanges(false);
+            }}
+          />
+          <Dialog.Button
+            bold={true}
+            color="red"
+            label="Yes"
+            onPress={() => navigation.goBack()}
+          />
+        </Dialog.Container>
+
         <View className="h-screen bg-background px-5 pt-6 dark:bg-background-dark">
-          <GoBackSignButton onPress={() => navigation.goBack()} />
+          <GoBackSignButton
+            onPress={() => {
+              if (
+                newUsername !== user?.username ||
+                profileUrl !== user.imageUrl
+              ) {
+                setVisibleDiscardChanges(true);
+              } else {
+                navigation.goBack();
+              }
+            }}
+          />
           <View className=" bg-background-dark">
-            <TouchableOpacity
-              className="mt-10 w-10"
-              onPress={() => {
-                if (
-                  newUsername !== user?.username ||
-                  profileUrl !== user.imageUrl
-                ) {
-                  Alert.alert(
-                    "Discard all changes?",
-                    "Are you sure you want to exit without saving?",
-                    [
-                      { text: "Yes", onPress: () => navigation.goBack() },
-                      {
-                        text: "No",
-                        onPress: () => console.log("No Pressed"),
-                        style: "cancel",
-                      },
-                    ],
-                    { cancelable: true },
-                  );
-                } else {
-                  navigation.goBack();
-                }
-              }}
-            ></TouchableOpacity>
             <TouchableOpacity
               className="mb-2 self-center"
               onPress={AudienceSelector}
@@ -239,19 +281,7 @@ export const SettingsScreen = ({
                 return (
                   <TouchableOpacity
                     onPress={() => {
-                      Alert.alert(
-                        "Log Out?",
-                        "Are you sure you want to log out?",
-                        [
-                          { text: "Yes", onPress: () => signOut() },
-                          {
-                            text: "No",
-                            onPress: () => {},
-                            style: "cancel",
-                          },
-                        ],
-                        { cancelable: true },
-                      );
+                      setVisibleLogOut(true);
                     }}
                     className={`mb-4  mt-4 flex h-14  w-full justify-center rounded-xl bg-card dark:bg-card-dark`}
                   >
