@@ -98,12 +98,12 @@ export const SettingsScreen = ({
 
     showActionSheetWithOptions(
       {
-        textStyle:{color:'white', fontWeight: "bold"},
-        containerStyle:{backgroundColor:'#1B1B1B', padding: 12},
+        textStyle: { color: "white", fontWeight: "bold" },
+        containerStyle: { backgroundColor: "#1B1B1B", padding: 12 },
 
-                options,
+        options,
         cancelButtonIndex,
-        destructiveButtonIndex
+        destructiveButtonIndex,
       },
       (selectedIndex: number | undefined) => {
         if (selectedIndex !== undefined) {
@@ -134,38 +134,69 @@ export const SettingsScreen = ({
       className="flex bg-background dark:bg-background-dark"
     >
       <SafeAreaView className="flex w-11/12 self-center bg-background dark:bg-background-dark">
+        <Dialog.Container
+          contentStyle={{ backgroundColor: "#1B1B1B", borderRadius: 20 }}
+          visible={visibleLogOut}
+        >
+          <Dialog.Title>Log Out?</Dialog.Title>
+          <Dialog.Description>
+            Are you sure you want to log out?
+          </Dialog.Description>
+          <Dialog.Button
+            bold={true}
+            color="white"
+            label="No"
+            style={{}}
+            onPress={() => {
+              setVisibleLogOut(false);
+            }}
+          />
+          <Dialog.Button
+            bold={true}
+            color="red"
+            label="Yes"
+            onPress={() => signOut()}
+          />
+        </Dialog.Container>
 
-      <Dialog.Container contentStyle={{backgroundColor:'#1B1B1B', borderRadius: 20}} visible={visibleLogOut}>
-      <Dialog.Title>Log Out?</Dialog.Title>
-      <Dialog.Description>
-      Are you sure you want to log out?
-      </Dialog.Description>
-      <Dialog.Button bold={true} color="white"  label="No" style={{}}  onPress={()=>{setVisibleLogOut(false)}}/>
-      <Dialog.Button bold={true}  color="red" label="Yes"  onPress={() => signOut()}/>
-    </Dialog.Container>
-
-
-    <Dialog.Container contentStyle={{backgroundColor:'#1B1B1B', borderRadius: 20}} visible={visibleDiscardChanges}>
-      <Dialog.Title>Discard all changes?</Dialog.Title>
-      <Dialog.Description>
-      Are you sure you want to exit without saving?
-      </Dialog.Description>
-      <Dialog.Button bold={true} color="white"  label="No" style={{}}  onPress={()=>{setVisibleDiscardChanges(false)}}/>
-      <Dialog.Button bold={true}  color="red" label="Yes"  onPress={() => navigation.goBack()}/>
-    </Dialog.Container>
-
+        <Dialog.Container
+          contentStyle={{ backgroundColor: "#1B1B1B", borderRadius: 20 }}
+          visible={visibleDiscardChanges}
+        >
+          <Dialog.Title>Discard all changes?</Dialog.Title>
+          <Dialog.Description>
+            Are you sure you want to exit without saving?
+          </Dialog.Description>
+          <Dialog.Button
+            bold={true}
+            color="white"
+            label="No"
+            style={{}}
+            onPress={() => {
+              setVisibleDiscardChanges(false);
+            }}
+          />
+          <Dialog.Button
+            bold={true}
+            color="red"
+            label="Yes"
+            onPress={() => navigation.goBack()}
+          />
+        </Dialog.Container>
 
         <View className="h-screen bg-background px-5 pt-6 dark:bg-background-dark">
-          <GoBackSignButton onPress={() => {
-                if (
-                  newUsername !== user?.username ||
-                  profileUrl !== user.imageUrl
-                ) {
-                  setVisibleDiscardChanges(true)
-                } else {
-                  navigation.goBack();
-                }
-              }} />
+          <GoBackSignButton
+            onPress={() => {
+              if (
+                newUsername !== user?.username ||
+                profileUrl !== user.imageUrl
+              ) {
+                setVisibleDiscardChanges(true);
+              } else {
+                navigation.goBack();
+              }
+            }}
+          />
           <View className=" bg-background-dark">
             <TouchableOpacity
               className="mb-2 self-center"
@@ -251,7 +282,7 @@ export const SettingsScreen = ({
                 return (
                   <TouchableOpacity
                     onPress={() => {
-                      setVisibleLogOut(true)
+                      setVisibleLogOut(true);
                     }}
                     className={`mb-4  mt-4 flex h-14  w-full justify-center rounded-xl bg-card dark:bg-card-dark`}
                   >

@@ -22,7 +22,6 @@ import { firestore } from "../../utils/firebaseConfig";
 import Markdown from "react-native-marked";
 import Dialog from "react-native-dialog";
 
-
 export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
   const insets = useSafeAreaInsets();
   const [note, setNote] = useState<string | []>(
@@ -31,8 +30,10 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [editing, setEditing] = useState<boolean>(false);
   const [preview, setPreview] = useState<boolean>(false);
-  const [visibleDismissChanges, setVisibleDismissChanges] = useState<boolean>(false);
-  const [visibleDismissChangesFlashcards, setVisibleDismissChangesFlashcards] = useState<boolean>(false);
+  const [visibleDismissChanges, setVisibleDismissChanges] =
+    useState<boolean>(false);
+  const [visibleDismissChangesFlashcards, setVisibleDismissChangesFlashcards] =
+    useState<boolean>(false);
 
   if (loading) {
     return (
@@ -88,41 +89,75 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
       className="flex-1 bg-background-dark"
     >
       <SafeAreaView className="mx-12 w-11/12 flex-1 self-center bg-background dark:bg-background-dark">
+        <Dialog.Container
+          contentStyle={{ backgroundColor: "#1B1B1B", borderRadius: 20 }}
+          visible={visibleDismissChanges}
+        >
+          <Dialog.Title>Dismiss all changes?</Dialog.Title>
+          <Dialog.Description>
+            Are you sure you want to dismiss all changes?
+          </Dialog.Description>
+          <Dialog.Button
+            bold={true}
+            color="white"
+            label="No"
+            style={{}}
+            onPress={() => {
+              setVisibleDismissChanges(false);
+            }}
+          />
+          <Dialog.Button
+            bold={true}
+            color="red"
+            label="Yes"
+            onPress={() => {
+              setVisibleDismissChanges(false);
+              params.navigation.goBack();
+            }}
+          />
+        </Dialog.Container>
 
-      <Dialog.Container contentStyle={{backgroundColor:'#1B1B1B', borderRadius: 20}} visible={visibleDismissChanges}>
-      <Dialog.Title>Dismiss all changes?</Dialog.Title>
-      <Dialog.Description>
-      Are you sure you want to dismiss all changes?
-      </Dialog.Description>
-      <Dialog.Button bold={true} color="white"  label="No" style={{}}  onPress={()=>{setVisibleDismissChanges(false)}}/>
-      <Dialog.Button bold={true}  color="red" label="Yes"  onPress={ () => {setVisibleDismissChanges(false);params.navigation.goBack();}}/>
-    </Dialog.Container>
-
-    <Dialog.Container contentStyle={{backgroundColor:'#1B1B1B', borderRadius: 20}} visible={visibleDismissChangesFlashcards}>
-      <Dialog.Title>Dismiss all changes?</Dialog.Title>
-      <Dialog.Description>
-      Are you sure you want to dismiss all changes?
-      </Dialog.Description>
-      <Dialog.Button bold={true} color="white"  label="No" style={{}}  onPress={()=>{setVisibleDismissChangesFlashcards(false)}}/>
-      <Dialog.Button bold={true}  color="red" label="Yes"  onPress={ () =>{
-        setNote(params.route.params.topic.notes);
-        setEditing(false);
-   setVisibleDismissChangesFlashcards(false);
-                        params.navigation.navigate("PrepareFlashcardsScreen", {
-                          topics: params.route.params.topics,
-                          index: params.route.params.topics.indexOf(
-                            params.route.params.topic,
-                          ),
-                          subjectID: params.route.params.subjectID,
-                        }) }} />
-    </Dialog.Container>
-
+        <Dialog.Container
+          contentStyle={{ backgroundColor: "#1B1B1B", borderRadius: 20 }}
+          visible={visibleDismissChangesFlashcards}
+        >
+          <Dialog.Title>Dismiss all changes?</Dialog.Title>
+          <Dialog.Description>
+            Are you sure you want to dismiss all changes?
+          </Dialog.Description>
+          <Dialog.Button
+            bold={true}
+            color="white"
+            label="No"
+            style={{}}
+            onPress={() => {
+              setVisibleDismissChangesFlashcards(false);
+            }}
+          />
+          <Dialog.Button
+            bold={true}
+            color="red"
+            label="Yes"
+            onPress={() => {
+              setNote(params.route.params.topic.notes);
+              setEditing(false);
+              setVisibleDismissChangesFlashcards(false);
+              params.navigation.navigate("PrepareFlashcardsScreen", {
+                topics: params.route.params.topics,
+                index: params.route.params.topics.indexOf(
+                  params.route.params.topic,
+                ),
+                subjectID: params.route.params.subjectID,
+              });
+            }}
+          />
+        </Dialog.Container>
 
         <View className="flex flex-row items-center justify-between">
           <TouchableOpacity
             onPress={() => {
               if (editing) {
-                setVisibleDismissChanges(true)
+                setVisibleDismissChanges(true);
               } else {
                 params.navigation.goBack();
               }

@@ -27,7 +27,6 @@ import { Alert } from "react-native";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import Dialog from "react-native-dialog";
 
-
 export const SubjectScreen = ({
   route,
   navigation,
@@ -60,7 +59,7 @@ export const SubjectScreen = ({
     setLoading(false);
   };
   const { showActionSheetWithOptions } = useActionSheet();
-  
+
   const AudienceSelector = () => {
     const icons = [
       <AntDesign name="edit" size={20} color={"white"} />,
@@ -68,34 +67,30 @@ export const SubjectScreen = ({
       <Entypo name="cross" size={20} color="white" />,
     ];
 
-    const options = [
-      "Edit",
-      "Delete",
-      "Cancel",
-    ];
-    const cancelButtonIndex =2;
+    const options = ["Edit", "Delete", "Cancel"];
+    const cancelButtonIndex = 2;
     const destructiveButtonIndex = 1;
     showActionSheetWithOptions(
       {
-        textStyle:{color:'white', fontWeight: "bold"},
-        containerStyle:{backgroundColor:'#1B1B1B', padding: 12},
+        textStyle: { color: "white", fontWeight: "bold" },
+        containerStyle: { backgroundColor: "#1B1B1B", padding: 12 },
         options,
         cancelButtonIndex,
         destructiveButtonIndex,
-        icons
+        icons,
       },
       (selectedIndex: number | undefined) => {
         if (selectedIndex !== undefined) {
           switch (selectedIndex) {
             case 0:
-                    navigation.navigate("EditSubjectScreen", {
-                      subject: route.params.subject,
-                      subjects: route.params.subjects,
-                    })
-                  
+              navigation.navigate("EditSubjectScreen", {
+                subject: route.params.subject,
+                subjects: route.params.subjects,
+              });
+
               break;
             case 1:
-              setVisibleDelete(true)
+              setVisibleDelete(true);
               break;
 
             case cancelButtonIndex:
@@ -105,30 +100,25 @@ export const SubjectScreen = ({
       },
     );
   };
-  
 
-  const TopicEditSelection = (item : Topic) => {
+  const TopicEditSelection = (item: Topic) => {
     const icons = [
       <AntDesign name="edit" size={20} color={"white"} />,
       <AntDesign name="delete" size={20} color={"red"} />,
       <Entypo name="cross" size={20} color="white" />,
     ];
 
-    const options = [
-      "Edit",
-      "Delete",
-      "Cancel",
-    ];
-    const cancelButtonIndex =2;
+    const options = ["Edit", "Delete", "Cancel"];
+    const cancelButtonIndex = 2;
     const destructiveButtonIndex = 1;
     showActionSheetWithOptions(
       {
-        textStyle:{color:'white', fontWeight: "bold"},
-        containerStyle:{backgroundColor:'#1B1B1B', padding: 12},
+        textStyle: { color: "white", fontWeight: "bold" },
+        containerStyle: { backgroundColor: "#1B1B1B", padding: 12 },
         options,
         cancelButtonIndex,
         destructiveButtonIndex,
-        icons
+        icons,
       },
       (selectedIndex: number | undefined) => {
         if (selectedIndex !== undefined) {
@@ -138,8 +128,8 @@ export const SubjectScreen = ({
                 subject: route.params.subject,
                 topics: topics,
                 topic: item,
-              })
-                  
+              });
+
               break;
             case 1:
               setDeleteTopic(item);
@@ -152,7 +142,6 @@ export const SubjectScreen = ({
       },
     );
   };
-
 
   useEffect(() => {
     getData();
@@ -197,45 +186,78 @@ export const SubjectScreen = ({
       className="flex-1 bg-background-dark"
     >
       <SafeAreaView className="mx-12 w-11/12 flex-1 self-center bg-background dark:bg-background-dark">
-        
-      <Dialog.Container contentStyle={{backgroundColor:'#1B1B1B', borderRadius: 20}} visible={visibleDelete}>
-      <Dialog.Title>Delete subject?</Dialog.Title>
-      <Dialog.Description>
-      Are you sure you want to delete this subject and all topics associated with it?
-      </Dialog.Description>
-      <Dialog.Button bold={true} color="white"  label="No" style={{}}  onPress={()=>{setVisibleDelete(false)}}/>
-      <Dialog.Button bold={true}  color="red" label="Yes"  onPress={() => {
-            setDoc(doc(firestore, "subjects", route.params.subject.id), {
-              topics: [],
-              deleted: true,
-            }).then(() => {
-              if (user) {
-                updateDoc(doc(firestore, "users", user?.id), {
-                  subjects: arrayRemove(route.params.subject),
-                });
-                navigation.navigate("MainScreen", { refresh: Math.random() });
-              }
-            });
-            setVisibleDelete(false)
-          }}/>
-    </Dialog.Container>
-      <Dialog.Container contentStyle={{backgroundColor:'#1B1B1B', borderRadius: 20}} visible={deleteTopic !== undefined}>
-      <Dialog.Title>Delete topic?</Dialog.Title>
-      <Dialog.Description>
-      Are you sure you want to delete this topic and all flashcards associated with it?
-      </Dialog.Description>
-      <Dialog.Button bold={true} color="white"  label="No" style={{}}  onPress={()=>{setDeleteTopic(undefined)}}/>
-      <Dialog.Button bold={true}  color="red" label="Yes"  onPress={ () => {
-            let tempTopics = [...topics];
-            if(!deleteTopic) return;
-            tempTopics = tempTopics.filter((el) => el.id !== deleteTopic.id);
-            updateDoc(doc(firestore, "subjects", route.params.subject.id), {
-              topics: tempTopics,
-            });
-            setTopics(tempTopics);
-            setDeleteTopic(undefined)
-          }}/>
-    </Dialog.Container>
+        <Dialog.Container
+          contentStyle={{ backgroundColor: "#1B1B1B", borderRadius: 20 }}
+          visible={visibleDelete}
+        >
+          <Dialog.Title>Delete subject?</Dialog.Title>
+          <Dialog.Description>
+            Are you sure you want to delete this subject and all topics
+            associated with it?
+          </Dialog.Description>
+          <Dialog.Button
+            bold={true}
+            color="white"
+            label="No"
+            style={{}}
+            onPress={() => {
+              setVisibleDelete(false);
+            }}
+          />
+          <Dialog.Button
+            bold={true}
+            color="red"
+            label="Yes"
+            onPress={() => {
+              setDoc(doc(firestore, "subjects", route.params.subject.id), {
+                topics: [],
+                deleted: true,
+              }).then(() => {
+                if (user) {
+                  updateDoc(doc(firestore, "users", user?.id), {
+                    subjects: arrayRemove(route.params.subject),
+                  });
+                  navigation.navigate("MainScreen", { refresh: Math.random() });
+                }
+              });
+              setVisibleDelete(false);
+            }}
+          />
+        </Dialog.Container>
+        <Dialog.Container
+          contentStyle={{ backgroundColor: "#1B1B1B", borderRadius: 20 }}
+          visible={deleteTopic !== undefined}
+        >
+          <Dialog.Title>Delete topic?</Dialog.Title>
+          <Dialog.Description>
+            Are you sure you want to delete this topic and all flashcards
+            associated with it?
+          </Dialog.Description>
+          <Dialog.Button
+            bold={true}
+            color="white"
+            label="No"
+            style={{}}
+            onPress={() => {
+              setDeleteTopic(undefined);
+            }}
+          />
+          <Dialog.Button
+            bold={true}
+            color="red"
+            label="Yes"
+            onPress={() => {
+              let tempTopics = [...topics];
+              if (!deleteTopic) return;
+              tempTopics = tempTopics.filter((el) => el.id !== deleteTopic.id);
+              updateDoc(doc(firestore, "subjects", route.params.subject.id), {
+                topics: tempTopics,
+              });
+              setTopics(tempTopics);
+              setDeleteTopic(undefined);
+            }}
+          />
+        </Dialog.Container>
 
         <CodeModal
           displayCode={displayCode}
@@ -259,21 +281,19 @@ export const SubjectScreen = ({
               topics.length <= 0 && "opacity-20"
             }`}
             disabled={topics.length <= 0}
-            >
+          >
             <Feather name="share" size={20} color="white" />
           </TouchableOpacity>
-            {route.params.author && (
-              <>
-                
-  
-                <TouchableOpacity
-                  onPress={AudienceSelector}
-                  className=" flex aspect-square w-1/12 items-center justify-center"
-                >
-  <Entypo name="dots-three-vertical" size={20} color="white" />
-                </TouchableOpacity>
-              </>
-            )}
+          {route.params.author && (
+            <>
+              <TouchableOpacity
+                onPress={AudienceSelector}
+                className=" flex aspect-square w-1/12 items-center justify-center"
+              >
+                <Entypo name="dots-three-vertical" size={20} color="white" />
+              </TouchableOpacity>
+            </>
+          )}
         </View>
 
         {topics && !loading ? (
@@ -369,15 +389,16 @@ export const SubjectScreen = ({
                       {item.title}
                     </Text>
                     {route.params.author && (
-                      
-                        
-                        <TouchableOpacity
-                        className="opacity-60 -mr-1"
-                          onPress={()=>TopicEditSelection(item)}
-                        >
-                           <Entypo name="dots-three-vertical" size={20} color="white" />
-                        </TouchableOpacity>
-                    
+                      <TouchableOpacity
+                        className="-mr-1 opacity-60"
+                        onPress={() => TopicEditSelection(item)}
+                      >
+                        <Entypo
+                          name="dots-three-vertical"
+                          size={20}
+                          color="white"
+                        />
+                      </TouchableOpacity>
                     )}
                   </View>
                   <Text className="font-open-sans-bold text-xs text-white opacity-50">
