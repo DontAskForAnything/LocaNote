@@ -101,7 +101,6 @@ export default function EditTopicScreen(
         </View>
 
         <View className="w-full px-8">
-
           <Text className="mt-2 font-open-sans-semibold text-base text-white opacity-70">
             Topic name:
           </Text>
