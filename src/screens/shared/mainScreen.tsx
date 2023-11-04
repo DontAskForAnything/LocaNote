@@ -155,7 +155,7 @@ export const MainSharedScreen = (
                 >
                   <View className=" flex-row items-center rounded-xl bg-primary-dark p-4">
                     <Text className="font-open-sans-bold text-sm text-white opacity-90">
-                      I have code
+                      I have a code
                     </Text>
                   </View>
                 </TouchableOpacity>

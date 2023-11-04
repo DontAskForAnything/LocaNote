@@ -23,6 +23,7 @@ interface iconPickerProps {
 export const IconPicker = ({ selectedIcon, onPress }: iconPickerProps) => {
   return (
     <FlatList
+      scrollEnabled={false}
       contentContainerStyle={{ alignItems: "center" }}
       numColumns={5}
       keyExtractor={(item) => item}
