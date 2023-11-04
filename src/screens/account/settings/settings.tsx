@@ -9,7 +9,7 @@ import {
   Keyboard,
 } from "react-native";
 import { RootStackScreenProps } from "../../../types/navigation";
-import { useClerk } from "@clerk/clerk-expo";
+import { isClerkAPIResponseError, useClerk } from "@clerk/clerk-expo";
 import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -38,6 +38,7 @@ export const SettingsScreen = ({
     control,
     watch,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(
@@ -243,7 +244,7 @@ export const SettingsScreen = ({
               </View>
             </View>
             {errors.username?.message && (
-              <Text className="mt-2 pb-4 font-open-sans-bold text-red-500">
+              <Text className="mt-2 font-open-sans-bold text-red-500">
                 {errors.username.message.toString()}
               </Text>
             )}
@@ -265,11 +266,21 @@ export const SettingsScreen = ({
                               username: newUsername,
                             };
 
-                            user?.update(params);
+                            user
+                              ?.update(params)
+                              .then(() => navigation.goBack())
+                              .catch((err: unknown) => {
+                                if (isClerkAPIResponseError(err)) {
+                                  setError("username", {
+                                    message: err.errors[0]?.message,
+                                  });
+                                  return;
+                                }
+                              });
                           }
                         })
                         .catch((e) => console.error(e))
-                        .finally(() => navigation.goBack());
+                        .finally(() => setLoading(false));
                     })}
                   >
                     <Text className="text-center font-open-sans-semibold text-lg dark:text-primary-dark">
