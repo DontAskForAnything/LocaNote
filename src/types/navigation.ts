@@ -48,7 +48,12 @@ export type RootStackParamList = {
   };
   AiErrorScreen: { error: Readonly<string> };
   // Shared
-  MainShared: undefined;
+  MainShared: { refresh: number } | undefined;
+  EditTopicScreen: {
+    subject: Readonly<SubjectItem>;
+    topics: Readonly<Topic[]>;
+    topic: Topic;
+  };
 };
 
 declare module "@react-navigation/native" {
