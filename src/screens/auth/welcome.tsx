@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { RootStackScreenProps } from "../../types/navigation";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -24,9 +24,9 @@ export default function WelcomeScreen({
             onPress={() => {
               navigation.navigate("LogInStrategy");
             }}
-            className="mb-2 inline-flex items-center justify-center rounded-xl bg-green-600 px-8 py-3"
+            className="mb-2 inline-flex items-center justify-center rounded-xl bg-green-600 px-8 py-4"
           >
-            <Text className=" font-open-sans-bold text-lg dark:text-white">
+            <Text className="font-open-sans-bold text-xl dark:text-white">
               Sign In
             </Text>
           </TouchableOpacity>
@@ -37,18 +37,18 @@ export default function WelcomeScreen({
             }}
             className="mt- flex w-full flex-col justify-center"
           >
-            <Text className="text-center font-open-sans-regular text-xs text-black dark:text-white">
+            <Text className="text-center font-open-sans-regular text-sm text-black dark:text-white">
               or
             </Text>
 
-            <Text className="text-center font-open-sans-bold text-sm text-black dark:text-white">
+            <Text className="text-center font-open-sans-bold text-base text-black dark:text-white">
               Sign Up
             </Text>
           </TouchableOpacity>
         </View>
 
         <Image
-          className="flex-1"
+          className="flex-1 opacity-80"
           source={require("../../../assets/background_welcome.png")}
         />
       </SafeAreaView>

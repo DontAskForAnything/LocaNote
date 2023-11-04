@@ -71,6 +71,7 @@ export const MainSharedScreen = (
         setDisplayCode={setDisplayCode}
         getSharedSubjects={getSharedSubjects}
       />
+      {! loading && <>
       {subjects.length > 0 ? (
         <SafeAreaView className="w-11/12 flex-1 self-center bg-background dark:bg-background-dark">
           <LogoTop />
@@ -155,7 +156,7 @@ export const MainSharedScreen = (
             </TouchableOpacity>
           </SafeAreaView>
         </>
-      )}
+      )}</>}
     </View>
   );
 };

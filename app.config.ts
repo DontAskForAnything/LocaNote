@@ -2,14 +2,15 @@ import { ExpoConfig } from "@expo/config";
 
 // _ctx: ConfigContext
 const defineConfig = (): ExpoConfig => ({
-  name: "locanote",
+  name: "LocaNote",
+  scheme: "locanote",
   slug: "locanote",
   version: "0.9.0",
   orientation: "portrait",
   icon: "./assets/icon.png",
   userInterfaceStyle: "dark",
   splash: {
-    image: "./assets/icon.png",
+    image: "./assets/splashscreen.png",
     backgroundColor: "#141416",
   },
   updates: {

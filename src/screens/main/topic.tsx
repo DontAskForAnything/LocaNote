@@ -231,7 +231,7 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
                 saveInDatabase(note);
                 setEditing(false);
               }}
-              className="my-2  flex-row items-center self-end rounded-xl bg-primary-dark p-3"
+              className="my-2  flex-row items-center self-center rounded-xl bg-primary-dark p-3 px-8"
             >
               <Text className="px-4 font-open-sans-bold text-base text-white opacity-90">
                 Save
@@ -327,7 +327,7 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
             onPress={() => {
               setEditing(true);
             }}
-            className="my-2 flex-row items-center self-start rounded-xl bg-primary-dark p-3"
+            className="my-2 flex-row items-center self-center rounded-xl bg-primary-dark p-3 px-8"
           >
             <Text className="px-4 font-open-sans-bold text-base text-white opacity-90">
               Edit

@@ -91,12 +91,17 @@ export const SettingsScreen = ({
       "Remove current picture",
       "Cancel",
     ];
-    const cancelButtonIndex = 3;
+    const cancelButtonIndex = 2;
+    const destructiveButtonIndex = 1;
 
     showActionSheetWithOptions(
       {
-        options,
+        textStyle:{color:'white', fontWeight: "bold"},
+        containerStyle:{backgroundColor:'#1B1B1B', padding: 12},
+
+                options,
         cancelButtonIndex,
+        destructiveButtonIndex
       },
       (selectedIndex: number | undefined) => {
         if (selectedIndex !== undefined) {

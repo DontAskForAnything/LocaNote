@@ -24,6 +24,8 @@ import {
 } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
 import { Alert } from "react-native";
+import { useActionSheet } from "@expo/react-native-action-sheet";
+
 
 export const SubjectScreen = ({
   route,
@@ -53,6 +55,99 @@ export const SubjectScreen = ({
       }
     }
     setLoading(false);
+  };
+  const { showActionSheetWithOptions } = useActionSheet();
+  
+  const AudienceSelector = () => {
+    const icons = [
+      <AntDesign name="edit" size={20} color={"white"} />,
+      <AntDesign name="delete" size={20} color={"red"} />,
+      <Entypo name="cross" size={20} color="white" />,
+    ];
+
+    const options = [
+      "Edit",
+      "Delete",
+      "Cancel",
+    ];
+    const cancelButtonIndex =2;
+    const destructiveButtonIndex = 1;
+    showActionSheetWithOptions(
+      {
+        textStyle:{color:'white', fontWeight: "bold"},
+        containerStyle:{backgroundColor:'#1B1B1B', padding: 12},
+        options,
+        cancelButtonIndex,
+        destructiveButtonIndex,
+        icons
+      },
+      (selectedIndex: number | undefined) => {
+        if (selectedIndex !== undefined) {
+          switch (selectedIndex) {
+            case 0:
+                    navigation.navigate("EditSubjectScreen", {
+                      subject: route.params.subject,
+                      subjects: route.params.subjects,
+                    })
+                  
+              break;
+            case 1:
+             handleSubjectDelete()
+              break;
+
+            case cancelButtonIndex:
+              break;
+          }
+        }
+      },
+    );
+  };
+  
+
+  const TopicEditSelection = (item : Topic) => {
+    const icons = [
+      <AntDesign name="edit" size={20} color={"white"} />,
+      <AntDesign name="delete" size={20} color={"red"} />,
+      <Entypo name="cross" size={20} color="white" />,
+    ];
+
+    const options = [
+      "Edit",
+      "Delete",
+      "Cancel",
+    ];
+    const cancelButtonIndex =2;
+    const destructiveButtonIndex = 1;
+    showActionSheetWithOptions(
+      {
+        textStyle:{color:'white', fontWeight: "bold"},
+        containerStyle:{backgroundColor:'#1B1B1B', padding: 12},
+        options,
+        cancelButtonIndex,
+        destructiveButtonIndex,
+        icons
+      },
+      (selectedIndex: number | undefined) => {
+        if (selectedIndex !== undefined) {
+          switch (selectedIndex) {
+            case 0:
+              navigation.navigate("EditTopicScreen", {
+                subject: route.params.subject,
+                topics: topics,
+                topic: item,
+              })
+                  
+              break;
+            case 1:
+             handleDelete(item);
+              break;
+
+            case cancelButtonIndex:
+              break;
+          }
+        }
+      },
+    );
   };
 
   const handleSubjectDelete = (): void => {
@@ -171,37 +266,27 @@ export const SubjectScreen = ({
           <Text className="w-8/12 py-4 text-center font-open-sans-bold text-white">
             {route.params.subject.title}
           </Text>
-          {route.params.author && (
-            <>
-              <TouchableOpacity
-                onPress={handleSubjectDelete}
-                className=" flex aspect-square w-1/12 items-center justify-center"
-              >
-                <AntDesign name="delete" size={20} color={"red"} />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("EditSubjectScreen", {
-                    subject: route.params.subject,
-                    subjects: route.params.subjects,
-                  })
-                }
-                className=" flex aspect-square w-1/12 items-center justify-center"
-              >
-                <AntDesign name="edit" size={20} color={"white"} />
-              </TouchableOpacity>
-            </>
-          )}
           <TouchableOpacity
             onPress={() => setDisplayCode(true)}
             className={`flex aspect-square w-1/12 items-center justify-center ${
               topics.length <= 0 && "opacity-20"
             }`}
             disabled={topics.length <= 0}
-          >
+            >
             <Feather name="share" size={20} color="white" />
           </TouchableOpacity>
+            {route.params.author && (
+              <>
+                
+  
+                <TouchableOpacity
+                  onPress={AudienceSelector}
+                  className=" flex aspect-square w-1/12 items-center justify-center"
+                >
+  <Entypo name="dots-three-vertical" size={20} color="white" />
+                </TouchableOpacity>
+              </>
+            )}
         </View>
 
         {topics && !loading ? (
@@ -297,26 +382,15 @@ export const SubjectScreen = ({
                       {item.title}
                     </Text>
                     {route.params.author && (
-                      <View className={"flex-row"}>
+                      
+                        
                         <TouchableOpacity
-                          className={"mx-2"}
-                          onPress={() =>
-                            navigation.navigate("EditTopicScreen", {
-                              subject: route.params.subject,
-                              topics: topics,
-                              topic: item,
-                            })
-                          }
+                        className="opacity-60 -mr-1"
+                          onPress={()=>TopicEditSelection(item)}
                         >
-                          <AntDesign name="edit" size={20} color={"white"} />
+                           <Entypo name="dots-three-vertical" size={20} color="white" />
                         </TouchableOpacity>
-                        <TouchableOpacity
-                          className={"mx-2"}
-                          onPress={() => handleDelete(item)}
-                        >
-                          <AntDesign name="delete" size={20} color={"red"} />
-                        </TouchableOpacity>
-                      </View>
+                    
                     )}
                   </View>
                   <Text className="font-open-sans-bold text-xs text-white opacity-50">
