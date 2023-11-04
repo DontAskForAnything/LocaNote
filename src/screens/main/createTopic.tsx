@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   View,
   TextInput,
+  KeyboardAvoidingView,
 } from "react-native";
 import { RootStackScreenProps } from "../../types/navigation";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -100,13 +101,13 @@ export default function CreateTopicScreen(
   }
 
   return (
-    <View
+    <KeyboardAvoidingView
       style={{ paddingTop: insets.top }}
       className="flex-1 bg-background-dark"
     >
       <SafeAreaView className="w-11/12 flex-1 self-center bg-background dark:bg-background-dark">
         <LoadingModal visible={loading} />
-        <View className="flex flex-row items-center justify-between ">
+        <View className="flex flex-row justify-between ">
           <TouchableOpacity
             onPress={() => params.navigation.goBack()}
             className=" flex aspect-square h-full w-1/12 items-center justify-center "
@@ -114,14 +115,9 @@ export default function CreateTopicScreen(
             <AntDesign name="left" size={20} color={"white"} />
           </TouchableOpacity>
 
-          <Text className="w-8/12 py-4 text-center font-open-sans-bold text-white"></Text>
-        </View>
-
-        <View className="w-full px-8">
           <View className="mb-4">
-            <View className="mt-4 flex-row items-center justify-center ">
+            <View className="flex-row items-center justify-center ">
               <View className="opacity-90">
-                {/* //TODO: add new topics */}
                 <FontAwesome5 name="lightbulb" size={18} color="white" />
               </View>
               <Text className="ml-2 font-open-sans-bold text-lg text-white opacity-90">
@@ -132,7 +128,10 @@ export default function CreateTopicScreen(
               {params.route.params.subject.title}
             </Text>
           </View>
+          <View className={"w-1/12"}></View>
+        </View>
 
+        <View className="w-full px-8">
           <Text className="mt-2 font-open-sans-semibold text-base text-white opacity-70">
             Topic name:
           </Text>
@@ -193,6 +192,6 @@ export default function CreateTopicScreen(
           </Text>
         </TouchableOpacity>
       </SafeAreaView>
-    </View>
+    </KeyboardAvoidingView>
   );
 }

@@ -20,6 +20,7 @@ interface colorPickerParams {
 export const ColorPicker = ({ onPress, selectedColor }: colorPickerParams) => {
   return (
     <FlatList
+      scrollEnabled={false}
       numColumns={4}
       keyExtractor={(item) => item}
       data={colors}

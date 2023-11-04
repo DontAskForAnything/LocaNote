@@ -67,6 +67,7 @@ export const MainSharedScreen = (
     >
       <LoadingModal visible={loading} />
       <CodeModal
+        subjects={subjects}
         displayCode={displayCode}
         setDisplayCode={setDisplayCode}
         getSharedSubjects={getSharedSubjects}
@@ -155,7 +156,7 @@ export const MainSharedScreen = (
                 >
                   <View className=" flex-row items-center rounded-xl bg-primary-dark p-4">
                     <Text className="font-open-sans-bold text-sm text-white opacity-90">
-                      I have code
+                      I have a code
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -170,10 +171,12 @@ export const MainSharedScreen = (
 
 const CodeModal = ({
   displayCode,
+  subjects,
   setDisplayCode,
   getSharedSubjects,
 }: {
   displayCode: boolean;
+  subjects: SubjectObject;
   setDisplayCode: React.Dispatch<React.SetStateAction<boolean>>;
   getSharedSubjects: () => void;
 }) => {
@@ -184,6 +187,12 @@ const CodeModal = ({
   const [subjectCreate, setSubjectCreate] = useState(false);
   const codeSubmit = async () => {
     setCodeError("");
+
+    if (subjects.filter((e) => e.id === code).length > 0) {
+      setCodeError("You already added this topic!");
+      return;
+    }
+
     const query = await getDoc(doc(firestore, "subjects", code));
     if (query.exists()) {
       if (query.data().authorId === (user.user?.id as string)) {

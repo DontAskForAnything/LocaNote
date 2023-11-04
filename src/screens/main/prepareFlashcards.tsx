@@ -6,6 +6,7 @@ import {
   ScrollView,
   SafeAreaView,
   Pressable,
+  KeyboardAvoidingView,
 } from "react-native";
 import React, { useState } from "react";
 import { RootStackScreenProps } from "../../types/navigation";
@@ -82,7 +83,7 @@ export const PrepareFlashcardsScreen = ({
 
   const insets = useSafeAreaInsets();
   return (
-    <View
+    <KeyboardAvoidingView
       style={{ paddingTop: insets.top }}
       className="flex-1 bg-background-dark"
     >
@@ -292,6 +293,6 @@ export const PrepareFlashcardsScreen = ({
           </View>
         )}
       </SafeAreaView>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
