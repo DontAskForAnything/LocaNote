@@ -24,6 +24,7 @@ export const FlashcardsScreen = ({
   const swipe = useRef(new Animated.ValueXY()).current;
   const tiltCard = useRef(new Animated.Value(1)).current;
   const [index, setIndex] = useState<number>(1);
+
   // PanResponder configuration
   const panResponder = PanResponder.create({
     // Allow pan responder to activate
@@ -108,8 +109,11 @@ export const FlashcardsScreen = ({
     return (
       <Fragment>
         <Animated.View
-          className={"absolute left-12 top-8"}
-          style={{ opacity: likeOpacity }}
+          className={"absolute left-12 top-8 "}
+          style={{   shadowColor: 'green',
+          shadowOpacity: 1,
+          shadowRadius: 5,
+          elevation: 20, opacity: likeOpacity }}
         >
           <Text className="text-3xl font-bold text-primary">Got It</Text>
         </Animated.View>
@@ -146,7 +150,7 @@ export const FlashcardsScreen = ({
             <Animated.View
               key={index}
               className={
-                "absolute h-3/5 w-4/5 rounded-3xl border-2 border-slate-500 bg-cardLight-dark p-4"
+                "absolute h-3/5 w-4/5 rounded-3xl bg-cardLight-dark p-4 border-2 border-card-dark "
               }
               {...dragHandler.panHandlers}
               style={[isFirst && animatedCardStyle]}
@@ -159,12 +163,12 @@ export const FlashcardsScreen = ({
                   {isFirst && renderChoice()}
                   <Text
                     className={
-                      "absolute top-0 text-3xl font-semibold text-white"
+                      "absolute top-0 text-xl font-open-sans-semibold text-white"
                     }
                   >
                     {showAnswer && isFirst ? "Answer:" : "Question: "}
                   </Text>
-                  <Text className={"text-center text-xl text-white"}>
+                  <Text className={"text-center text-2xl font-open-sans-bold text-white"}>
                     {showAnswer && isFirst ? answer : question}
                   </Text>
                 </Fragment>
@@ -173,12 +177,32 @@ export const FlashcardsScreen = ({
           );
         })
         .reverse()}
+
+<Animated.View
+      style={{ shadowColor: 'green',
+      shadowOpacity: 1,
+      shadowRadius: 5,
+      elevation: 50, opacity:likeOpacity}}
+      className={
+        "absolute -z-50 h-3/5 w-4/5 justify-center rounded-3xl p-4"
+      }
+      />
+<Animated.View
+      style={{ shadowColor: 'red',
+      shadowOpacity: 1,
+      shadowRadius: 5,
+      elevation: 50, opacity:nopeOpacity}}
+      className={
+        "absolute -z-50 h-3/5 w-4/5 justify-center rounded-3xl border-2 p-4"
+      }
+      />
+
       <View
-        className={
-          "absolute -z-50 h-3/5 w-4/5 justify-center rounded-3xl border-2 border-slate-500 bg-cardLight-dark p-4"
-        }
+      className={
+        "absolute -z-50 h-3/5 w-4/5 justify-center rounded-3xl bg-cardLight-dark p-4"
+      }
       >
-        <Text className={"my-4 text-center text-3xl text-white"}>
+        <Text className={"my-4 text-center text-3xl text-white font-open-sans-semibold"}>
           {route.params.length > 0
             ? "That's all, good job!"
             : "This flashcards set is empty!"}
@@ -186,8 +210,8 @@ export const FlashcardsScreen = ({
         <TouchableOpacity
           className={"rounded-xl bg-primary p-2"}
           onPress={() => navigation.goBack()}
-        >
-          <Text className={"text-center text-base text-white"}>Go back</Text>
+          >
+          <Text className={"text-center text-base py-2 text-white font-open-sans-semibold"}>Go back</Text>
         </TouchableOpacity>
       </View>
       <Text className={"absolute bottom-16 text-xl text-white"}>
@@ -196,5 +220,6 @@ export const FlashcardsScreen = ({
           : `${route.params.length > 0 ? "All done! Good job!" : ""}`}
       </Text>
     </View>
+
   );
 };
