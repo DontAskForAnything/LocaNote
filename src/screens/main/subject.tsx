@@ -25,6 +25,7 @@ import {
 import { firestore } from "../../utils/firebaseConfig";
 import { Alert } from "react-native";
 import { useActionSheet } from "@expo/react-native-action-sheet";
+import Dialog from "react-native-dialog";
 
 
 export const SubjectScreen = ({
@@ -35,7 +36,9 @@ export const SubjectScreen = ({
   const { user } = useClerk();
   const [topics, setTopics] = useState<Topic[] | []>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [visibleDelete, setVisibleDelete] = useState<boolean>(false);
   const [displayCode, setDisplayCode] = useState<boolean>(false);
+  const [deleteTopic, setDeleteTopic] = useState<undefined | Topic>(undefined);
   const [isDeleted, setIsDeleted] = useState<boolean>(false);
 
   const getData = async (): Promise<void> => {
@@ -92,7 +95,7 @@ export const SubjectScreen = ({
                   
               break;
             case 1:
-             handleSubjectDelete()
+              setVisibleDelete(true)
               break;
 
             case cancelButtonIndex:
@@ -139,7 +142,7 @@ export const SubjectScreen = ({
                   
               break;
             case 1:
-             handleDelete(item);
+              setDeleteTopic(item);
               break;
 
             case cancelButtonIndex:
@@ -150,62 +153,6 @@ export const SubjectScreen = ({
     );
   };
 
-  const handleSubjectDelete = (): void => {
-    Alert.alert(
-      "Delete subject?",
-      "Are you sure you want to delete this subject and all topics associated with it?",
-      [
-        {
-          text: "Yes",
-          onPress: () => {
-            setDoc(doc(firestore, "subjects", route.params.subject.id), {
-              topics: [],
-              deleted: true,
-            }).then(() => {
-              if (user) {
-                updateDoc(doc(firestore, "users", user?.id), {
-                  subjects: arrayRemove(route.params.subject),
-                });
-                navigation.navigate("MainScreen", { refresh: Math.random() });
-              }
-            });
-          },
-        },
-        {
-          text: "No",
-          onPress: () => {},
-          style: "cancel",
-        },
-      ],
-      { cancelable: true },
-    );
-  };
-
-  const handleDelete = (topic: Topic): void => {
-    Alert.alert(
-      "Delete topic?",
-      "Are you sure you want to delete this topic and all flashcards associated with it?",
-      [
-        {
-          text: "Yes",
-          onPress: () => {
-            let tempTopics = [...topics];
-            tempTopics = tempTopics.filter((el) => el.id !== topic.id);
-            updateDoc(doc(firestore, "subjects", route.params.subject.id), {
-              topics: tempTopics,
-            });
-            setTopics(tempTopics);
-          },
-        },
-        {
-          text: "No",
-          onPress: () => {},
-          style: "cancel",
-        },
-      ],
-      { cancelable: true },
-    );
-  };
 
   useEffect(() => {
     getData();
@@ -250,6 +197,46 @@ export const SubjectScreen = ({
       className="flex-1 bg-background-dark"
     >
       <SafeAreaView className="mx-12 w-11/12 flex-1 self-center bg-background dark:bg-background-dark">
+        
+      <Dialog.Container contentStyle={{backgroundColor:'#1B1B1B', borderRadius: 20}} visible={visibleDelete}>
+      <Dialog.Title>Delete subject?</Dialog.Title>
+      <Dialog.Description>
+      Are you sure you want to delete this subject and all topics associated with it?
+      </Dialog.Description>
+      <Dialog.Button bold={true} color="white"  label="No" style={{}}  onPress={()=>{setVisibleDelete(false)}}/>
+      <Dialog.Button bold={true}  color="red" label="Yes"  onPress={() => {
+            setDoc(doc(firestore, "subjects", route.params.subject.id), {
+              topics: [],
+              deleted: true,
+            }).then(() => {
+              if (user) {
+                updateDoc(doc(firestore, "users", user?.id), {
+                  subjects: arrayRemove(route.params.subject),
+                });
+                navigation.navigate("MainScreen", { refresh: Math.random() });
+              }
+            });
+            setVisibleDelete(false)
+          }}/>
+    </Dialog.Container>
+      <Dialog.Container contentStyle={{backgroundColor:'#1B1B1B', borderRadius: 20}} visible={deleteTopic !== undefined}>
+      <Dialog.Title>Delete topic?</Dialog.Title>
+      <Dialog.Description>
+      Are you sure you want to delete this topic and all flashcards associated with it?
+      </Dialog.Description>
+      <Dialog.Button bold={true} color="white"  label="No" style={{}}  onPress={()=>{setDeleteTopic(undefined)}}/>
+      <Dialog.Button bold={true}  color="red" label="Yes"  onPress={ () => {
+            let tempTopics = [...topics];
+            if(!deleteTopic) return;
+            tempTopics = tempTopics.filter((el) => el.id !== deleteTopic.id);
+            updateDoc(doc(firestore, "subjects", route.params.subject.id), {
+              topics: tempTopics,
+            });
+            setTopics(tempTopics);
+            setDeleteTopic(undefined)
+          }}/>
+    </Dialog.Container>
+
         <CodeModal
           displayCode={displayCode}
           setDisplayCode={setDisplayCode}
