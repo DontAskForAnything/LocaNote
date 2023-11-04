@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { RootStackScreenProps } from "../../types/navigation";
 import { SafeAreaView } from "react-native-safe-area-context";

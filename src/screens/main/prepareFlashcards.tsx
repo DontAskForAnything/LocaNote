@@ -4,18 +4,13 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
-  Alert,
   SafeAreaView,
   Pressable,
 } from "react-native";
 import React, { useState } from "react";
 import { RootStackScreenProps } from "../../types/navigation";
 import { Flashcard } from "../../utils/types";
-import {
-  AntDesign,
-  FontAwesome5,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
+import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { doc, updateDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -33,10 +28,11 @@ export const PrepareFlashcardsScreen = ({
         [...route.params.topics[route.params.index].flashcards]
       : [],
   );
-  const [collapsedFlashcards, setCollapsedFlashcards] = useState<number[]>( route.params.topics[route.params.index]?.flashcards
-    ? 
-    Array.from({ length: 11 }, (_, index) => index)
-    : []);
+  const [collapsedFlashcards, setCollapsedFlashcards] = useState<number[]>(
+    route.params.topics[route.params.index]?.flashcards
+      ? Array.from({ length: 11 }, (_, index) => index)
+      : [],
+  );
   const [isChanged, setIsChanged] = useState<boolean>(false);
   const [displayDismissMessage, setDisplayDismissMessage] =
     useState<boolean>(false);
@@ -178,31 +174,40 @@ export const PrepareFlashcardsScreen = ({
         ) : (
           <ScrollView className={"mb-28 w-10/12 self-center"}>
             {currentFlashcards.map((flashcard, cardIndex) => {
-              if(collapsedFlashcards.includes(cardIndex)){
-                return(
+              if (collapsedFlashcards.includes(cardIndex)) {
+                return (
                   <Pressable
-                  onPress={()=>setCollapsedFlashcards((collapsed) => collapsed.filter(index => index !== cardIndex))}
+                    onPress={() =>
+                      setCollapsedFlashcards((collapsed) =>
+                        collapsed.filter((index) => index !== cardIndex),
+                      )
+                    }
                     key={cardIndex}
                     className={`${
                       cardIndex !== 0 ? "mt-4" : "mt-2"
-                    } w-full self-center rounded-xl flex-row bg-cardLight-dark p-4 px-6`}
+                    } w-full flex-row self-center rounded-xl bg-cardLight-dark p-4 px-6`}
                   >
                     <View className="flex-row">
-
-                    <Text className="font-open-sans-semibold text-base text-white">
-                    #{cardIndex + 1}
-                    </Text>
-                    <Text className="pl-4 font-open-sans-semibold text-base text-white opacity-70">
-                  {flashcard.question.trim().length > 0 ? flashcard.question : "No question provided :<"}
-                    </Text>
+                      <Text className="font-open-sans-semibold text-base text-white">
+                        #{cardIndex + 1}
+                      </Text>
+                      <Text className="pl-4 font-open-sans-semibold text-base text-white opacity-70">
+                        {flashcard.question.trim().length > 0
+                          ? flashcard.question
+                          : "No question provided :<"}
+                      </Text>
                     </View>
-
                   </Pressable>
-                )
+                );
               }
               return (
                 <Pressable
-                onPress={()=>setCollapsedFlashcards((collapsed) =>[...collapsed, cardIndex] )}
+                  onPress={() =>
+                    setCollapsedFlashcards((collapsed) => [
+                      ...collapsed,
+                      cardIndex,
+                    ])
+                  }
                   key={cardIndex}
                   className={`${
                     cardIndex !== 0 ? "mt-4" : "mt-2"

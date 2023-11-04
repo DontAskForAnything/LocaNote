@@ -6,7 +6,6 @@ import {
 import { RootStackScreenProps } from "../../types/navigation";
 import {
   ActivityIndicator,
-  Alert,
   Pressable,
   SafeAreaView,
   Text,

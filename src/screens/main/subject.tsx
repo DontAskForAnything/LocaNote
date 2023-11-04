@@ -23,7 +23,6 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
-import { Alert } from "react-native";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import Dialog from "react-native-dialog";
 

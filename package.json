@@ -51,6 +51,7 @@
     "react-native": "^0.71.8",
     "react-native-calendars": "^1.1301.0",
     "react-native-chart-kit": "^6.12.0",
+    "react-native-confetti-cannon": "^1.5.2",
     "react-native-dialog": "^9.3.0",
     "react-native-dropdown-select-list": "^2.0.5",
     "react-native-gesture-handler": "^2.9.0",
