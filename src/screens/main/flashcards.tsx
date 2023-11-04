@@ -131,7 +131,7 @@ export const FlashcardsScreen = ({
       className={"flex flex-1 items-center justify-center bg-background-dark"}
     >
       {!(index <= route.params.length) && route.params.length > 0 && (
-        <ConfettiCannon count={300} origin={{ x: 0, y: 0 }} fallSpeed={6000} />
+        <ConfettiCannon count={300} origin={{ x: 0, y: 0 }} fallSpeed={5000} />
       )}
 
       <GoBackSignButton onPress={() => navigation.goBack()} />
