@@ -36,6 +36,8 @@ import CreateTopicScreen from "./screens/main/createTopic";
 import { Ionicons } from "@expo/vector-icons";
 import { MainSharedScreen } from "./screens/shared/mainScreen";
 import EditTopicScreen from "./screens/main/editTopicScreen";
+import * as SecureStore from "expo-secure-store";
+import { TokenCache } from "@clerk/clerk-expo/dist/cache";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -86,6 +88,32 @@ const AppStack = () => {
     </Tab.Navigator>
   );
 };
+
+const tokenCache: TokenCache = {
+  getToken(key: string): Promise<string | null | undefined> {
+    try {
+      return SecureStore.getItemAsync(key);
+    } catch (err) {
+      return Promise.resolve(null);
+    }
+  },
+  saveToken(key: string, value: string): Promise<void> {
+    try {
+      return SecureStore.setItemAsync(key, value);
+    } catch (err) {
+      return Promise.resolve();
+    }
+  },
+
+  clearToken(key: string): Promise<void> {
+    try {
+      return SecureStore.deleteItemAsync(key);
+    } catch (err) {
+      return Promise.resolve();
+    }
+  },
+};
+
 export const App = () => {
   const [isConnected, setIsConnected] = useState(true);
 
@@ -116,6 +144,7 @@ export const App = () => {
   return (
     <ActionSheetProvider>
       <ClerkProvider
+        tokenCache={tokenCache}
         publishableKey={Constants.expoConfig?.extra?.CLERK_PUBLISHABLE_KEY}
       >
         <SignedIn>
