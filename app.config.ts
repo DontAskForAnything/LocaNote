@@ -32,13 +32,11 @@ const defineConfig = (): ExpoConfig => ({
     package: "misiu.dontaskforanything.locanote",
   },
   extra: {
-    CLERK_PUBLISHABLE_KEY:
-      "pk_test_dWx0aW1hdGUtcmF5LTY2LmNsZXJrLmFjY291bnRzLmRldiQ",
-    OPENAI_API_KEY: "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", // Change this value to match your openai key
-
-    // eas: {
-    //   projectId: "c0c5802d-8183-4aab-88af-27ef68b73009",
-    // },
+    CLERK_PUBLISHABLE_KEY: "<YOUR_CLERK_KEY>",
+    OPENAI_API_KEY: "<YOUR_OPENAI_KEY>", // Change this value to match your openai key
+    eas: {
+      projectId: "<YOUR_EXPO_PROJECT_ID>",
+    },
   },
 });
 

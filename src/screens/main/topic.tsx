@@ -280,7 +280,7 @@ export const TopicScreen = (params: RootStackScreenProps<"TopicScreen">) => {
                   Note:
                 </Text>
 
-                <View className="mb-4 flex-1 p-2">
+                <View className="flex-1 p-2">
                   {note.length > 0 ? (
                     <Markdown
                       value={note}
